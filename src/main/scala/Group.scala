@@ -12,3 +12,5 @@ final case class Group(name: String, members: List[Person], expenses: List[Expen
 
   def addExpense(expense: Expense): Group =
     copy(expenses = expenses :+ expense)
+
+    //

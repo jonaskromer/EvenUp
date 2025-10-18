@@ -1,3 +1,5 @@
+package de.htwg.swe.evenup
+
 final case class Group(name: String, members: List[Person], expenses: List[Expense]):
 
     override def toString(): String = 

@@ -11,13 +11,14 @@ final case class Group(name: String, members: List[Person], expenses: List[Expen
         if (members.contains(person)) this else copy(members = members :+ person)
 
     def removeMember(person: Person): Group =
-        if (members.contains(person)) copy(members = members :- person) else this
+        if (members.contains(person)) copy(members = members.filterNot(_ == person)) else this
+
 
     def addExpense(expense: Expense): Group =
         copy(expenses = expenses :+ expense)
 
     def removeExpense(expense: Expense): Group =
-        if(expenses.contains(expense)) this else copy(expenses = expenses :- expense)
+        if(expenses.contains(expense)) this else copy(expenses = expenses.filterNot(_ == expense))
 
     def updateName(name: String): Group =
         copy(name = name)

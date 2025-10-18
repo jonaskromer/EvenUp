@@ -6,56 +6,56 @@ case class Transaction(from: Person, to: Person, amount: Double)
 
 case class BalanceSheet(balances: Map[Person, Double]):
   
-  def total: Double = balances.values.sum
-  def nonZeroBalances: Map[Person, Double] = balances.filter(_._2 != 0)
+    def total: Double = balances.values.sum
+    def nonZeroBalances: Map[Person, Double] = balances.filter(_._2 != 0)
 
 case class Group(name: String, members: List[Person], expenses: List[Expense]):
 
-  def addMember(person: Person): Group =
-    if (members.contains(person)) this else copy(members = members :+ person)
+    def addMember(person: Person): Group =
+        if (members.contains(person)) this else copy(members = members :+ person)
 
-  def addExpense(expense: Expense): Group =
-    copy(expenses = expenses :+ expense)
+    def addExpense(expense: Expense): Group =
+        copy(expenses = expenses :+ expense)
 
-  def computeBalances: BalanceSheet =
-    val initial = members.map(_ -> 0.0).toMap
+    def computeBalances: BalanceSheet =
+        val initial = members.map(_ -> 0.0).toMap
 
-    val balances = expenses.foldLeft(initial) { (acc, expense) =>
-      // Subtract each participant's share except the payer
-      val afterShares = expense.shares.foldLeft(acc) { (a, pair) =>
-        val (person, share) = pair
-        if person == expense.paid_by then a
-        else a.updated(person, a(person) - share)
-      }
+        val balances = expenses.foldLeft(initial) { (acc, expense) =>
+        // Subtract each participant's share except the payer
+        val afterShares = expense.shares.foldLeft(acc) { (a, pair) =>
+            val (person, share) = pair
+            if person == expense.paid_by then a
+            else a.updated(person, a(person) - share)
+        }
 
-      // Add total amount to payer
-      afterShares.updated(expense.paid_by, afterShares(expense.paid_by) + expense.amount)
-    }
+        // Add total amount to payer
+        afterShares.updated(expense.paid_by, afterShares(expense.paid_by) + expense.amount)
+        }
 
-    BalanceSheet(balances)
+        BalanceSheet(balances)
 
 
 
 def printGroupState(group: Group): Unit =
-  println(s"=== Group: ${group.name} ===")
-  println(s"Members: ${group.members.map(_.name).mkString(", ")}")
-  println("Expenses:")
-  if group.expenses.isEmpty then
-    println("  (none)")
-  else
-    group.expenses.foreach { e =>
-      println(s"  ${e.name}: ${e.paid_by.name} paid €${e.amount} on ${e.date}")
-      e.shares.foreach { case (person, share) =>
-        println(f"    → ${person.name} owes €$share%.2f")
-      }
-    }
+    println(s"=== Group: ${group.name} ===")
+    println(s"Members: ${group.members.map(_.name).mkString(", ")}")
+    println("Expenses:")
+    if group.expenses.isEmpty then
+        println("  (none)")
+    else
+        group.expenses.foreach { e =>
+        println(s"  ${e.name}: ${e.paid_by.name} paid €${e.amount} on ${e.date}")
+        e.shares.foreach { case (person, share) =>
+            println(f"    → ${person.name} owes €$share%.2f")
+        }
+        }
 
-  println("\nBalances:")
-  val balances = group.computeBalances.balances
-  balances.foreach { case (p, b) =>
-    val sign = if b >= 0 then "+" else "-"
-    println(f"  ${p.name}%-10s : $sign€${math.abs(b)}%.2f")
-  }
+    println("\nBalances:")
+    val balances = group.computeBalances.balances
+    balances.foreach { case (p, b) =>
+        val sign = if b >= 0 then "+" else "-"
+        println(f"  ${p.name}%-10s : $sign€${math.abs(b)}%.2f")
+    }
 
 
 val p_jonas = Person("Jonas")

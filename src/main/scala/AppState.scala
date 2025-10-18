@@ -1,15 +1,15 @@
 final case class AppState(groups: List[Group]):
-    
-  def allGroups: List[Group] = groups
 
-  def allUsers: List[Person] =
-    groups.flatMap(_.members).distinct
+    def allGroups: List[Group] = groups
 
-  def addGroup(group: Group): AppState =
-    copy(groups = groups :+ group)
+    def allUsers: List[Person] =
+        groups.flatMap(_.members).distinct
 
-  def updateGroup(updatedGroup: Group): AppState =
-    copy(groups = groups.map(g => if g.name == updatedGroup.name then updatedGroup else g))
+    def addGroup(group: Group): AppState =
+        copy(groups = groups :+ group)
 
-  def findGroupByName(name: String): Option[Group] =
-    groups.find(_.name == name)
+    def updateGroup(updatedGroup: Group): AppState =
+        copy(groups = groups.map(g => if g.name == updatedGroup.name then updatedGroup else g))
+
+    def findGroupByName(name: String): Option[Group] =
+        groups.find(_.name == name)

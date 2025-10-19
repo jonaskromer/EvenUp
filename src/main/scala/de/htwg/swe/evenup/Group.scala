@@ -15,7 +15,6 @@ final case class Group(name: String, members: List[Person], expenses: List[Expen
     def removeMember(person: Person): Group =
         if (members.contains(person)) copy(members = members.filterNot(_ == person)) else this
 
-
     def addExpense(expense: Expense): Group =
         copy(expenses = expenses :+ expense)
 

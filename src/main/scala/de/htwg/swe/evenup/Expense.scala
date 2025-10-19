@@ -6,10 +6,10 @@ final case class Expense(name: String, amount: Double, date: String, paid_by: Pe
 
         val sharesString =
             shares.map { case (person, share) =>
-                f"${person.name} owes €$share%.2f"
+                f"${person.name} owes $share%.2f€"
             }.mkString(", ")
 
-        s"${paid_by.name} paid $amount€ for $name on $date. $sharesString"
+        f"${paid_by.name} paid $amount%.2f€ for $name on $date. $sharesString."
 
     def updateName(name: String): Expense =
         copy(name = name)

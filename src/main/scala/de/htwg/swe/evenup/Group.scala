@@ -28,8 +28,8 @@ final case class Group(
 
   def removeExpense(expense: Expense): Group =
     if (expenses.contains(expense))
-      this
-    else
       copy(expenses = expenses.filterNot(_ == expense))
+    else
+      this
 
   def updateName(name: String): Group = copy(name = name)

@@ -1,3 +1,5 @@
+package de.htwg.se.evenup
+
 final case class Person(name: String): //future: mail, friendlist, login, picture
 
     override def toString(): String = f"$name"

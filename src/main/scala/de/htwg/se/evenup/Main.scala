@@ -1,3 +1,5 @@
+package de.htwg.se.evenup
+
 @main def hello(): Unit =
 
 

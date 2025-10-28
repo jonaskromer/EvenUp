@@ -1,3 +1,5 @@
+package de.htwg.se.evenup
+
 final case class Expense(name: String, amount: Double, date: String, paid_by: Person, shares: Map[Person, Double]):
 
     override def toString(): String =

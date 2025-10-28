@@ -1,3 +1,5 @@
+package de.htwg.se.evenup
+
 final case class AppState(groups: List[Group]):
 
     def allGroups: List[Group] = groups

@@ -15,3 +15,4 @@ final case class AppState(groups: List[Group]):
 
     def findGroupByName(name: String): Option[Group] =
         groups.find(_.name == name)
+    

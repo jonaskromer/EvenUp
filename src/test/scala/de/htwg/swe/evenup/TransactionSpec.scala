@@ -5,6 +5,8 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 import de.htwg.swe.evenup._
+import de.htwg.swe.evenup.model.Person
+import de.htwg.swe.evenup.model.Transaction
 
 class TransactionSpec extends AnyWordSpec with Matchers:
 

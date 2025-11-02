@@ -5,6 +5,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 import de.htwg.swe.evenup._
+import de.htwg.swe.evenup.model.Person
 
 class PersonSpec extends AnyWordSpec with Matchers:
 

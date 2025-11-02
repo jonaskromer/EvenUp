@@ -1,4 +1,6 @@
-package de.htwg.swe.evenup
+package de.htwg.swe.evenup.model
+
+import de.htwg.swe.evenup.model.Person
 
 final case class Transaction(from: Person, to: Person, amount: Double):
 

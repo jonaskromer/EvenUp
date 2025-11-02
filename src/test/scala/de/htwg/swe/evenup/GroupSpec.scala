@@ -5,6 +5,9 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 import de.htwg.swe.evenup._
+import de.htwg.swe.evenup.model.Expense
+import de.htwg.swe.evenup.model.Group
+import de.htwg.swe.evenup.model.Person
 
 class GroupSpec extends AnyWordSpec with Matchers:
 

@@ -1,4 +1,4 @@
-package de.htwg.swe.evenup
+package de.htwg.swe.evenup.model
 
 final case class Person(
   name: String

@@ -11,6 +11,4 @@ package de.htwg.swe.evenup
     print("> ")
     val input = scala.io.StdIn.readLine()
     if input != null then
-      tui.processInput(input) match
-        case Some(newState) => // Weitermachen
-        case None => running = false // Beenden
+      running = tui.processInput(input)

@@ -81,7 +81,7 @@ class TUI(var state: AppState = AppState(Nil)):
 
   private def showGroup(name: String): Unit =
     state.findGroupByName(name) match
-      case Some(group) => group.toString()
+      case Some(group) => print(group.toString())
       case None        => println(s"Group ${name} does not exist.")
 
   private def addToGroup(username: String, groupname: String): Unit =
@@ -91,5 +91,6 @@ class TUI(var state: AppState = AppState(Nil)):
           case Some(group) =>
             val newGroup = group.addMember(user)
             state = state.updateGroup(newGroup)
+            println(s"User ${username} was added to group ${groupname}.")
           case None => println(s"Group ${groupname} does not exist.")
       case None => println(s"User ${username} does not exist.")

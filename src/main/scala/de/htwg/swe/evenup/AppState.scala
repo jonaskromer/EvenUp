@@ -1,10 +1,12 @@
 package de.htwg.swe.evenup
 
-final case class AppState(groups: List[Group]):
+final case class AppState(groups: List[Group], users: List[Person] = Nil):
 
   def allGroups: List[Group] = groups
 
-  def allUsers: List[Person] = groups.flatMap(_.members).distinct
+  def allUsers: List[Person] = users
+
+  def addUser(person: Person): AppState = copy(users = users :+ person)
 
   def addGroup(group: Group): AppState = copy(groups = groups :+ group)
 
@@ -13,3 +15,5 @@ final case class AppState(groups: List[Group]):
   )
 
   def findGroupByName(name: String): Option[Group] = groups.find(_.name == name)
+
+  def findUserByName(name: String): Option[Person] = users.find(_.name == name)

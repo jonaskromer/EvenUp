@@ -4,40 +4,38 @@ class TUI(var state: AppState = AppState(Nil)):
 
   def processInput(input: String): Boolean =
     val tokens = input.trim.split("\\s+").toList
-      tokens match
-        case "quit" :: Nil =>
-          false
-        case "help" :: Nil =>
-          printHelp()
-          true
-        case "users" :: Nil =>
-          showUsers()
-          true
-        case "groups" :: Nil =>
-          showGroups()
-          true
-        case "createuser" :: username :: Nil =>
-          createUser(username)
-          true
-        case "creategroup" :: groupname :: Nil =>
-          createGroup(groupname)
-          true
-        case "showgroup" :: groupname :: Nil =>
-          showGroup(groupname)
-          true
-        case "adduser" :: username :: groupname :: Nil =>
-          addToGroup(username, groupname)
-          true
-        case "addexpense" :: expensename :: groupname :: payee :: amount :: date :: debtor :: debtpercentage :: Nil =>
-          //addExpense(expensename, groupname, payee, amount, date, debtor, debtpercentage)
-          println("Not yet implemented.")
-          true
-        case _ =>
-          println("Unknown command. Please use 'help' for more information.")
-          true
-  
-  private def printHelp(): Unit =
-    println("""
+    tokens match
+      case "quit" :: Nil => false
+      case "help" :: Nil =>
+        printHelp()
+        true
+      case "users" :: Nil =>
+        showUsers()
+        true
+      case "groups" :: Nil =>
+        showGroups()
+        true
+      case "createuser" :: username :: Nil =>
+        createUser(username)
+        true
+      case "creategroup" :: groupname :: Nil =>
+        createGroup(groupname)
+        true
+      case "showgroup" :: groupname :: Nil =>
+        showGroup(groupname)
+        true
+      case "adduser" :: username :: groupname :: Nil =>
+        addToGroup(username, groupname)
+        true
+      case "addexpense" :: expensename :: groupname :: payee :: amount :: date :: debtor :: debtpercentage :: Nil =>
+        // addExpense(expensename, groupname, payee, amount, date, debtor, debtpercentage)
+        println("Not yet implemented.")
+        true
+      case _ =>
+        println("Unknown command. Please use 'help' for more information.")
+        true
+
+  private def printHelp(): Unit = println("""
             |Commands:
             |  quit                           - Closes the program
             |  help                           - Shows this help
@@ -51,8 +49,7 @@ class TUI(var state: AppState = AppState(Nil)):
             |""".stripMargin)
 
   private def showUsers(): Unit =
-    if state.allUsers.isEmpty then
-      println("No users have been created.")
+    if state.allUsers.isEmpty then println("No users have been created.")
     else
       println("Users:")
       state.allUsers.foreach { Person =>
@@ -60,8 +57,7 @@ class TUI(var state: AppState = AppState(Nil)):
       }
 
   private def showGroups(): Unit =
-    if state.allGroups.isEmpty then
-      println("No groups have been created.")
+    if state.allGroups.isEmpty then println("No groups have been created.")
     else
       println("Groups:")
       state.allGroups.foreach { group =>
@@ -69,8 +65,7 @@ class TUI(var state: AppState = AppState(Nil)):
       }
 
   private def createUser(name: String): Unit =
-    if state.findUserByName(name).isDefined then
-      println("User already exists.")
+    if state.findUserByName(name).isDefined then println("User already exists.")
     else
       val newUser = Person(name)
       state = state.addUser(newUser)
@@ -86,19 +81,15 @@ class TUI(var state: AppState = AppState(Nil)):
 
   private def showGroup(name: String): Unit =
     state.findGroupByName(name) match
-      case Some(group) =>
-        group.toString()
-      case None =>
-        println(s"Group ${name} does not exist.")
+      case Some(group) => group.toString()
+      case None        => println(s"Group ${name} does not exist.")
 
   private def addToGroup(username: String, groupname: String): Unit =
-  state.findUserByName(username) match
-    case Some(user) =>
-      state.findGroupByName(groupname) match
-        case Some(group) =>
-          val newGroup = group.addMember(user)
-          state = state.updateGroup(newGroup)
-        case None =>
-          println(s"Group ${groupname} does not exist.")
-    case None =>
-      println(s"User ${username} does not exist.")
+    state.findUserByName(username) match
+      case Some(user) =>
+        state.findGroupByName(groupname) match
+          case Some(group) =>
+            val newGroup = group.addMember(user)
+            state = state.updateGroup(newGroup)
+          case None => println(s"Group ${groupname} does not exist.")
+      case None => println(s"User ${username} does not exist.")

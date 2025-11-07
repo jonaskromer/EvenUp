@@ -1,4 +1,4 @@
-/* 
+/*
 package de.htwg.swe.evenup
 
 @main def test(): Unit =
@@ -43,4 +43,4 @@ package de.htwg.swe.evenup
   g_wg = g_wg.addExpense(e_4)
 
   println(g_wg)
-*/
+ */

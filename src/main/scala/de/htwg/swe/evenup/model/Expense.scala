@@ -1,11 +1,12 @@
 package de.htwg.swe.evenup.model
 
 import de.htwg.swe.evenup.model.Person
+import de.htwg.swe.evenup.model.Date
 
 final case class Expense(
   name: String,
   amount: Double,
-  date: String,
+  date: Date,
   paid_by: Person,
   shares: Map[Person, Double]
 ):
@@ -21,7 +22,7 @@ final case class Expense(
 
   def updateAmount(amount: Double): Expense = copy(amount = amount)
 
-  def updateDate(date: String): Expense = copy(date = date)
+  def updateDate(date: Date): Expense = copy(date = date)
 
   def updatePaidBy(paid_by: Person): Expense = copy(paid_by = paid_by)
 

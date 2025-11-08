@@ -1,14 +1,16 @@
 package de.htwg.swe.evenup.util
 
 trait Observer:
-  def update: Unit
+  def update(e: ObservableEvent): Unit
+
+class ObservableEvent
 
 class Observable:
   var subscribers: Vector[Observer] = Vector()
+  def add(s: Observer): Unit        = subscribers = subscribers :+ s
 
-  def add(s: Observer): Unit = subscribers = subscribers :+ s
-
-  def remove(s: Observer): Unit =
+  def remove(s: Observer): Unit     =
     subscribers = subscribers.filterNot(o => o == s)
 
-  def notifyObservers: Unit = subscribers.foreach(o => o.update)
+  def notifyObservers(e: ObservableEvent = ObservableEvent()): Unit =
+    subscribers.foreach(o => o.update(e))

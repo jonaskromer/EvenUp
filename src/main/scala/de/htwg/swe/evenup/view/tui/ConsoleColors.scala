@@ -1,4 +1,4 @@
-package de.htwg.swe.evenup.view
+package de.htwg.swe.evenup.view.tui
 
 object ConsoleColors:
   // Reset

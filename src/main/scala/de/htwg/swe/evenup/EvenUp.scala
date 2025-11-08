@@ -4,11 +4,11 @@ import de.htwg.swe.evenup.model.App
 import de.htwg.swe.evenup.control.Controller
 
 import scala.io.StdIn.readLine
-import de.htwg.swe.evenup.view.Tui
+import de.htwg.swe.evenup.view.tui.Tui
 
 @main def hello(): Unit =
 
-  val app        = App(Nil)
+  val app        = App(Nil, None, None)
   val controller = new Controller(app)
   val tui        = new Tui(controller)
 

@@ -4,14 +4,15 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers.*
 
 class ObservableSpec extends AnyWordSpec {
+
   "Observable" should {
     class TestObserver extends Observer {
-      var updated: Int = 0
+      var updated: Int                              = 0
       override def update(e: ObservableEvent): Unit = updated += 1
     }
 
     val observable = Observable()
-    val observer = TestObserver()
+    val observer   = TestObserver()
     "add observer" in {
       observable.add(observer)
       observable.subscribers should have length 1
@@ -27,4 +28,5 @@ class ObservableSpec extends AnyWordSpec {
       observable.subscribers should have length 0
     }
   }
+
 }

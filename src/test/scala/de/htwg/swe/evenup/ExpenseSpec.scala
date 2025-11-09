@@ -12,11 +12,11 @@ import de.htwg.swe.evenup.model.Date
 class ExpenseSpec extends AnyWordSpec with Matchers:
 
   "The String of an expense should print as follows" in:
-    val date = Date(1,1,2000)
-    val p_1 = Person("John")
-    val p_2 = Person("Peter")
-    val p_3 = Person("Frank")
-    val e_1 = Expense(
+    val date = Date(1, 1, 2000)
+    val p_1  = Person("John")
+    val p_2  = Person("Peter")
+    val p_3  = Person("Frank")
+    val e_1  = Expense(
       "Groceries",
       25.00,
       date,
@@ -26,11 +26,11 @@ class ExpenseSpec extends AnyWordSpec with Matchers:
     e_1.toString() shouldBe "John paid 25.00€ for Groceries on 01.01.2000. John owes 10.00€, Peter owes 10.00€, Frank owes 5.00€."
 
   "When updating the name of an expense it should have the new value" in:
-    val date = Date(1,1,2000)
-    val p_1 = Person("John")
-    val p_2 = Person("Peter")
-    val p_3 = Person("Frank")
-    val e_1 = Expense(
+    val date = Date(1, 1, 2000)
+    val p_1  = Person("John")
+    val p_2  = Person("Peter")
+    val p_3  = Person("Frank")
+    val e_1  = Expense(
       "Groceries",
       25.00,
       date,
@@ -41,11 +41,11 @@ class ExpenseSpec extends AnyWordSpec with Matchers:
     e_2.name shouldBe "Drinks"
 
   "When updating the amount of an expense it should update correctly" in:
-    val date = Date(1,1,2000)
-    val p_1 = Person("John")
-    val p_2 = Person("Peter")
-    val p_3 = Person("Frank")
-    val e_1 = Expense(
+    val date = Date(1, 1, 2000)
+    val p_1  = Person("John")
+    val p_2  = Person("Peter")
+    val p_3  = Person("Frank")
+    val e_1  = Expense(
       "Groceries",
       25.00,
       date,
@@ -56,26 +56,26 @@ class ExpenseSpec extends AnyWordSpec with Matchers:
     e_2.amount shouldBe 10.00
 
   "When updating the date of an expense it should update correctly" in:
-    val date = Date(1,1,2000)
-    val p_1 = Person("John")
-    val p_2 = Person("Peter")
-    val p_3 = Person("Frank")
-    val e_1 = Expense(
+    val date = Date(1, 1, 2000)
+    val p_1  = Person("John")
+    val p_2  = Person("Peter")
+    val p_3  = Person("Frank")
+    val e_1  = Expense(
       "Groceries",
       25.00,
       date,
       p_1,
       Map((p_1, 10.00), (p_2, 10.00), (p_3, 5.00))
     )
-    val e_2 = e_1.updateDate(Date(10,10,2010))
+    val e_2 = e_1.updateDate(Date(10, 10, 2010))
     e_2.date.toString shouldBe "10.10.2010"
 
   "When updating the payee of an expense it should update correctly" in:
-    val date = Date(1,1,2000)
-    val p_1 = Person("John")
-    val p_2 = Person("Peter")
-    val p_3 = Person("Frank")
-    val e_1 = Expense(
+    val date = Date(1, 1, 2000)
+    val p_1  = Person("John")
+    val p_2  = Person("Peter")
+    val p_3  = Person("Frank")
+    val e_1  = Expense(
       "Groceries",
       25.00,
       date,
@@ -86,11 +86,11 @@ class ExpenseSpec extends AnyWordSpec with Matchers:
     e_2.paid_by shouldBe p_3
 
   "When updating the shares of an expense it should update correctly" in:
-    val date = Date(1,1,2000)
-    val p_1 = Person("John")
-    val p_2 = Person("Peter")
-    val p_3 = Person("Frank")
-    val e_1 = Expense(
+    val date = Date(1, 1, 2000)
+    val p_1  = Person("John")
+    val p_2  = Person("Peter")
+    val p_3  = Person("Frank")
+    val e_1  = Expense(
       "Groceries",
       25.00,
       date,

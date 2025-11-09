@@ -63,3 +63,11 @@ class AppSpec extends AnyWordSpec with Matchers:
     val g_1   = Group("Trip", List(p_1), List())
     val state = App(List(g_1), None, None)
     state.findGroupByName("Holiday") shouldBe None
+
+  "The active group should be update correct" in:
+    val p_1   = Person("John")
+    val g_1   = Group("Trip", List(p_1), List())
+    val g_2   = Group("Travel", List(p_1), List())
+    val state = App(List(g_1, g_2), None, None)
+    val newState = state.updateActiveGroup(Some("Travel"))
+    newState.active_group.get shouldBe "Travel"

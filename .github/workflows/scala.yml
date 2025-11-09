@@ -27,7 +27,8 @@ jobs:
         run: |
           curl -Lo cs https://git.io/coursier-cli
           chmod +x cs
-          ./cs setup
+          ./cs setup --yes
+
 
       - name: Compile
         run: sbt compile

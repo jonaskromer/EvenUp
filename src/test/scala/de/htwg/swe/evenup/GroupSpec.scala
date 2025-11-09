@@ -8,16 +8,18 @@ import de.htwg.swe.evenup._
 import de.htwg.swe.evenup.model.Expense
 import de.htwg.swe.evenup.model.Group
 import de.htwg.swe.evenup.model.Person
+import de.htwg.swe.evenup.model.Date
 
 class GroupSpec extends AnyWordSpec with Matchers:
 
   "The String of a group should print as follows" in:
+    val date = Date(1,1,2000)
     val p_1 = Person("John")
     val p_2 = Person("Peter")
     val e_1 = Expense(
       "Groceries",
       25.00,
-      "01.01.2000",
+      date,
       p_1,
       Map((p_1, 10.00), (p_2, 15.00))
     )
@@ -57,22 +59,22 @@ class GroupSpec extends AnyWordSpec with Matchers:
 
   "When adding an expense it should be included in the list of expenses" in:
     val p_1 = Person("John")
-    val e_1 = Expense("Groceries", 25.00, "01.01.2000", p_1, Map((p_1, 25.00)))
+    val e_1 = Expense("Groceries", 25.00, Date(1,1,2000), p_1, Map((p_1, 25.00)))
     val g_1 = Group("Weekend Trip", List(p_1), List())
     val g_2 = g_1.addExpense(e_1)
     g_2.expenses should contain(e_1)
 
   "When removing an expense that exists it should no longer be in the list" in:
     val p_1 = Person("John")
-    val e_1 = Expense("Groceries", 25.00, "01.01.2000", p_1, Map((p_1, 25.00)))
+    val e_1 = Expense("Groceries", 25.00, Date(1,1,2000), p_1, Map((p_1, 25.00)))
     val g_1 = Group("Weekend Trip", List(p_1), List(e_1))
     val g_2 = g_1.removeExpense(e_1)
     g_2.expenses shouldBe List()
 
   "When removing an expense that does not exist it should stay the same" in:
     val p_1 = Person("John")
-    val e_1 = Expense("Groceries", 25.00, "01.01.2000", p_1, Map((p_1, 25.00)))
-    val e_2 = Expense("Drinks", 10.00, "02.02.2000", p_1, Map((p_1, 10.00)))
+    val e_1 = Expense("Groceries", 25.00, Date(1,1,2000), p_1, Map((p_1, 25.00)))
+    val e_2 = Expense("Drinks", 10.00, Date(1,1,2000), p_1, Map((p_1, 10.00)))
     val g_1 = Group("Weekend Trip", List(p_1), List(e_1))
     val g_2 = g_1.removeExpense(e_2)
     g_2 shouldBe g_1

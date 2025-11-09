@@ -23,6 +23,11 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
 
+      - uses: sbt/setup-sbt@v1
+      - name: Build and test
+        shell: bash
+        run: sbt -v +test
+
       - name: Compile
         run: sbt compile
 

@@ -101,4 +101,5 @@ class Tui(controller: Controller) extends Observer {
       case TuiKeys.gotoGroup.key => controller.gotoGroup(Group(in.drop(1).mkString(" "), Nil, Nil))
       case _ => 
         println("This key is not supported... yet :)")
+        print(">")
 }

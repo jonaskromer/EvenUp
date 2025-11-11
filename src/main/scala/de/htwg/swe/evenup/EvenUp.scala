@@ -15,6 +15,5 @@ import de.htwg.swe.evenup.view.tui.Tui
   var input = ""
 
   while (input != "exit")
-    print(">")
     input = readLine()
     tui.processInput(input)

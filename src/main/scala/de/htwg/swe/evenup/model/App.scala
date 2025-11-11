@@ -5,8 +5,8 @@ import de.htwg.swe.evenup.model.Person
 
 final case class App(
   groups: List[Group],
-  active_user: Option[String],
-  active_group: Option[String]
+  active_user: Option[Person],
+  active_group: Option[Group]
 ):
 
   def allGroups: List[Group] = groups
@@ -19,8 +19,8 @@ final case class App(
     groups.map(g => if g.name == updatedGroup.name then updatedGroup else g)
   )
 
-  def updateActiveGroup(active_group: Option[String]): App = copy(active_group =
+  def updateActiveGroup(active_group: Option[Group]): App = copy(active_group =
     active_group
   )
 
-  def findGroupByName(name: String): Option[Group] = groups.find(_.name == name)
+  def findGroup(group: Group): Option[Group] = groups.find(_.name == group.name)

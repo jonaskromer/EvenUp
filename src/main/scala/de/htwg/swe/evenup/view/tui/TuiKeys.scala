@@ -10,5 +10,4 @@ enum TuiKeys(val key: String, val usage: String, val description: String):
   case addUserToGroup  extends TuiKeys(":adduser", "<user name> <user name> ...", "Add a user to a group")
   case help            extends TuiKeys(":h", "", "Help")
   case quit            extends TuiKeys(":q", "", "Quit")
-  case proceed         extends TuiKeys(":p", "", "Proceed")
   case MainMenu        extends TuiKeys(":m", "", "Go into the main menu")

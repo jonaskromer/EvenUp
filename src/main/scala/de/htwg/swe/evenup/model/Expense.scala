@@ -8,12 +8,12 @@ final case class Expense(
   amount: Double,
   date: Date,
   paid_by: Person,
-  shares: Map[Person, Double]
+  shares: List[Share]
 ):
 
   override def toString(): String =
     val sharesString = shares
-      .map { case (person, share) => f"${person.name} owes $share%.2f€" }
+      .map(s => f"${s.person.name} owes ${s.amount}%.2f€").mkString(", ")
       .mkString(", ")
 
     f"${paid_by.name} paid $amount%.2f€ for $name on $date. $sharesString."
@@ -26,4 +26,4 @@ final case class Expense(
 
   def updatePaidBy(paid_by: Person): Expense = copy(paid_by = paid_by)
 
-  def updateShares(shares: Map[Person, Double]): Expense = copy(shares = shares)
+  def updateShares(shares: List[Share]): Expense = copy(shares = shares)

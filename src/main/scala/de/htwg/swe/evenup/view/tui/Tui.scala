@@ -4,12 +4,12 @@ import de.htwg.swe.evenup.control.{Controller, ControllerEvent}
 import de.htwg.swe.evenup.util.{ObservableEvent, Observer}
 
 import scala.io.StdIn.readLine
+import de.htwg.swe.evenup.model.Person
+import de.htwg.swe.evenup.model.Group
 
 enum PromptState {
   case None
   case GetOrCreateGroup
-  case SetupGroupName
-  case SetupGroupUsers
   case InGroup
   case SetupExpense
   case MainMenu
@@ -24,7 +24,12 @@ class Tui(controller: Controller) extends Observer {
   controller.add(this)
 
   def printHelp: Unit =
-    for key <- TuiKeys.values do println(s"${key.productPrefix} ==> ${key.key}")
+    val maxDescriptionLen = TuiKeys.values.map(_.description.length).max
+    val maxKeyLen  = TuiKeys.values.map(_.key.length).max
+
+    for key <- TuiKeys.values do
+      println(String.format(s"%-${maxDescriptionLen}s ==> %-${maxKeyLen}s %s",
+        key.description, key.key, key.usage))
 
   def printFullOverview: Unit =
     println("_" * 40)
@@ -39,16 +44,19 @@ class Tui(controller: Controller) extends Observer {
 
   def printActiveGroup: Unit =
     println("_" * 40)
-    println(controller.app.findGroupByName(controller.app.active_group.get).get)
+    println(controller.app.findGroup(controller.app.active_group.get).get)
     println("_" * 40)
 
   println("Welcome to EvenUp!")
+
+  /*
   val user = readLine("Please enter your name: ")
   println(f"Logged in as $user.")
-
+   */
   println(
     f"Start by adding a group with => ${TuiKeys.newGroup.key} <group name>"
   )
+  print(">")
 
   override def update(event: ObservableEvent): Unit =
     event match
@@ -56,45 +64,42 @@ class Tui(controller: Controller) extends Observer {
         println("Goodbye!")
         System.exit(0)
 
-      case ControllerEvent.NewGroupCreated =>
-        promptState = PromptState.SetupGroupName
-        printFullOverview
-        prompter.promptAddUser
-
-      case ControllerEvent.PersonAddedToGroup =>
-        promptState = PromptState.SetupGroupUsers
-        printFullOverview
-        prompter.promptAddUserOrContinue
-
-      case ControllerEvent.GroupCreationFinished =>
-        promptState = PromptState.InGroup
-        printActiveGroup
-        prompter.promptInGroup
-
       case ControllerEvent.MainMenu =>
         promptState = PromptState.MainMenu
         printAvailableGroups
         prompter.promptMainMenu
 
+      case ControllerEvent.GroupInitialized =>
+        promptState = PromptState.InGroup
+        printActiveGroup
+        prompter.promptInitGroup
+
+      case ControllerEvent.InGroup =>
+        promptState = PromptState.InGroup
+        printActiveGroup
+        prompter.promptInGroup
+
+      case ControllerEvent.PersonAddedToGroup =>
+        // no real use
+        promptState = PromptState.InGroup
+        printFullOverview
+        prompter.promptInGroup
+
+      case ControllerEvent.ExpenseAddedToGroup =>
+        promptState = PromptState.InGroup
+        printFullOverview
+        prompter.promptInGroup
+
   def processInput(input: String): Unit =
     val in = input.split(" ").toList
     in.head match
-      case TuiKeys.help.key    => printHelp
-      case TuiKeys.quit.key    => controller.quit
-      case TuiKeys.newGroup.key => controller.addGroup(in.drop(1).mkString(" "))
-      case TuiKeys.addUserToGroup.key =>
-        in.drop(2).foreach(person => controller.addPersonToGroup(in(1), person))
-      case TuiKeys.MainMenu.key => controller.gotoMainMenu
-      case TuiKeys.proceed.key =>
-        promptState match
-          case PromptState.SetupGroupName =>
-            println(
-              f"Please first add a user to this group by using => ${TuiKeys.addUserToGroup.key} <user name>"
-            )
-          case PromptState.SetupGroupUsers =>
-            controller.finishGroupSetup
-            // TODO: Controller go into group / set active group
-          case _ => println("Not supported yet.")
-      case _ => println("This key is not supported!")
+      case TuiKeys.help.key     => printHelp
+      case TuiKeys.quit.key     => controller.quit
+      case TuiKeys.newGroup.key => controller.addGroup(Group(in.drop(1).mkString(" "), Nil, Nil))
+      case TuiKeys.addUserToGroup.key => in.drop(1).foreach(person_name => controller.addPersonToGroup(Person(person_name)))
+      case TuiKeys.addExpense.key => controller.addExpenseToGroup(in(1), in(2), in(3).toDouble)
+      case TuiKeys.MainMenu.key  => controller.gotoMainMenu
+      case TuiKeys.gotoGroup.key => controller.gotoGroup(Group(in.drop(1).mkString(" "), Nil, Nil))
+      case _ => println("This key is not supported... yet :)")
 
 }

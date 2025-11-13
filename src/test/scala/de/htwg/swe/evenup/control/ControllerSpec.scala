@@ -351,7 +351,9 @@ class ControllerSpec extends AnyWordSpec with Matchers:
               .toDouble
           aliceShare shouldBe 50.01
           bobShare shouldBe 50.00
-          expense.shares.map(_.amount).sum shouldBe 100.01
+          BigDecimal(expense.shares.map(_.amount).sum)
+            .setScale(2, BigDecimal.RoundingMode.HALF_UP)
+            .toDouble shouldBe 100.01
         case _ => fail("Expected Success expense event with remainder handled")
 
   }

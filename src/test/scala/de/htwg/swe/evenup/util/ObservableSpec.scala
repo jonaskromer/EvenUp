@@ -11,9 +11,10 @@ class ObservableSpec extends AnyWordSpec with Matchers:
     "notify its observers with default ObservableEvent" in:
       // test observer
       var receivedEvent: Option[ObservableEvent] = None
-      val testObserver = new Observer:
-        override def update(e: ObservableEvent): Unit =
-          receivedEvent = Some(e)
+      val testObserver                           =
+        new Observer:
+          override def update(e: ObservableEvent): Unit =
+            receivedEvent = Some(e)
 
       val observable = new Observable()
       observable.add(testObserver)
@@ -22,13 +23,14 @@ class ObservableSpec extends AnyWordSpec with Matchers:
       observable.notifyObservers()
 
       receivedEvent should not be None
-      receivedEvent.get shouldBe a [ObservableEvent]
+      receivedEvent.get shouldBe a[ObservableEvent]
 
     "notify observers with a custom event" in:
       var receivedEvent: Option[ObservableEvent] = None
-      val testObserver = new Observer:
-        override def update(e: ObservableEvent): Unit =
-          receivedEvent = Some(e)
+      val testObserver                           =
+        new Observer:
+          override def update(e: ObservableEvent): Unit =
+            receivedEvent = Some(e)
 
       val observable = new Observable()
       observable.add(testObserver)
@@ -40,8 +42,9 @@ class ObservableSpec extends AnyWordSpec with Matchers:
 
     "remove observers correctly" in:
       var called = false
-      val obs = new Observer:
-        override def update(e: ObservableEvent): Unit = called = true
+      val obs    =
+        new Observer:
+          override def update(e: ObservableEvent): Unit = called = true
 
       val observable = new Observable()
       observable.add(obs)

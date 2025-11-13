@@ -32,7 +32,9 @@ class AppSpec extends AnyWordSpec with Matchers:
   "When updating a group it should replace the old one with the same name" in:
     val p_1         = Person("John")
     val g_1         = Group("Trip", List(p_1), List(), List())
-    val g_1_updated = g_1.updateName("Trip") // same name, potentially updated members/expenses
+    val g_1_updated = g_1.updateName(
+      "Trip"
+    ) // same name, potentially updated members/expenses
     val state   = App(List(g_1), None, None)
     val updated = state.updateGroup(g_1_updated)
     updated.groups should contain(g_1_updated)

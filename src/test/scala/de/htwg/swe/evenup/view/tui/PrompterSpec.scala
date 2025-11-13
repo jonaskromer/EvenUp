@@ -16,9 +16,9 @@ class PrompterSpec extends AnyWordSpec with Matchers:
         prompter.promptNewGroup
 
       val output = outStream.toString
-      output should include (TuiKeys.newGroup.key)
-      output should include (TuiKeys.newGroup.usage)
-      output should include (">")
+      output should include(TuiKeys.newGroup.key)
+      output should include(TuiKeys.newGroup.usage)
+      output should include(">")
 
     "prompt to add a user correctly" in:
       val outStream = new ByteArrayOutputStream()
@@ -27,9 +27,9 @@ class PrompterSpec extends AnyWordSpec with Matchers:
         prompter.promptAddUser
 
       val output = outStream.toString
-      output should include (TuiKeys.addUserToGroup.key)
-      output should include (TuiKeys.addUserToGroup.usage)
-      output should include (">")
+      output should include(TuiKeys.addUserToGroup.key)
+      output should include(TuiKeys.addUserToGroup.usage)
+      output should include(">")
 
     "prompt for adding expense in a group correctly" in:
       val outStream = new ByteArrayOutputStream()
@@ -38,9 +38,9 @@ class PrompterSpec extends AnyWordSpec with Matchers:
         prompter.promptInGroup
 
       val output = outStream.toString
-      output should include (TuiKeys.addExpense.key)
-      output should include (TuiKeys.addExpense.usage)
-      output should include (">")
+      output should include(TuiKeys.addExpense.key)
+      output should include(TuiKeys.addExpense.usage)
+      output should include(">")
 
     "prompt for main menu correctly" in:
       val outStream = new ByteArrayOutputStream()
@@ -49,9 +49,9 @@ class PrompterSpec extends AnyWordSpec with Matchers:
         prompter.promptMainMenu
 
       val output = outStream.toString
-      output should include (TuiKeys.gotoGroup.key)
-      output should include (TuiKeys.gotoGroup.usage)
-      output should include (">")
+      output should include(TuiKeys.gotoGroup.key)
+      output should include(TuiKeys.gotoGroup.usage)
+      output should include(">")
 
     "prompt for initialized group correctly" in:
       val outStream = new ByteArrayOutputStream()
@@ -60,8 +60,8 @@ class PrompterSpec extends AnyWordSpec with Matchers:
         prompter.promptInitGroup
 
       val output = outStream.toString
-      output should include ("This group is only initialized.")
-      output should include (TuiKeys.addUserToGroup.key)
-      output should include (TuiKeys.addExpense.key)
-      output should include (">")
+      output should include("This group is only initialized.")
+      output should include(TuiKeys.addUserToGroup.key)
+      output should include(TuiKeys.addExpense.key)
+      output should include(">")
   }

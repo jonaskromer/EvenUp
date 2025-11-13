@@ -4,7 +4,7 @@ import org.scalatest._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-import de.htwg.swe.evenup.model.{Share, Person}
+import de.htwg.swe.evenup.model.{Person, Share}
 import java.io.PrintStream
 import java.io.ByteArrayOutputStream
 
@@ -22,9 +22,12 @@ class ParserSpec extends AnyWordSpec with Matchers:
       parser.parseNewUser("") shouldBe Some("")
 
     "parse valid shares correctly" in:
-      val input = "John:30_Peter:20"
+      val input  = "John:30_Peter:20"
       val shares = parser.parseShares(Some(input)).get
-      shares.map(_.person.name) should contain theSameElementsAs List("John", "Peter")
+      shares.map(_.person.name) should contain theSameElementsAs List(
+        "John",
+        "Peter"
+      )
       shares.map(_.amount) should contain theSameElementsAs List(30.0, 20.0)
 
     "return None for invalid share format" in:
@@ -38,7 +41,7 @@ class ParserSpec extends AnyWordSpec with Matchers:
       parser.parseShares(Some("")) shouldBe None
 
     "return None and print 'Wrong Usage' when input cannot be parsed" in:
-      val parser = new Parser()
+      val parser    = new Parser()
       val outStream = new ByteArrayOutputStream()
       Console.withOut(new PrintStream(outStream)):
         val result = parser.parseNewUser(null) // simulate failure

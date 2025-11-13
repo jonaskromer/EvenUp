@@ -45,10 +45,10 @@ class TransactionSpec extends AnyWordSpec with Matchers:
     t_2.amount shouldBe 5.00
 
   "The date should be change correct" in:
-    val date = Date(1, 1, 2000)
-    val newDate = Date(2,2,2002)
-    val p_1  = Person("John")
-    val p_2  = Person("Peter")
-    val t_1  = Transaction(p_1, p_2, 10.00, date)
-    val t_2  = t_1.updateDate(newDate)
+    val date    = Date(1, 1, 2000)
+    val newDate = Date(2, 2, 2002)
+    val p_1     = Person("John")
+    val p_2     = Person("Peter")
+    val t_1     = Transaction(p_1, p_2, 10.00, date)
+    val t_2     = t_1.updateDate(newDate)
     t_2.date shouldBe newDate

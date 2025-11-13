@@ -6,7 +6,8 @@ import de.htwg.swe.evenup.model.Person
 final case class Group(
   name: String,
   members: List[Person],
-  expenses: List[Expense]
+  expenses: List[Expense],
+  transactions: List[Transaction]
 ):
 
   override def toString(): String =
@@ -36,3 +37,13 @@ final case class Group(
       this
 
   def updateName(name: String): Group = copy(name = name)
+
+  def addTransaction(transaction: Transaction): Group = copy(transactions =
+    transactions :+ transaction
+  )
+
+  def removeTransaction(transaction: Transaction): Group =
+    if (transactions.contains(transaction))
+      copy(expenses = expenses.filterNot(_ == transaction))
+    else
+      this

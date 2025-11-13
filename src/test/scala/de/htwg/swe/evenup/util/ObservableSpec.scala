@@ -1,32 +1,52 @@
 package de.htwg.swe.evenup.util
 
+import org.scalatest._
+import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import org.scalatest.matchers.should.Matchers.*
 
-class ObservableSpec extends AnyWordSpec {
+class ObservableSpec extends AnyWordSpec with Matchers:
 
   "Observable" should {
-    class TestObserver extends Observer {
-      var updated: Int                              = 0
-      override def update(e: ObservableEvent): Unit = updated += 1
-    }
 
-    val observable = Observable()
-    val observer   = TestObserver()
-    "add observer" in {
-      observable.add(observer)
-      observable.subscribers should have length 1
-    }
+    "notify its observers with default ObservableEvent" in:
+      // test observer
+      var receivedEvent: Option[ObservableEvent] = None
+      val testObserver = new Observer:
+        override def update(e: ObservableEvent): Unit =
+          receivedEvent = Some(e)
 
-    "notify observer" in {
+      val observable = new Observable()
+      observable.add(testObserver)
+
+      // call notifyObservers without argument
       observable.notifyObservers()
-      observer.updated should be(1)
-    }
 
-    "remove observer" in {
-      observable.remove(observer)
-      observable.subscribers should have length 0
-    }
+      receivedEvent should not be None
+      receivedEvent.get shouldBe a [ObservableEvent]
+
+    "notify observers with a custom event" in:
+      var receivedEvent: Option[ObservableEvent] = None
+      val testObserver = new Observer:
+        override def update(e: ObservableEvent): Unit =
+          receivedEvent = Some(e)
+
+      val observable = new Observable()
+      observable.add(testObserver)
+
+      val customEvent = new ObservableEvent
+      observable.notifyObservers(customEvent)
+
+      receivedEvent shouldBe Some(customEvent)
+
+    "remove observers correctly" in:
+      var called = false
+      val obs = new Observer:
+        override def update(e: ObservableEvent): Unit = called = true
+
+      val observable = new Observable()
+      observable.add(obs)
+      observable.remove(obs)
+
+      observable.notifyObservers()
+      called shouldBe false
   }
-
-}

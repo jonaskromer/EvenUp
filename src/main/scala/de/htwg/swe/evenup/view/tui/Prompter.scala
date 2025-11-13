@@ -15,15 +15,21 @@ class Prompter {
     print(">")
 
   def promptInGroup: Unit =
-    println(f"Add Expense by using => ${TuiKeys.addExpense.key} ${TuiKeys.addExpense.usage}")
+    println(
+      f"Add Expense by using => ${TuiKeys.addExpense.key} ${TuiKeys.addExpense.usage}"
+    )
     print(">")
 
   def promptMainMenu: Unit =
-    println(f"Goto group by => ${TuiKeys.gotoGroup.key} ${TuiKeys.gotoGroup.usage}")
+    println(
+      f"Goto group by => ${TuiKeys.gotoGroup.key} ${TuiKeys.gotoGroup.usage}"
+    )
     print(">")
 
   def promptInitGroup: Unit =
-    println(s"This group is only initialized.\nAdd a user to a group by using => ${TuiKeys.addUserToGroup.key} ${TuiKeys.addUserToGroup.usage}\nAdd Expense by using => ${TuiKeys.addExpense.key} ${TuiKeys.addExpense.usage}")
+    println(
+      s"This group is only initialized.\nAdd a user to a group by using => ${TuiKeys.addUserToGroup.key} ${TuiKeys.addUserToGroup.usage}\nAdd Expense by using => ${TuiKeys.addExpense.key} ${TuiKeys.addExpense.usage}"
+    )
     print(">")
 
 }

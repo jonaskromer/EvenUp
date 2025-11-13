@@ -43,7 +43,7 @@ final case class Group(
   )
 
   def removeTransaction(transaction: Transaction): Group =
-    if (transactions.contains(transaction))
-      copy(expenses = expenses.filterNot(_ == transaction))
-    else
-      this
+  if (transactions.contains(transaction))
+    copy(transactions = transactions.filterNot(_ == transaction))
+  else
+    this

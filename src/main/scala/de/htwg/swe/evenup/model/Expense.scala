@@ -13,7 +13,7 @@ final case class Expense(
 
   override def toString(): String =
     val sharesString = shares
-      .map(s => f"${s.person.name} owes ${s.amount}%.2f€").mkString(", ")
+      .map(s => f"${s.person.name} owes ${s.amount}%.2f€")
       .mkString(", ")
 
     f"${paid_by.name} paid $amount%.2f€ for $name on $date. $sharesString."

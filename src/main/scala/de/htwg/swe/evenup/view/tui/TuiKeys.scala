@@ -32,4 +32,4 @@ enum TuiKeys(val key: String, val usage: String, val description: String):
   case help     extends TuiKeys(":h", "", "Help")
   case quit     extends TuiKeys(":q", "", "Quit")
   case MainMenu extends TuiKeys(":m", "", "Go into the main menu")
-  case login extends TuiKeys(":l", "<user name>", "Login")
+  case login    extends TuiKeys(":l", "<user name>", "Login")

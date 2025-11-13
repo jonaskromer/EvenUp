@@ -22,12 +22,12 @@ class ConsoleColorsSpec extends AnyWordSpec with Matchers:
       ConsoleColors.BG_BLUE shouldBe "\u001b[44m"
 
     "colorize text correctly" in:
-      val text = "Hello"
+      val text    = "Hello"
       val colored = ConsoleColors.colorize(text, ConsoleColors.RED)
       colored shouldBe s"${ConsoleColors.RED}$text${ConsoleColors.RESET}"
 
     "colorize text with bright background correctly" in:
-      val text = "World"
+      val text    = "World"
       val colored = ConsoleColors.colorize(text, ConsoleColors.BG_BRIGHT_YELLOW)
       colored shouldBe s"${ConsoleColors.BG_BRIGHT_YELLOW}$text${ConsoleColors.RESET}"
   }

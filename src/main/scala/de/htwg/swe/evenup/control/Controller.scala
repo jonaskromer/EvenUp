@@ -18,29 +18,32 @@ enum ControllerEvent extends ObservableEvent:
   case AddExpense(result: AddExpenseResult, expense: Expense)
 
 sealed trait AddGroupResult
+
 object AddGroupResult:
   case object Success extends AddGroupResult
 
 sealed trait GotoGroupResult
+
 object GotoGroupResult:
-  case object Success extends GotoGroupResult
+  case object Success           extends GotoGroupResult
   case object SuccessEmptyGroup extends GotoGroupResult
-  case object GroupNotFound extends GotoGroupResult
+  case object GroupNotFound     extends GotoGroupResult
 
 sealed trait AddUserToGroupResult
+
 object AddUserToGroupResult:
-  case object Success extends AddUserToGroupResult
+  case object Success          extends AddUserToGroupResult
   case object UserAlreadyAdded extends AddUserToGroupResult
-  case object NoActiveGroup extends AddUserToGroupResult
+  case object NoActiveGroup    extends AddUserToGroupResult
 
 sealed trait AddExpenseResult
-object AddExpenseResult:
-  case object Success extends AddExpenseResult
-  case object ActiveGroupNotFound extends AddExpenseResult
-  case object SharesSumWrong extends AddExpenseResult
-  case object SharesPersonNotFound extends AddExpenseResult
-  case object PaidByNotFound extends AddExpenseResult
 
+object AddExpenseResult:
+  case object Success              extends AddExpenseResult
+  case object ActiveGroupNotFound  extends AddExpenseResult
+  case object SharesSumWrong       extends AddExpenseResult
+  case object SharesPersonNotFound extends AddExpenseResult
+  case object PaidByNotFound       extends AddExpenseResult
 
 class Controller(var app: App) extends Observable {
 
@@ -62,9 +65,17 @@ class Controller(var app: App) extends Observable {
       case Some(group) =>
         app = app.updateActiveGroup(Some(group))
         if group.members.length == 1 then
-          notifyObservers(ControllerEvent.GotoGroup(GotoGroupResult.SuccessEmptyGroup, group))
-        else notifyObservers(ControllerEvent.GotoGroup(GotoGroupResult.Success, group))
-      case None => notifyObservers(ControllerEvent.GotoGroup(GotoGroupResult.GroupNotFound, group))
+          notifyObservers(
+            ControllerEvent.GotoGroup(GotoGroupResult.SuccessEmptyGroup, group)
+          )
+        else
+          notifyObservers(
+            ControllerEvent.GotoGroup(GotoGroupResult.Success, group)
+          )
+      case None =>
+        notifyObservers(
+          ControllerEvent.GotoGroup(GotoGroupResult.GroupNotFound, group)
+        )
 
   def addGroup(group: Group): Unit =
     app = app.addGroup(group)
@@ -76,15 +87,30 @@ class Controller(var app: App) extends Observable {
       case Some(group) =>
         val already_added_user = group.members.contains(user)
         if already_added_user then
-          notifyObservers(ControllerEvent.AddUserToGroup(AddUserToGroupResult.UserAlreadyAdded, user))
+          notifyObservers(
+            ControllerEvent.AddUserToGroup(
+              AddUserToGroupResult.UserAlreadyAdded,
+              user
+            )
+          )
           return
         val updatedGroup = app
           .findGroup(group)
           .get
           .addMember(user)
-        app = app.updateGroup(updatedGroup).updateActiveGroup(Some(updatedGroup))
-        notifyObservers(ControllerEvent.AddUserToGroup(AddUserToGroupResult.Success, user))
-      case None => notifyObservers(ControllerEvent.AddUserToGroup(AddUserToGroupResult.NoActiveGroup, user))
+        app = app
+          .updateGroup(updatedGroup)
+          .updateActiveGroup(Some(updatedGroup))
+        notifyObservers(
+          ControllerEvent.AddUserToGroup(AddUserToGroupResult.Success, user)
+        )
+      case None =>
+        notifyObservers(
+          ControllerEvent.AddUserToGroup(
+            AddUserToGroupResult.NoActiveGroup,
+            user
+          )
+        )
 
   def addExpenseToGroup(
     expense_name: String,
@@ -95,10 +121,21 @@ class Controller(var app: App) extends Observable {
   ): Unit =
     app.active_group match
       case Some(active_group) =>
-        val group = app.findGroup(active_group).get
+        val group         = app.findGroup(active_group).get
         val valid_paid_by = group.members.contains(paid_by)
-        if !valid_paid_by then 
-          notifyObservers(ControllerEvent.AddExpense(AddExpenseResult.PaidByNotFound, Expense("",0,Date(0,0,1000),Person(""),List(Share(Person(""),0)))))
+        if !valid_paid_by then
+          notifyObservers(
+            ControllerEvent.AddExpense(
+              AddExpenseResult.PaidByNotFound,
+              Expense(
+                "",
+                0,
+                Date(0, 0, 1000),
+                Person(""),
+                List(Share(Person(""), 0))
+              )
+            )
+          )
           return
         shares match
           case Some(share) =>
@@ -111,7 +148,9 @@ class Controller(var app: App) extends Observable {
             )
             val updatedGroup = group.addExpense(newExpense)
             app = app.updateGroup(updatedGroup)
-            notifyObservers(ControllerEvent.AddExpense(AddExpenseResult.Success, newExpense))
+            notifyObservers(
+              ControllerEvent.AddExpense(AddExpenseResult.Success, newExpense)
+            )
           case None =>
             val n     = group.members.length
             val total = BigDecimal(amount).setScale(
@@ -135,7 +174,10 @@ class Controller(var app: App) extends Observable {
                 )
             val evenShare =
               adjustedShares.map { case (person, share) =>
-                Share(person, share.setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble)
+                Share(
+                  person,
+                  share.setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
+                )
               }.toList
             val newExpense = Expense(
               expense_name,
@@ -146,9 +188,11 @@ class Controller(var app: App) extends Observable {
             )
             val updatedGroup = group.addExpense(newExpense)
             app = app.updateGroup(updatedGroup)
-            notifyObservers(ControllerEvent.AddExpense(AddExpenseResult.Success, newExpense))
+            notifyObservers(
+              ControllerEvent.AddExpense(AddExpenseResult.Success, newExpense)
+            )
       case None => println("No active group.")
-/*
+  /*
   def newTransaction(
     amount: Double,
     to: Person,
@@ -157,5 +201,6 @@ class Controller(var app: App) extends Observable {
   ): Unit = app.active_group.get.addTransaction(
     Transaction(from, Person("test"), 10.0, date)
   )
-*/
+   */
+
 }

@@ -15,10 +15,12 @@ class AppSpec extends AnyWordSpec with Matchers:
     val state = App(List(g_1, g_2), None, None)
     state.allGroups shouldBe List(g_1, g_2)
 
-  "The list of all users should return all distinct users" in:
+  "The list of all users should return all distinct users across all groups" in:
     val p_1   = Person("John")
     val p_2   = Person("Peter")
-    val state = AppState(Nil, List(p_1, p_2))
+    val g_1   = Group("Trip", List(p_1, p_2), List(), List())
+    val g_2   = Group("Party", List(p_2), List(), List())
+    val state = App(List(g_1, g_2), None, None)
     state.allUsers should contain theSameElementsAs List(p_1, p_2)
 
   "When adding a new group it should be included in the state" in:

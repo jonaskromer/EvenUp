@@ -57,7 +57,7 @@ class Controller(var app: App) extends Observable {
   def allUsers: List[Person] = app.groups.flatMap(_.members).distinct
 
   def gotoMainMenu: Unit =
-    app.updateActiveGroup(None)
+    app = app.updateActiveGroup(None)
     notifyObservers(ControllerEvent.MainMenu)
 
   def gotoGroup(group: Group): Unit =

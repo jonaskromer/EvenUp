@@ -22,6 +22,8 @@ class Tui(controller: Controller) extends Observer {
 
   controller.add(this)
 
+  def spacer = "_" * 40
+
   def printHelp: Unit =
     val maxDescriptionLen = TuiKeys.values.map(_.description.length).max
     val maxKeyLen         = TuiKeys.values.map(_.key.length).max
@@ -36,88 +38,96 @@ class Tui(controller: Controller) extends Observer {
         )
       )
 
-  def printFullOverview: Unit =
-    println("_" * 40)
-    controller.app.allGroups.foreach(group => println(group))
-    println("_" * 40)
+  def buildFullOverviewString: String =
+    Seq(
+      spacer,
+      controller.app.allGroups.map(_.toString).mkString("\n"),
+      spacer
+    ).mkString("\n")
 
-  def printAvailableGroups: Unit =
-    println("_" * 40)
-    println("The following groups are available:")
-    controller.app.groups.foreach(group => println(group.name))
-    println("_" * 40)
+  def getAvailableGroupsString: String =
+    Seq(
+      spacer,
+      "Available Groups:",
+      spacer,
+      controller.app.allGroups.map(_.name).mkString("\n"),
+      spacer
+    ).mkString("\n")
 
-  def printActiveGroup: Unit =
-    println("_" * 40)
-    println(controller.app.findGroup(controller.app.active_group.get).get)
-    println("_" * 40)
+  def getActiveGroupString: String =
+    controller.app.active_group match
+      case Some(group) =>
+        Seq(
+          spacer,
+          group.toString,
+          spacer
+        ).mkString("\n")
+      case None => ""
 
   println("Welcome to EvenUp!")
 
   println(
-    f"Start by adding a group with => ${TuiKeys.newGroup.key} <group name>"
+    s"Start by adding a group with => ${TuiKeys.newGroup.key} <group name>"
   )
 
   print(">")
 
-  val addGroupHandler: PartialFunction[ControllerEvent, Unit] =
+  val addGroupHandler: PartialFunction[ControllerEvent, String] =
     case ControllerEvent.AddGroup(AddGroupResult.Success, group) =>
-      println(f"Added group ${group.name}")
+      s"Added group ${group.name}"
 
-  val gotoGroupHandler: PartialFunction[ControllerEvent, Unit] =
+  val gotoGroupHandler: PartialFunction[ControllerEvent, String] =
     case ControllerEvent.GotoGroup(GotoGroupResult.Success, group) =>
-      println(s"Set active group to ${group.name}")
+      s"Set active group to ${group.name}"
     case ControllerEvent.GotoGroup(GotoGroupResult.GroupNotFound, group) =>
-      println(s"Unable to find group ${group.name}")
+      s"Unable to find group ${group.name}"
 
-  val addUserToGroupHandler: PartialFunction[ControllerEvent, Unit] =
+  val addUserToGroupHandler: PartialFunction[ControllerEvent, String] =
     case ControllerEvent.AddUserToGroup(AddUserToGroupResult.Success, user) =>
-      println(
-        f"Added ${user.name} to ${controller.app.active_group.get.name}."
-      ) // IS THIS VALID OR SHOULD I RETURN ALSO A GROUP???
+        s"Added ${user.name} to ${controller.app.active_group.get.name}."// IS THIS VALID OR SHOULD I RETURN ALSO A GROUP???
     case ControllerEvent.AddUserToGroup(
           AddUserToGroupResult.UserAlreadyAdded,
           user
-        ) =>
-      println(
-        f"User ${user.name} already added to group ${controller.app.active_group.get.name}!"
-      )
+        ) => s"User ${user.name} already added to group ${controller.app.active_group.get.name}!"
+      
     case ControllerEvent.AddUserToGroup(
           AddUserToGroupResult.NoActiveGroup,
           user
-        ) =>
-      println(f"Cannot add ${user.name} because there is no active group!")
+        ) => s"Cannot add ${user.name} because there is no active group!"
 
-  val expenseHandler: PartialFunction[ControllerEvent, Unit] =
+  val expenseHandler: PartialFunction[ControllerEvent, String] =
     case ControllerEvent.AddExpense(AddExpenseResult.Success, expense) =>
-      println(s"Added expense ${expense}")
+      s"Added expense ${expense}"
     case ControllerEvent.AddExpense(
           AddExpenseResult.ActiveGroupNotFound,
           expense
-        ) =>
-      println("Please first goto a group.")
+        ) => "Please first goto a group."
     case ControllerEvent.AddExpense(AddExpenseResult.SharesSumWrong, expense) =>
-      println("The sum of the shares do not match with the sum of the expense.")
+      "The sum of the shares do not match with the sum of the expense."
     case ControllerEvent.AddExpense(
           AddExpenseResult.SharesPersonNotFound,
           expense
-        ) =>
-      println(s"Wrong user in shares.")
+        ) => s"Wrong user in shares."
     case ControllerEvent.AddExpense(AddExpenseResult.PaidByNotFound, expense) =>
-      println(
-        s"Please first add ${expense.paid_by} to the group before using in expense."
-      )
+      s"Please first add ${expense.paid_by} to the group before using in expense."
 
-  val handler: PartialFunction[ControllerEvent, Unit] =
-    addGroupHandler orElse gotoGroupHandler orElse expenseHandler orElse addUserToGroupHandler
+  val commandHandler: PartialFunction[ControllerEvent, String] =
+    case ControllerEvent.Quit => s"Goodbye!"
+    case ControllerEvent.MainMenu => s"Go to a group by using ${TuiKeys.gotoGroup.key} ${TuiKeys.gotoGroup.usage}\n${getAvailableGroupsString}"
+
+  val handler: PartialFunction[ControllerEvent, String] =
+    addGroupHandler orElse gotoGroupHandler orElse expenseHandler orElse addUserToGroupHandler orElse commandHandler
 
   override def update(event: ObservableEvent): Unit =
     event match
       case e: ControllerEvent if handler.isDefinedAt(e) =>
-        handler(e)
-        printActiveGroup
-      case ControllerEvent.MainMenu => printFullOverview
-      case ControllerEvent.Quit     => println("GoodBye!")
+        print(Seq(
+          ".\n.\n",
+          handler(e),
+          getActiveGroupString,
+          ">"
+          ).mkString("\n")
+        )
       case _                        => println("Unhandled event...")
 
   def processInput(input: String): Unit =

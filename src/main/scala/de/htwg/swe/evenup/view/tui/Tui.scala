@@ -38,21 +38,19 @@ class Tui(controller: Controller) extends Observer {
         )
       )
 
-  def buildFullOverviewString: String =
-    Seq(
-      spacer,
-      controller.app.allGroups.map(_.toString).mkString("\n"),
-      spacer
-    ).mkString("\n")
+  def buildFullOverviewString: String = Seq(
+    spacer,
+    controller.app.allGroups.map(_.toString).mkString("\n"),
+    spacer
+  ).mkString("\n")
 
-  def getAvailableGroupsString: String =
-    Seq(
-      spacer,
-      "Available Groups:",
-      spacer,
-      controller.app.allGroups.map(_.name).mkString("\n"),
-      spacer
-    ).mkString("\n")
+  def getAvailableGroupsString: String = Seq(
+    spacer,
+    "Available Groups:",
+    spacer,
+    controller.app.allGroups.map(_.name).mkString("\n"),
+    spacer
+  ).mkString("\n")
 
   def getActiveGroupString: String =
     controller.app.active_group match
@@ -84,16 +82,18 @@ class Tui(controller: Controller) extends Observer {
 
   val addUserToGroupHandler: PartialFunction[ControllerEvent, String] =
     case ControllerEvent.AddUserToGroup(AddUserToGroupResult.Success, user) =>
-        s"Added ${user.name} to ${controller.app.active_group.get.name}."// IS THIS VALID OR SHOULD I RETURN ALSO A GROUP???
+      s"Added ${user.name} to ${controller.app.active_group.get.name}." // IS THIS VALID OR SHOULD I RETURN ALSO A GROUP???
     case ControllerEvent.AddUserToGroup(
           AddUserToGroupResult.UserAlreadyAdded,
           user
-        ) => s"User ${user.name} already added to group ${controller.app.active_group.get.name}!"
-      
+        ) =>
+      s"User ${user.name} already added to group ${controller.app.active_group.get.name}!"
+
     case ControllerEvent.AddUserToGroup(
           AddUserToGroupResult.NoActiveGroup,
           user
-        ) => s"Cannot add ${user.name} because there is no active group!"
+        ) =>
+      s"Cannot add ${user.name} because there is no active group!"
 
   val expenseHandler: PartialFunction[ControllerEvent, String] =
     case ControllerEvent.AddExpense(AddExpenseResult.Success, expense) =>
@@ -101,19 +101,22 @@ class Tui(controller: Controller) extends Observer {
     case ControllerEvent.AddExpense(
           AddExpenseResult.ActiveGroupNotFound,
           expense
-        ) => "Please first goto a group."
+        ) =>
+      "Please first goto a group."
     case ControllerEvent.AddExpense(AddExpenseResult.SharesSumWrong, expense) =>
       "The sum of the shares do not match with the sum of the expense."
     case ControllerEvent.AddExpense(
           AddExpenseResult.SharesPersonNotFound,
           expense
-        ) => s"Wrong user in shares."
+        ) =>
+      s"Wrong user in shares."
     case ControllerEvent.AddExpense(AddExpenseResult.PaidByNotFound, expense) =>
       s"Please first add ${expense.paid_by} to the group before using in expense."
 
   val commandHandler: PartialFunction[ControllerEvent, String] =
-    case ControllerEvent.Quit => s"Goodbye!"
-    case ControllerEvent.MainMenu => s"Go to a group by using ${TuiKeys.gotoGroup.key} ${TuiKeys.gotoGroup.usage}\n${getAvailableGroupsString}"
+    case ControllerEvent.Quit     => s"Goodbye!"
+    case ControllerEvent.MainMenu =>
+      s"Go to a group by using ${TuiKeys.gotoGroup.key} ${TuiKeys.gotoGroup.usage}\n${getAvailableGroupsString}"
 
   val handler: PartialFunction[ControllerEvent, String] =
     addGroupHandler orElse gotoGroupHandler orElse expenseHandler orElse addUserToGroupHandler orElse commandHandler
@@ -121,14 +124,15 @@ class Tui(controller: Controller) extends Observer {
   override def update(event: ObservableEvent): Unit =
     event match
       case e: ControllerEvent if handler.isDefinedAt(e) =>
-        print(Seq(
-          ".\n.\n",
-          handler(e),
-          getActiveGroupString,
-          ">"
+        print(
+          Seq(
+            ".\n.\n",
+            handler(e),
+            getActiveGroupString,
+            ">"
           ).mkString("\n")
         )
-      case _                        => println("Unhandled event...")
+      case _ => println("Unhandled event...")
 
   def processInput(input: String): Unit =
     val in = input.split(" ").toList

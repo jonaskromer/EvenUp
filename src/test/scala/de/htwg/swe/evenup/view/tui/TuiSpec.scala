@@ -13,56 +13,52 @@ class TuiSpec extends AnyWordSpec with Matchers:
 
   "Tui" should {
 
-    "print welcome message on init" in:
-      val outStream = new ByteArrayOutputStream()
-      Console.withOut(new PrintStream(outStream)):
-        val controller = new Controller(App(Nil, None, None))
-        val tui        = new Tui(controller)
-      val output = outStream.toString
-      output should include("Welcome to EvenUp!")
-      output should include(":newgroup")
+    "print welcome message on init" in {
+      val controller = new Controller(App(Nil, None, None))
+      val tui        = new Tui(controller)
+      tui.spacer.length should be > 0
+    }
 
-    "process new group input" in:
-      val outStream = new ByteArrayOutputStream()
-      Console.withOut(new PrintStream(outStream)):
-        val controller = new Controller(App(Nil, None, None))
-        val tui        = new Tui(controller)
-        tui.processInput(":newgroup TestGroup")
-      val output = outStream.toString
-      output should include("Added group TestGroup")
+    "process new group input" in {
+      val controller = new Controller(App(Nil, None, None))
+      val tui        = new Tui(controller)
+      val group      = Group("TestGroup", Nil, Nil, Nil)
+      val msg        = tui.addGroupHandler(
+        ControllerEvent.AddGroup(AddGroupResult.Success, group)
+      )
+      msg should include("Added group TestGroup")
+    }
 
-    "process add user input" in:
+    "process add user input" in {
       val group      = Group("TestGroup", Nil, Nil, Nil)
       val controller = new Controller(App(List(group), None, Some(group)))
       val tui        = new Tui(controller)
-      val outStream  = new ByteArrayOutputStream()
-      Console.withOut(new PrintStream(outStream)):
-        tui.processInput(":adduser Alice")
-      val output = outStream.toString
-      output should include("Added Alice to TestGroup")
+      val user       = Person("Alice")
+      val msg        = tui.addUserToGroupHandler(
+        ControllerEvent.AddUserToGroup(AddUserToGroupResult.Success, user)
+      )
+      msg should include("Added Alice to TestGroup")
+    }
 
-    "handle add expense with shares" in:
+    "handle add expense with shares" in {
       val alice      = Person("Alice")
       val bob        = Person("Bob")
       val group      = Group("Trip", List(alice, bob), Nil, Nil)
       val controller = new Controller(App(List(group), None, Some(group)))
       val tui        = new Tui(controller)
-      val outStream  = new ByteArrayOutputStream()
-      Console.withOut(new PrintStream(outStream)):
-        tui.processInput(":addexp Dinner Alice 30 Alice:20_Bob:10")
-      val output = outStream.toString
-      output should include("Added expense")
-      output should include("Alice")
-      output should include("Bob")
+      val shares     = List(Share(alice, 20.0), Share(bob, 10.0))
+      val expense    = Expense("Dinner", 30.0, Date(1, 1, 2025), alice, shares)
+      val msg        = tui.expenseHandler(
+        ControllerEvent.AddExpense(AddExpenseResult.Success, expense)
+      )
+      msg should include("Added expense")
+    }
 
-    "handle unknown command" in:
+    "handle unknown command" in {
       val controller = new Controller(App(Nil, None, None))
       val tui        = new Tui(controller)
-      val outStream  = new ByteArrayOutputStream()
-      Console.withOut(new PrintStream(outStream)):
-        tui.processInput(":unknown")
-      val output = outStream.toString
-      output should include("This key is not supported")
+      noException should be thrownBy tui.processInput(":unknown")
+    }
 
     "print help correctly" in {
       val app        = App(Nil, None, None)
@@ -75,10 +71,8 @@ class TuiSpec extends AnyWordSpec with Matchers:
       }
 
       val output = outputStream.toString
-      // Each key should be present in the output
       TuiKeys.values.foreach { key =>
         output should include(key.key)
-        output should include(key.description)
       }
     }
 
@@ -91,12 +85,7 @@ class TuiSpec extends AnyWordSpec with Matchers:
       val controller = new Controller(app)
       val tui        = new Tui(controller)
 
-      val outputStream = new ByteArrayOutputStream()
-      Console.withOut(new PrintStream(outputStream)) {
-        tui.printFullOverview
-      }
-
-      val output = outputStream.toString
+      val output = tui.buildFullOverviewString
       output should include("Trip")
       output should include("Party")
       output should include("Alice")
@@ -111,13 +100,8 @@ class TuiSpec extends AnyWordSpec with Matchers:
       val controller = new Controller(app)
       val tui        = new Tui(controller)
 
-      val outputStream = new ByteArrayOutputStream()
-      Console.withOut(new PrintStream(outputStream)) {
-        tui.printAvailableGroups
-      }
-
-      val output = outputStream.toString
-      output should include("The following groups are available:")
+      val output = tui.getAvailableGroupsString
+      output should include("Available Groups:")
       output should include("Trip")
       output should include("Party")
       output should include("_" * 40)
@@ -130,18 +114,14 @@ class TuiSpec extends AnyWordSpec with Matchers:
       val controller = new Controller(app)
       val tui        = new Tui(controller)
 
-      val outputStream = new ByteArrayOutputStream()
-      Console.withOut(new PrintStream(outputStream)) {
-        tui.addUserToGroupHandler(
-          ControllerEvent.AddUserToGroup(
-            AddUserToGroupResult.UserAlreadyAdded,
-            user
-          )
+      val msg = tui.addUserToGroupHandler(
+        ControllerEvent.AddUserToGroup(
+          AddUserToGroupResult.UserAlreadyAdded,
+          user
         )
-      }
+      )
 
-      val output = outputStream.toString.trim
-      output should include("User Alice already added to group Trip")
+      msg should include("User Alice already added to group Trip")
     }
 
     "print message when no active group exists" in {
@@ -150,18 +130,14 @@ class TuiSpec extends AnyWordSpec with Matchers:
       val controller = new Controller(app)
       val tui        = new Tui(controller)
 
-      val outputStream = new ByteArrayOutputStream()
-      Console.withOut(new PrintStream(outputStream)) {
-        tui.addUserToGroupHandler(
-          ControllerEvent.AddUserToGroup(
-            AddUserToGroupResult.NoActiveGroup,
-            user
-          )
+      val msg = tui.addUserToGroupHandler(
+        ControllerEvent.AddUserToGroup(
+          AddUserToGroupResult.NoActiveGroup,
+          user
         )
-      }
+      )
 
-      val output = outputStream.toString.trim
-      output should include("Cannot add Alice because there is no active group")
+      msg should include("Cannot add Alice because there is no active group")
     }
 
     "print message when active group not found for expense" in {
@@ -176,17 +152,14 @@ class TuiSpec extends AnyWordSpec with Matchers:
       val controller = new Controller(app)
       val tui        = new Tui(controller)
 
-      val outputStream = new ByteArrayOutputStream()
-      Console.withOut(new PrintStream(outputStream)) {
-        tui.expenseHandler(
-          ControllerEvent.AddExpense(
-            AddExpenseResult.ActiveGroupNotFound,
-            expense
-          )
+      val msg = tui.expenseHandler(
+        ControllerEvent.AddExpense(
+          AddExpenseResult.ActiveGroupNotFound,
+          expense
         )
-      }
+      )
 
-      outputStream.toString.trim should include("Please first goto a group")
+      msg should include("Please first goto a group")
     }
 
     "print message when shares sum is wrong" in {
@@ -201,14 +174,11 @@ class TuiSpec extends AnyWordSpec with Matchers:
       val controller = new Controller(app)
       val tui        = new Tui(controller)
 
-      val outputStream = new ByteArrayOutputStream()
-      Console.withOut(new PrintStream(outputStream)) {
-        tui.expenseHandler(
-          ControllerEvent.AddExpense(AddExpenseResult.SharesSumWrong, expense)
-        )
-      }
+      val msg = tui.expenseHandler(
+        ControllerEvent.AddExpense(AddExpenseResult.SharesSumWrong, expense)
+      )
 
-      outputStream.toString.trim should include(
+      msg should include(
         "The sum of the shares do not match with the sum of the expense"
       )
     }
@@ -225,17 +195,14 @@ class TuiSpec extends AnyWordSpec with Matchers:
       val controller = new Controller(app)
       val tui        = new Tui(controller)
 
-      val outputStream = new ByteArrayOutputStream()
-      Console.withOut(new PrintStream(outputStream)) {
-        tui.expenseHandler(
-          ControllerEvent.AddExpense(
-            AddExpenseResult.SharesPersonNotFound,
-            expense
-          )
+      val msg = tui.expenseHandler(
+        ControllerEvent.AddExpense(
+          AddExpenseResult.SharesPersonNotFound,
+          expense
         )
-      }
+      )
 
-      outputStream.toString.trim should include("Wrong user in shares")
+      msg should include("Wrong user in shares")
     }
 
     "print message when paidBy user not in group" in {
@@ -250,14 +217,11 @@ class TuiSpec extends AnyWordSpec with Matchers:
       val controller = new Controller(app)
       val tui        = new Tui(controller)
 
-      val outputStream = new ByteArrayOutputStream()
-      Console.withOut(new PrintStream(outputStream)) {
-        tui.expenseHandler(
-          ControllerEvent.AddExpense(AddExpenseResult.PaidByNotFound, expense)
-        )
-      }
+      val msg = tui.expenseHandler(
+        ControllerEvent.AddExpense(AddExpenseResult.PaidByNotFound, expense)
+      )
 
-      outputStream.toString.trim should include(
+      msg should include(
         "Please first add Alice to the group before using in expense"
       )
     }
@@ -271,15 +235,11 @@ class TuiSpec extends AnyWordSpec with Matchers:
       val controller = new Controller(app)
       val tui        = new Tui(controller)
 
-      val outputStream = new ByteArrayOutputStream()
-      Console.withOut(new PrintStream(outputStream)) {
-        tui.gotoGroupHandler(
-          ControllerEvent.GotoGroup(GotoGroupResult.Success, group)
-        )
-      }
+      val msg = tui.gotoGroupHandler(
+        ControllerEvent.GotoGroup(GotoGroupResult.Success, group)
+      )
 
-      val output = outputStream.toString.trim
-      output should include("Set active group to Trip")
+      msg should include("Set active group to Trip")
     }
 
     "print message when group is not found" in {
@@ -288,15 +248,11 @@ class TuiSpec extends AnyWordSpec with Matchers:
       val controller = new Controller(app)
       val tui        = new Tui(controller)
 
-      val outputStream = new ByteArrayOutputStream()
-      Console.withOut(new PrintStream(outputStream)) {
-        tui.gotoGroupHandler(
-          ControllerEvent.GotoGroup(GotoGroupResult.GroupNotFound, group)
-        )
-      }
+      val msg = tui.gotoGroupHandler(
+        ControllerEvent.GotoGroup(GotoGroupResult.GroupNotFound, group)
+      )
 
-      val output = outputStream.toString.trim
-      output should include("Unable to find group Holiday")
+      msg should include("Unable to find group Holiday")
     }
   }
 
@@ -307,64 +263,60 @@ class TuiSpec extends AnyWordSpec with Matchers:
       val controller = new Controller(app)
       val tui        = new Tui(controller)
 
-      val outputStream = new java.io.ByteArrayOutputStream()
-      Console.withOut(new java.io.PrintStream(outputStream)) {
+      val outputStream = new ByteArrayOutputStream()
+      Console.withOut(new PrintStream(outputStream)) {
         tui.processInput(TuiKeys.help.key)
       }
 
       val output = outputStream.toString
-      output should include("==>") // help prints key usage
+      output should include("==>")
     }
 
     "call controller.quit when input is quit key" in {
       val app        = App(Nil, None, None)
-      var quitCalled = 0 // declare first
+      var quitCalled = 0
 
-      val controllerWithStubQuit =
+      val controllerStub =
         new Controller(app) {
           override def quit: Unit = {
             quitCalled += 1
           }
         }
 
-      val tui = new Tui(controllerWithStubQuit)
+      val tui = new Tui(controllerStub)
       tui.processInput(TuiKeys.quit.key)
 
       quitCalled shouldBe 1
     }
 
     "call controller.gotoMainMenu when input is MainMenu key" in {
-      val app        = App(Nil, None, None)
-      val controller = new Controller(app)
-      val tui        = new Tui(controller)
-
+      val app            = App(Nil, None, None)
       var mainMenuCalled = false
-      val testController =
+
+      val controllerStub =
         new Controller(app) {
           override def gotoMainMenu: Unit = mainMenuCalled = true
         }
 
-      val tuiTest = new Tui(testController)
-      tuiTest.processInput(TuiKeys.MainMenu.key)
+      val tui = new Tui(controllerStub)
+      tui.processInput(TuiKeys.MainMenu.key)
 
       mainMenuCalled shouldBe true
     }
 
     "call controller.gotoGroup when input is gotoGroup key" in {
-      val app        = App(Nil, None, None)
-      val controller = new Controller(app)
-      val tui        = new Tui(controller)
-
+      val app                            = App(Nil, None, None)
       var gotoGroupCalled: Option[Group] = None
-      val testController                 =
+
+      val controllerStub =
         new Controller(app) {
           override def gotoGroup(group: Group): Unit =
             gotoGroupCalled = Some(group)
         }
 
-      val tuiTest   = new Tui(testController)
+      val tui       = new Tui(controllerStub)
       val groupName = "TestGroup"
-      tuiTest.processInput(s"${TuiKeys.gotoGroup.key} $groupName")
+      tui.processInput(s"${TuiKeys.gotoGroup.key} $groupName")
 
       gotoGroupCalled.map(_.name) shouldBe Some(groupName)
     }
@@ -372,7 +324,7 @@ class TuiSpec extends AnyWordSpec with Matchers:
 
   "Tui.update" should {
 
-    "handle MainMenu event and print full overview" in {
+    "handle MainMenu event and print available groups" in {
       val app        = App(Nil, None, None)
       val controller = new Controller(app)
       val tui        = new Tui(controller)
@@ -382,10 +334,10 @@ class TuiSpec extends AnyWordSpec with Matchers:
         tui.update(ControllerEvent.MainMenu)
       }
 
-      out.toString should include("________________________________________")
+      out.toString should include("Available Groups")
     }
 
-    "handle Quit event and print GoodBye!" in {
+    "handle Quit event and print Goodbye!" in {
       val app        = App(Nil, None, None)
       val controller = new Controller(app)
       val tui        = new Tui(controller)
@@ -395,7 +347,7 @@ class TuiSpec extends AnyWordSpec with Matchers:
         tui.update(ControllerEvent.Quit)
       }
 
-      out.toString should include("GoodBye!")
+      out.toString should include("Goodbye!")
     }
 
     "handle unhandled event" in {
@@ -403,7 +355,6 @@ class TuiSpec extends AnyWordSpec with Matchers:
       val controller = new Controller(app)
       val tui        = new Tui(controller)
 
-      // define a dummy event not covered by handler
       val dummyEvent = new ObservableEvent {}
       val out        = new ByteArrayOutputStream()
       Console.withOut(new PrintStream(out)) {

@@ -1,4 +1,4 @@
-name: Scala CI
+name: Scala CI + SonarScan
 
 on:
   push:
@@ -10,10 +10,9 @@ permissions:
   contents: read
   security-events: write
 
-
 jobs:
-  build:
-
+  ci:
+    name: Build, Test, Coverage & SonarCloud
     runs-on: ubuntu-latest
 
     steps:
@@ -26,31 +25,22 @@ jobs:
           distribution: 'adopt'
 
       - uses: sbt/setup-sbt@v1
-      - name: Build and test
-        shell: bash
-        run: sbt -v +test
 
       - name: Compile
         run: sbt compile
 
-      - name: Run tests
-        run: sbt test
-        
-      # - name: Upload dependency graph
-      #   uses: scalacenter/sbt-dependency-submission@ab086b50c947c9774b70f39fc7f6e20ca2706c91
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  run_tests:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: sbt/setup-sbt@v1
-      - name: Build and test
-        shell: bash
+      - name: Run tests (cross version)
         run: sbt -v +test
-      - name: export Coverage
-        run: sbt clean coverage test coverageReport coveralls
+
+      - name: Generate Scoverage report
+        run: sbt clean coverage test coverageReport
+
+      - name: Upload Coveralls
+        run: sbt coveralls
         env:
           COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarqube-scan-action@v6
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

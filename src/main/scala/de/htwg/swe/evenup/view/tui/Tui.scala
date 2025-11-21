@@ -38,11 +38,7 @@ class Tui(controller: Controller) extends Observer {
         )
       )
 
-  def buildFullOverviewString: String = Seq(
-    spacer,
-    controller.app.allGroups.map(_.toString).mkString("\n"),
-    spacer
-  ).mkString("\n")
+  def buildFullOverviewString: String = Seq(spacer, controller.app.allGroups.map(_.toString).mkString("\n"), spacer).mkString("\n")
 
   def getAvailableGroupsString: String = Seq(
     spacer,

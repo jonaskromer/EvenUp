@@ -65,7 +65,7 @@ jobs:
       - uses: actions/download-artifact@v4
         with:
           name: scoverage
-          path: coverage/
+          path: coverage
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v6

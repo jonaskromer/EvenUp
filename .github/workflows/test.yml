@@ -50,7 +50,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: scoverage
-          path: target/scala-*/scoverage-report/scoverage.xml
+          path: target/scala-*/scoverage-report/
 
   sonarcloud:
     name: SonarCloud Scan

@@ -24,4 +24,3 @@ final case class App(
   )
 
   def findGroup(group: Group): Option[Group] = groups.find(_.name == group.name)
-  

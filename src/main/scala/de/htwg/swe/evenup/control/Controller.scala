@@ -17,33 +17,25 @@ enum ControllerEvent extends ObservableEvent:
   case AddUserToGroup(result: AddUserToGroupResult, user: Person)
   case AddExpense(result: AddExpenseResult, expense: Expense)
 
-sealed trait AddGroupResult
+enum AddGroupResult:
+  case Success
 
-object AddGroupResult:
-  case object Success extends AddGroupResult
+enum GotoGroupResult:
+  case Success
+  case SuccessEmptyGroup
+  case GroupNotFound
 
-sealed trait GotoGroupResult
+enum AddUserToGroupResult:
+  case Success
+  case UserAlreadyAdded
+  case NoActiveGroup
 
-object GotoGroupResult:
-  case object Success           extends GotoGroupResult
-  case object SuccessEmptyGroup extends GotoGroupResult
-  case object GroupNotFound     extends GotoGroupResult
-
-sealed trait AddUserToGroupResult
-
-object AddUserToGroupResult:
-  case object Success          extends AddUserToGroupResult
-  case object UserAlreadyAdded extends AddUserToGroupResult
-  case object NoActiveGroup    extends AddUserToGroupResult
-
-sealed trait AddExpenseResult
-
-object AddExpenseResult:
-  case object Success              extends AddExpenseResult
-  case object ActiveGroupNotFound  extends AddExpenseResult
-  case object SharesSumWrong       extends AddExpenseResult
-  case object SharesPersonNotFound extends AddExpenseResult
-  case object PaidByNotFound       extends AddExpenseResult
+enum AddExpenseResult:
+  case Success
+  case ActiveGroupNotFound
+  case SharesSumWrong
+  case SharesPersonNotFound
+  case PaidByNotFound
 
 class Controller(var app: App) extends Observable {
 

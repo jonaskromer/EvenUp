@@ -5,6 +5,7 @@ lazy val root = project
   .settings(
     name := "EvenUp",
     version := "0.1.0-SNAPSHOT",
+    coverageEnabled := true,
 
     scalaVersion := scala3Version,
 

@@ -22,7 +22,7 @@ class Parser {
     def getShares(input: String) = input.split("_").toList.map { s =>
       s.split(":") match
         case Array(name, amount) => Share(Person(name), amount.toDouble)
-        case _ => throw new IllegalArgumentException(s"Invalid share: $s")
+        case _                   => throw new IllegalArgumentException(s"Invalid share: $s")
     }
     input match
       case Some(in) =>

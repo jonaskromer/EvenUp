@@ -225,9 +225,9 @@ class ControllerSpec extends AnyWordSpec with Matchers:
       notified shouldBe true
 
     "notify Success when gotoGroup on non-empty group" in:
-      val user  = Person("Alice")
-      val group = Group("Trip", List(user, Person("Bob")), Nil, Nil)
-      val app   = App(List(group), None, None)
+      val user                                   = Person("Alice")
+      val group                                  = Group("Trip", List(user, Person("Bob")), Nil, Nil)
+      val app                                    = App(List(group), None, None)
       var notifiedEvent: Option[ControllerEvent] = None
 
       val controller = new Controller(app)
@@ -245,8 +245,8 @@ class ControllerSpec extends AnyWordSpec with Matchers:
       )
 
     "notify NoActiveGroup when adding user without active group" in:
-      val user       = Person("Alice")
-      val controller = new Controller(App(Nil, None, None))
+      val user                                   = Person("Alice")
+      val controller                             = new Controller(App(Nil, None, None))
       var notifiedEvent: Option[ControllerEvent] = None
 
       val observer =
@@ -263,8 +263,8 @@ class ControllerSpec extends AnyWordSpec with Matchers:
       )
 
     "notify PaidByNotFound when adding expense with invalid payer" in:
-      val group = Group("Trip", List(Person("Bob")), Nil, Nil)
-      val app   = App(List(group), None, Some(group))
+      val group                                  = Group("Trip", List(Person("Bob")), Nil, Nil)
+      val app                                    = App(List(group), None, Some(group))
       var notifiedEvent: Option[ControllerEvent] = None
 
       val controller = new Controller(app)
@@ -288,10 +288,10 @@ class ControllerSpec extends AnyWordSpec with Matchers:
         case _ => fail("Expected PaidByNotFound event")
 
     "correctly adjust remainder shares when dividing expense among members" in:
-      val alice = Person("Alice")
-      val bob   = Person("Bob")
-      val group = Group("Trip", List(alice, bob), Nil, Nil)
-      val app   = App(List(group), None, Some(group))
+      val alice                                  = Person("Alice")
+      val bob                                    = Person("Bob")
+      val group                                  = Group("Trip", List(alice, bob), Nil, Nil)
+      val app                                    = App(List(group), None, Some(group))
       var notifiedEvent: Option[ControllerEvent] = None
 
       val controller = new Controller(app)
@@ -319,10 +319,10 @@ class ControllerSpec extends AnyWordSpec with Matchers:
       succeed
 
     "correctly assign remainder to first member when dividing expense" in:
-      val alice = Person("Alice")
-      val bob   = Person("Bob")
-      val group = Group("Trip", List(alice, bob), Nil, Nil)
-      val app   = App(List(group), None, Some(group))
+      val alice                                  = Person("Alice")
+      val bob                                    = Person("Bob")
+      val group                                  = Group("Trip", List(alice, bob), Nil, Nil)
+      val app                                    = App(List(group), None, Some(group))
       var notifiedEvent: Option[ControllerEvent] = None
 
       val controller = new Controller(app)

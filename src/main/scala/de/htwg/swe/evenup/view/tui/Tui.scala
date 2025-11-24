@@ -71,14 +71,11 @@ class Tui(controller: Controller) extends Observer {
   print(">")
 
   val addGroupHandler: PartialFunction[ControllerEvent, String] =
-    case ControllerEvent.AddGroup(AddGroupResult.Success, group) =>
-      s"Added group ${group.name}"
+    case ControllerEvent.AddGroup(AddGroupResult.Success, group) => s"Added group ${group.name}"
 
   val gotoGroupHandler: PartialFunction[ControllerEvent, String] =
-    case ControllerEvent.GotoGroup(GotoGroupResult.Success, group) =>
-      s"Set active group to ${group.name}"
-    case ControllerEvent.GotoGroup(GotoGroupResult.GroupNotFound, group) =>
-      s"Unable to find group ${group.name}"
+    case ControllerEvent.GotoGroup(GotoGroupResult.Success, group)       => s"Set active group to ${group.name}"
+    case ControllerEvent.GotoGroup(GotoGroupResult.GroupNotFound, group) => s"Unable to find group ${group.name}"
 
   val addUserToGroupHandler: PartialFunction[ControllerEvent, String] =
     case ControllerEvent.AddUserToGroup(AddUserToGroupResult.Success, user) =>
@@ -96,8 +93,7 @@ class Tui(controller: Controller) extends Observer {
       s"Cannot add ${user.name} because there is no active group!"
 
   val expenseHandler: PartialFunction[ControllerEvent, String] =
-    case ControllerEvent.AddExpense(AddExpenseResult.Success, expense) =>
-      s"Added expense ${expense}"
+    case ControllerEvent.AddExpense(AddExpenseResult.Success, expense) => s"Added expense ${expense}"
     case ControllerEvent.AddExpense(
           AddExpenseResult.ActiveGroupNotFound,
           expense
@@ -137,15 +133,12 @@ class Tui(controller: Controller) extends Observer {
   def processInput(input: String): Unit =
     val in = input.split(" ").toList
     in.head match
-      case TuiKeys.help.key     => printHelp
-      case TuiKeys.quit.key     => controller.quit
-      case TuiKeys.newGroup.key =>
-        controller.addGroup(Group(in.drop(1).mkString(" "), Nil, Nil, Nil))
+      case TuiKeys.help.key           => printHelp
+      case TuiKeys.quit.key           => controller.quit
+      case TuiKeys.newGroup.key       => controller.addGroup(Group(in.drop(1).mkString(" "), Nil, Nil, Nil))
       case TuiKeys.addUserToGroup.key =>
         in.drop(1)
-          .foreach(person_name =>
-            controller.addUserToGroup(Person(person_name))
-          )
+          .foreach(person_name => controller.addUserToGroup(Person(person_name)))
       case TuiKeys.addExpense.key =>
         controller.addExpenseToGroup(
           in(1),
@@ -154,8 +147,7 @@ class Tui(controller: Controller) extends Observer {
           shares = parser.parseShares(in.lift(4))
         )
       case TuiKeys.MainMenu.key  => controller.gotoMainMenu
-      case TuiKeys.gotoGroup.key =>
-        controller.gotoGroup(Group(in.drop(1).mkString(" "), Nil, Nil, Nil))
-      case _ => println("This key is not supported... yet :)")
+      case TuiKeys.gotoGroup.key => controller.gotoGroup(Group(in.drop(1).mkString(" "), Nil, Nil, Nil))
+      case _                     => println("This key is not supported... yet :)")
 
 }

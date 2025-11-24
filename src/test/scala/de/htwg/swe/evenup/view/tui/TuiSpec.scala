@@ -311,8 +311,7 @@ class TuiSpec extends AnyWordSpec with Matchers:
 
       val controllerStub =
         new Controller(app) {
-          override def gotoGroup(group: Group): Unit =
-            gotoGroupCalled = Some(group)
+          override def gotoGroup(group: Group): Unit = gotoGroupCalled = Some(group)
         }
 
       val tui       = new Tui(controllerStub)
@@ -328,8 +327,7 @@ class TuiSpec extends AnyWordSpec with Matchers:
 
       val controllerStub =
         new Controller(app) {
-          override def addGroup(group: Group): Unit =
-            addGroupCalled = Some(group)
+          override def addGroup(group: Group): Unit = addGroupCalled = Some(group)
         }
 
       val tui       = new Tui(controllerStub)
@@ -345,8 +343,7 @@ class TuiSpec extends AnyWordSpec with Matchers:
 
       val controllerStub =
         new Controller(app) {
-          override def addUserToGroup(person: Person): Unit =
-            addedUsers = addedUsers :+ person
+          override def addUserToGroup(person: Person): Unit = addedUsers = addedUsers :+ person
         }
 
       val tui = new Tui(controllerStub)

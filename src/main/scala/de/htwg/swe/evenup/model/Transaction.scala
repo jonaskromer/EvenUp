@@ -10,8 +10,7 @@ final case class Transaction(
   date: Date
 ):
 
-  override def toString(): String =
-    f"${from.name} paid $amount%.2f to ${to.name} on ${date}."
+  override def toString(): String = f"${from.name} paid $amount%.2f to ${to.name} on ${date}."
 
   def updateFrom(from: Person): Transaction = copy(from = from)
 

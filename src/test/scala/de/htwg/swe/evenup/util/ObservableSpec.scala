@@ -13,8 +13,7 @@ class ObservableSpec extends AnyWordSpec with Matchers:
       var receivedEvent: Option[ObservableEvent] = None
       val testObserver                           =
         new Observer:
-          override def update(e: ObservableEvent): Unit =
-            receivedEvent = Some(e)
+          override def update(e: ObservableEvent): Unit = receivedEvent = Some(e)
 
       val observable = new Observable()
       observable.add(testObserver)
@@ -29,8 +28,7 @@ class ObservableSpec extends AnyWordSpec with Matchers:
       var receivedEvent: Option[ObservableEvent] = None
       val testObserver                           =
         new Observer:
-          override def update(e: ObservableEvent): Unit =
-            receivedEvent = Some(e)
+          override def update(e: ObservableEvent): Unit = receivedEvent = Some(e)
 
       val observable = new Observable()
       observable.add(testObserver)

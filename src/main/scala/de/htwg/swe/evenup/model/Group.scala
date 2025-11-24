@@ -38,9 +38,7 @@ final case class Group(
 
   def updateName(name: String): Group = copy(name = name)
 
-  def addTransaction(transaction: Transaction): Group = copy(transactions =
-    transactions :+ transaction
-  )
+  def addTransaction(transaction: Transaction): Group = copy(transactions = transactions :+ transaction)
 
   def removeTransaction(transaction: Transaction): Group =
     if (transactions.contains(transaction))

@@ -1,0 +1,16 @@
+package de.htwg.swe.evenup.model.state
+
+import de.htwg.swe.evenup.control.Controller
+
+class InGroupState extends AppState:
+  override def execute(controller: Controller): Unit = {}
+  override def canAddGroup: Boolean                  = false
+  override def canRemoveGroup: Boolean               = false
+  override def canAddUser: Boolean                   = true
+  override def canRemoveUser: Boolean                = true
+  override def canAddExpense: Boolean                = true
+  override def canRemoveExpense: Boolean             = true
+  override def canEditExpense: Boolean               = true
+  override def canAddTransaction: Boolean            = true
+  override def canRemoveTransaction: Boolean         = true
+  override def canEditTransaction: Boolean           = true

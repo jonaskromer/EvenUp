@@ -1,6 +1,6 @@
 package de.htwg.swe.evenup.model.debt
 
-import de.htwg.swe.evenup.model.{Group, Person, Transaction, Date}
+import de.htwg.swe.evenup.model.{Group, Person}
 
 class SimplifiedDebtStrategy extends DebtCalculationStrategy:
   /*
@@ -11,22 +11,38 @@ class SimplifiedDebtStrategy extends DebtCalculationStrategy:
 
     -> Alice owes Carlos 10€
     */
-  override def calculateDebts(group:Group): List[Debt] =
+  override def calculateDebts(group: Group): List[Debt] =
     val balances = DebtCalculationUtils.calculateBalances(group)
-    
-    balances.flatMap { case (person, balance) =>
-      if balance < 0 then
-        group.expenses
-          .filter(_.shares.exists(_.person == person))
-          .flatMap { expense =>
-            val share = expense.shares.find(_.person == person).get
-            if expense.paid_by != person then
-              Some(Debt(
-                from = person,
-                to = expense.paid_by,
-                amount = share.amount,
-              ))
-            else None
-          }
-      else Nil
+
+    val debtMap = scala.collection.mutable.Map[(Person, Person), Double]()
+
+    group.expenses.foreach { expense =>
+      expense.shares.foreach { share =>
+        if share.person != expense.paid_by then
+          val key = (share.person, expense.paid_by)
+          debtMap(key) = debtMap.getOrElse(key, 0.0) + share.amount
+      }
+    }
+
+    val processedPairs = scala.collection.mutable.Set[(Person, Person)]()
+
+    debtMap.flatMap { case ((from, to), amount) =>
+      val pair = (from, to)
+      val reversePair = (to, from)
+
+      if !processedPairs.contains(pair) && !processedPairs.contains(reversePair) then
+        processedPairs.add(pair)
+        processedPairs.add(reversePair)
+
+        val reverseAmount = debtMap.getOrElse(reversePair, 0.0)
+        val netAmount = amount - reverseAmount
+
+        if netAmount > 0 then
+          Some(Debt(from = from, to = to, amount = netAmount))
+        else if netAmount < 0 then
+          Some(Debt(from = to, to = from, amount = -netAmount))
+        else
+          None
+      else
+        None
     }.toList

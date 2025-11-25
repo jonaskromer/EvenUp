@@ -29,6 +29,9 @@ enum TuiKeys(val key: String, val usage: String, val description: String):
         "Add a user to a group"
       )
 
+  case calculateDebts extends TuiKeys(":debts", "", "Calculate debts for group")
+  case setStrategy extends TuiKeys(":strategy", "<simplified|normal>", "Set debt calculation strategy")
+
   case help     extends TuiKeys(":h", "", "Help")
   case quit     extends TuiKeys(":q", "", "Quit")
   case MainMenu extends TuiKeys(":m", "", "Go into the main menu")

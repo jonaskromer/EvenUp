@@ -17,7 +17,7 @@ class NormalDebtStrategy extends DebtCalculationStrategy:
                 from = person,
                 to = expense.paid_by,
                 amount = share.amount,
-                //TODO: better way to show debts maybe a debt class or smth
+                //TODO: better way to save debts maybe a debt class or smth, actually balances per person per group would be good
                 date = Date(1, 1, 1)
               ))
             else None

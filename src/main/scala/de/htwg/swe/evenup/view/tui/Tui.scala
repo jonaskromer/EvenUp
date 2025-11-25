@@ -109,6 +109,17 @@ class Tui(controller: Controller) extends Observer {
     case ControllerEvent.AddExpense(AddExpenseResult.PaidByNotFound, expense) =>
       s"Please first add ${expense.paid_by} to the group before using in expense."
 
+  val debtHandler: PartialFunction[ControllerEvent, String] =
+    case ControllerEvent.CalculateDebts(transactions) =>
+      if transactions.isEmpty then
+        "No debts to settle. Group is Evend Up!"
+      else
+        val transactionStrings = transactions.map(_.toString).mkString("\n ")
+        s"Calculated debts:\n ${transactionStrings}"
+
+    case ControllerEvent.SwitchStrategy(strategyName) =>
+      s"Switched to ${strategyName} debt calculation strategy."
+
   val commandHandler: PartialFunction[ControllerEvent, String] =
     case ControllerEvent.Quit     => s"Goodbye!"
     case ControllerEvent.MainMenu =>

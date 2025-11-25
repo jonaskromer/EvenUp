@@ -159,6 +159,10 @@ class Tui(controller: Controller) extends Observer {
         )
       case TuiKeys.MainMenu.key  => controller.gotoMainMenu
       case TuiKeys.gotoGroup.key => controller.gotoGroup(Group(in.drop(1).mkString(" "), Nil, Nil, Nil))
-      case _                     => println("This key is not supported... yet :)")
+      case TuiKeys.calculateDebts.key => controller.calculateDebts()
+      case TuiKeys.setStrategy.key => controller.setDebtStrategy(in(1))
+      case _                     =>
+        println("This key is not supported... yet :)")
+        print(">")
 
 }

@@ -198,7 +198,7 @@ class Controller(var app: App) extends Observable {
   )
    */
   private val debtCalculator = DebtCalculator(NormalDebtStrategy())
-  
+
   def calculateDebts(): Unit =
     app.active_group match
       case Some(group) =>
@@ -206,9 +206,10 @@ class Controller(var app: App) extends Observable {
         notifyObservers(ControllerEvent.CalculateDebts(transactions))
       case None => println("No active group.")
 
-  def setDebtStrategy(useSimplified: Boolean): Unit =
-    val strategy = if useSimplified then SimplifiedDebtStrategy() else NormalDebtStrategy()
+  def setDebtStrategy(useSimplified: String): Unit =
+    val strategy = if useSimplified == "simplified"
+    then SimplifiedDebtStrategy() else NormalDebtStrategy()
     debtCalculator.setStrategy(strategy)
-    val strategyName = if useSimplified then "Simplified" else "Normal"
+    val strategyName = if useSimplified == "simplified" then "Simplified" else "Normal"
     notifyObservers(ControllerEvent.SwitchStrategy(strategyName))
 }

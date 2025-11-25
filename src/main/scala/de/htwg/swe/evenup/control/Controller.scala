@@ -197,6 +197,8 @@ class Controller(var app: App) extends Observable {
     Transaction(from, Person("test"), 10.0, date)
   )
    */
+  private val debtCalculator = DebtCalculator(NormalDebtStrategy())
+  
   def calculateDebts(): Unit =
     app.active_group match
       case Some(group) =>

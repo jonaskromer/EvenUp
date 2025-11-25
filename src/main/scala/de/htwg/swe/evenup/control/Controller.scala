@@ -8,6 +8,7 @@ import de.htwg.swe.evenup.model.Expense
 import de.htwg.swe.evenup.model.Date
 import de.htwg.swe.evenup.model.Share
 import de.htwg.swe.evenup.model.Transaction
+import de.htwg.swe.evenup.model.debt.{NormalDebtStrategy, SimplifiedDebtStrategy, DebtCalculator}
 
 enum ControllerEvent extends ObservableEvent:
   case Quit
@@ -16,6 +17,8 @@ enum ControllerEvent extends ObservableEvent:
   case GotoGroup(result: GotoGroupResult, group: Group)
   case AddUserToGroup(result: AddUserToGroupResult, user: Person)
   case AddExpense(result: AddExpenseResult, expense: Expense)
+  case CalculateDebts(transactions: List[Transaction])
+  case SwitchStrategy(strategyName: String)
 
 enum AddGroupResult:
   case Success
@@ -194,5 +197,16 @@ class Controller(var app: App) extends Observable {
     Transaction(from, Person("test"), 10.0, date)
   )
    */
+  def calculateDebts(): Unit =
+    app.active_group match
+      case Some(group) =>
+        val transactions = debtCalculator.calculate(group)
+        notifyObservers(ControllerEvent.CalculateDebts(transactions))
+      case None => println("No active group.")
 
+  def setDebtStrategy(useSimplified: Boolean): Unit =
+    val strategy = if useSimplified then SimplifiedDebtStrategy() else NormalDebtStrategy()
+    debtCalculator.setStrategy(strategy)
+    val strategyName = if useSimplified then "Simplified" else "Normal"
+    notifyObservers(ControllerEvent.SwitchStrategy(strategyName))
 }

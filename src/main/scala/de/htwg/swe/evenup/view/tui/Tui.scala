@@ -126,7 +126,7 @@ class Tui(controller: Controller) extends Observer {
       s"Go to a group by using ${TuiKeys.gotoGroup.key} ${TuiKeys.gotoGroup.usage}\n${getAvailableGroupsString}"
 
   val handler: PartialFunction[ControllerEvent, String] =
-    addGroupHandler orElse gotoGroupHandler orElse expenseHandler orElse addUserToGroupHandler orElse commandHandler
+    addGroupHandler orElse gotoGroupHandler orElse expenseHandler orElse addUserToGroupHandler orElse debtHandler orElse commandHandler
 
   override def update(event: ObservableEvent): Unit =
     event match

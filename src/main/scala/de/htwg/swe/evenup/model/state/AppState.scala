@@ -1,0 +1,19 @@
+package de.htwg.swe.evenup.model.state
+
+import de.htwg.swe.evenup.control.Controller
+
+trait AppState:
+  def execute(controller: Controller): Unit
+  def canLogin: Boolean  = false
+  def canLogout: Boolean = true
+  def canAddGroup: Boolean
+  def canRemoveGroup: Boolean
+  def canAddUser: Boolean
+  def canRemoveUser: Boolean
+  def canAddExpense: Boolean
+  def canRemoveExpense: Boolean
+  def canEditExpense: Boolean
+  def canAddTransaction: Boolean
+  def canRemoveTransaction: Boolean
+  def canEditTransaction: Boolean
+  def canQuit: Boolean = true

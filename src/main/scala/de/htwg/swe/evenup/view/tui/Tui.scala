@@ -5,6 +5,7 @@ import de.htwg.swe.evenup.model.Person
 import de.htwg.swe.evenup.model.Group
 import de.htwg.swe.evenup.model.Share
 import de.htwg.swe.evenup.control.*
+import de.htwg.swe.evenup.model.debt.NormalDebtStrategy
 
 enum PromptState {
   case None
@@ -146,7 +147,7 @@ class Tui(controller: Controller) extends Observer {
     in.head match
       case TuiKeys.help.key           => printHelp
       case TuiKeys.quit.key           => controller.quit
-      case TuiKeys.newGroup.key       => controller.addGroup(Group(in.drop(1).mkString(" "), Nil, Nil, Nil))
+      case TuiKeys.newGroup.key       => controller.addGroup(Group(in.drop(1).mkString(" "), Nil, Nil, Nil, NormalDebtStrategy()))
       case TuiKeys.addUserToGroup.key =>
         in.drop(1)
           .foreach(person_name => controller.addUserToGroup(Person(person_name)))
@@ -158,7 +159,7 @@ class Tui(controller: Controller) extends Observer {
           shares = parser.parseShares(in.lift(4))
         )
       case TuiKeys.MainMenu.key  => controller.gotoMainMenu
-      case TuiKeys.gotoGroup.key => controller.gotoGroup(Group(in.drop(1).mkString(" "), Nil, Nil, Nil))
+      case TuiKeys.gotoGroup.key => controller.gotoGroup(Group(in.drop(1).mkString(" "), Nil, Nil, Nil, NormalDebtStrategy()))
       case TuiKeys.calculateDebts.key => controller.calculateDebts()
       case TuiKeys.setStrategy.key => controller.setDebtStrategy(in(1))
       case _                     =>

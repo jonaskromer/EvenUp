@@ -2,12 +2,14 @@ package de.htwg.swe.evenup.model
 
 import de.htwg.swe.evenup.model.Expense
 import de.htwg.swe.evenup.model.Person
+import de.htwg.swe.evenup.model.debt.{DebtCalculationStrategy, SimplifiedDebtStrategy, NormalDebtStrategy, Debt}
 
 final case class Group(
   name: String,
   members: List[Person],
   expenses: List[Expense],
-  transactions: List[Transaction]
+  transactions: List[Transaction],
+  debtstrategy: DebtCalculationStrategy
 ):
 
   override def toString(): String =
@@ -45,3 +47,8 @@ final case class Group(
       copy(transactions = transactions.filterNot(_ == transaction))
     else
       this
+
+  def changeDebtCalculationStrategy(debtstrategy: DebtCalculationStrategy): Group = copy(debtstrategy = debtstrategy)
+
+  def calculateDebt(): List[Debt] =
+    debtstrategy.calculateDebts(this)

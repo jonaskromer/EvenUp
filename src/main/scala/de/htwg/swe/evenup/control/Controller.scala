@@ -7,10 +7,9 @@ import de.htwg.swe.evenup.model.Person
 import de.htwg.swe.evenup.model.financial.Expense
 import de.htwg.swe.evenup.model.Date
 import de.htwg.swe.evenup.model.Share
-import de.htwg.swe.evenup.model.financial.{Expense, Transaction}
+import de.htwg.swe.evenup.model.financial.{Expense, Transaction, ExpenseBuilder}
 import de.htwg.swe.evenup.model.financial.debt.{NormalDebtStrategy, SimplifiedDebtStrategy, Debt}
 import de.htwg.swe.evenup.model.state.*
-import de.htwg.swe.evenup.model.ExpenseBuilder
 
 enum ControllerEvent extends ObservableEvent:
   case Quit

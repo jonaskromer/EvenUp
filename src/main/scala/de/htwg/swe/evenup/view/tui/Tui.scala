@@ -6,6 +6,7 @@ import de.htwg.swe.evenup.model.Group
 import de.htwg.swe.evenup.model.Share
 import de.htwg.swe.evenup.control.*
 import de.htwg.swe.evenup.model.financial.debt.NormalDebtStrategy
+import de.htwg.swe.evenup.model.state.AppState
 
 enum PromptState {
   case None
@@ -25,11 +26,13 @@ class Tui(controller: Controller) extends Observer {
 
   def spacer = "_" * 40
 
-  def printHelp: Unit =
-    val maxDescriptionLen = TuiKeys.values.map(_.description.length).max
-    val maxKeyLen         = TuiKeys.values.map(_.key.length).max
+  def printHelp(state: AppState): Unit =
+    val keys = TuiKeys.values.filter(_.allowed(state))
 
-    for key <- TuiKeys.values do
+    val maxDescriptionLen = keys.map(_.description.length).max
+    val maxKeyLen         = keys.map(_.key.length).max
+
+    for key <- keys do
       println(
         String.format(
           s"%-${maxDescriptionLen}s ==> %-${maxKeyLen}s %s",
@@ -38,6 +41,7 @@ class Tui(controller: Controller) extends Observer {
           key.usage
         )
       )
+
 
   def buildFullOverviewString: String = Seq(
     spacer,
@@ -145,7 +149,7 @@ class Tui(controller: Controller) extends Observer {
   def processInput(input: String): Unit =
     val in = input.split(" ").toList
     in.head match
-      case TuiKeys.help.key           => printHelp
+      case TuiKeys.help.key           => printHelp(controller.app.state)
       case TuiKeys.quit.key           => controller.quit
       case TuiKeys.newGroup.key       => controller.addGroup(Group(in.drop(1).mkString(" "), Nil, Nil, Nil, NormalDebtStrategy()))
       case TuiKeys.addUserToGroup.key =>

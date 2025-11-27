@@ -5,10 +5,11 @@ import de.htwg.swe.evenup.control.Controller
 
 import scala.io.StdIn.readLine
 import de.htwg.swe.evenup.view.tui.Tui
+import de.htwg.swe.evenup.model.state.MainMenuState
 
 @main def main(): Unit =
 
-  val app        = App(Nil, None, None)
+  val app        = App(Nil, None, None, MainMenuState())
   val controller = new Controller(app)
   val tui        = new Tui(controller)
 

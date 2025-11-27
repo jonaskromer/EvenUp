@@ -2,7 +2,7 @@ package de.htwg.swe.evenup.model.state
 
 import de.htwg.swe.evenup.control.Controller
 
-class InGroupState extends AppState:
+class InEmptyGroupState extends AppState:
   override def execute(controller: Controller): Unit = {}
 
   override def canAddGroup: Boolean        = false
@@ -10,7 +10,7 @@ class InGroupState extends AppState:
   override def canGotoGroup: Boolean       = false
 
   override def canAddUser: Boolean         = true
-  override def canRemoveUser: Boolean      = true
+  override def canRemoveUser: Boolean      = false
 
   override def canAddExpense: Boolean      = true
   override def canRemoveExpense: Boolean   = true

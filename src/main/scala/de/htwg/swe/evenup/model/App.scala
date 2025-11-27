@@ -2,11 +2,13 @@ package de.htwg.swe.evenup.model
 
 import de.htwg.swe.evenup.model.Group
 import de.htwg.swe.evenup.model.Person
+import de.htwg.swe.evenup.model.state.AppState
 
 final case class App(
   groups: List[Group],
   active_user: Option[Person],
-  active_group: Option[Group]
+  active_group: Option[Group],
+  state: AppState
 ):
 
   def allGroups: List[Group] = groups
@@ -22,3 +24,5 @@ final case class App(
   def updateActiveGroup(active_group: Option[Group]): App = copy(active_group = active_group)
 
   def findGroup(group: Group): Option[Group] = groups.find(_.name == group.name)
+
+  def updateAppState(state: AppState): App = copy(state = state)

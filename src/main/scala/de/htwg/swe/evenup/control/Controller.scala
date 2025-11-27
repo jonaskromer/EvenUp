@@ -9,6 +9,7 @@ import de.htwg.swe.evenup.model.Date
 import de.htwg.swe.evenup.model.Share
 import de.htwg.swe.evenup.model.financial.{Expense, Transaction}
 import de.htwg.swe.evenup.model.financial.debt.{NormalDebtStrategy, SimplifiedDebtStrategy, Debt}
+import de.htwg.swe.evenup.model.state.*
 
 enum ControllerEvent extends ObservableEvent:
   case Quit
@@ -53,6 +54,7 @@ class Controller(var app: App) extends Observable {
 
   def gotoMainMenu: Unit =
     app = app.updateActiveGroup(None)
+    app = app.updateAppState(MainMenuState())
     notifyObservers(ControllerEvent.MainMenu)
 
   def gotoGroup(group: Group): Unit =
@@ -60,10 +62,12 @@ class Controller(var app: App) extends Observable {
       case Some(group) =>
         app = app.updateActiveGroup(Some(group))
         if group.members.length == 1 then
+          app = app.updateAppState(InEmptyGroupState())
           notifyObservers(
             ControllerEvent.GotoGroup(GotoGroupResult.SuccessEmptyGroup, group)
           )
         else
+          app = app.updateAppState(InGroupState())
           notifyObservers(
             ControllerEvent.GotoGroup(GotoGroupResult.Success, group)
           )

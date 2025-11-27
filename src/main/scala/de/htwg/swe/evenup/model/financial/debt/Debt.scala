@@ -1,4 +1,4 @@
-package de.htwg.swe.evenup.model.debt
+package de.htwg.swe.evenup.model.financial.debt
 
 import de.htwg.swe.evenup.model.Person
 

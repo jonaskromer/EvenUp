@@ -5,7 +5,7 @@ import de.htwg.swe.evenup.model.Person
 import de.htwg.swe.evenup.model.Group
 import de.htwg.swe.evenup.model.Share
 import de.htwg.swe.evenup.control.*
-import de.htwg.swe.evenup.model.debt.NormalDebtStrategy
+import de.htwg.swe.evenup.model.financial.debt.NormalDebtStrategy
 
 enum PromptState {
   case None

@@ -1,4 +1,4 @@
-package de.htwg.swe.evenup.model
+package de.htwg.swe.evenup.model.financial
 
 import de.htwg.swe.evenup.model.Person
 import de.htwg.swe.evenup.model.Date

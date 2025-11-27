@@ -1,8 +1,8 @@
 package de.htwg.swe.evenup.model
 
-import de.htwg.swe.evenup.model.Expense
 import de.htwg.swe.evenup.model.Person
-import de.htwg.swe.evenup.model.debt.{DebtCalculationStrategy, SimplifiedDebtStrategy, NormalDebtStrategy, Debt}
+import de.htwg.swe.evenup.model.financial.debt.{DebtCalculationStrategy, SimplifiedDebtStrategy, NormalDebtStrategy, Debt}
+import de.htwg.swe.evenup.model.financial.{Expense, Transaction}
 
 final case class Group(
   name: String,

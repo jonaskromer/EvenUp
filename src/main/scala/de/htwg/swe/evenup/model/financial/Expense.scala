@@ -1,7 +1,6 @@
-package de.htwg.swe.evenup.model
+package de.htwg.swe.evenup.model.financial
 
-import de.htwg.swe.evenup.model.Person
-import de.htwg.swe.evenup.model.Date
+import de.htwg.swe.evenup.model.{Person, Date, Share}
 
 final case class Expense(
   name: String,

@@ -10,6 +10,7 @@ import de.htwg.swe.evenup.model.Share
 import de.htwg.swe.evenup.model.financial.{Expense, Transaction}
 import de.htwg.swe.evenup.model.financial.debt.{NormalDebtStrategy, SimplifiedDebtStrategy, Debt}
 import de.htwg.swe.evenup.model.state.*
+import de.htwg.swe.evenup.model.ExpenseBuilder
 
 enum ControllerEvent extends ObservableEvent:
   case Quit
@@ -138,13 +139,13 @@ class Controller(var app: App) extends Observable {
           return
         shares match
           case Some(share) =>
-            val newExpense = Expense(
-              expense_name,
-              amount,
-              date,
-              paid_by,
-              share
-            )
+            val newExpense = ExpenseBuilder()
+              .withName(expense_name)
+              .withAmount(amount)
+              .onDate(date)
+              .paidBy(paid_by)
+              .withShares(share)
+              .build()
             val updatedGroup = group.addExpense(newExpense)
             app = app.updateGroup(updatedGroup)
             notifyObservers(
@@ -178,13 +179,13 @@ class Controller(var app: App) extends Observable {
                   share.setScale(2, BigDecimal.RoundingMode.HALF_UP).toDouble
                 )
               }.toList
-            val newExpense = Expense(
-              expense_name,
-              amount,
-              date,
-              paid_by,
-              evenShare
-            )
+            val newExpense = ExpenseBuilder()
+              .withName(expense_name)
+              .withAmount(amount)
+              .onDate(date)
+              .paidBy(paid_by)
+              .withShares(evenShare)
+              .build()
             val updatedGroup = group.addExpense(newExpense)
             app = app.updateGroup(updatedGroup)
             notifyObservers(

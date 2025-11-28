@@ -4,7 +4,7 @@ import de.htwg.swe.evenup.model.{Group, Person}
 
 class NormalDebtStrategy extends DebtCalculationStrategy:
   override def calculateDebts(group: Group): List[Debt] =
-    val balances = DebtCalculationUtils.calculateBalances(group)
+    val balances = calculateBalances(group)
 
     val debtMap = scala.collection.mutable.Map[(Person, Person), Double]()
 

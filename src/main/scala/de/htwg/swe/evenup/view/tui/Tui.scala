@@ -28,19 +28,31 @@ class Tui(controller: Controller) extends Observer {
 
   def printHelp(state: AppState): Unit =
     val keys = TuiKeys.values.filter(_.allowed(state))
-
     val maxDescriptionLen = keys.map(_.description.length).max
-    val maxKeyLen         = keys.map(_.key.length).max
+    val maxKeyLen = keys.map(_.key.length).max
 
-    for key <- keys do
-      println(
-        String.format(
-          s"%-${maxDescriptionLen}s ==> %-${maxKeyLen}s %s",
-          key.description,
-          key.key,
-          key.usage
-        )
+    val helpText = keys.map { key =>
+      String.format(
+        s"%-${maxDescriptionLen}s ==> %-${maxKeyLen}s %s",
+        key.description,
+        key.key,
+        key.usage
       )
+    }.mkString("\n")
+
+    val decoratedHelp = new HeaderFooterDecorator(
+      new ColorDecorator(
+        new BorderDecorator(
+          new TextComponent(helpText),
+          "="
+        ),
+        ConsoleColors.BRIGHT_YELLOW
+      ),
+      header = Some("Available Commands"),
+      footer = Some("Type a command to get started")
+  )
+
+    println(decoratedHelp.render)
 
 
   def buildFullOverviewString: String = Seq(

@@ -11,6 +11,9 @@ import de.htwg.swe.evenup.model.financial.Expense
 import de.htwg.swe.evenup.model.state.MainMenuState
 import de.htwg.swe.evenup.model.financial.debt.NormalDebtStrategy
 import de.htwg.swe.evenup.util.ObservableEvent
+import de.htwg.swe.evenup.model.state.MainMenuState
+import de.htwg.swe.evenup.model.financial.debt.NormalDebtStrategy
+import de.htwg.swe.evenup.model.financial.Expense
 
 class TuiSpec extends AnyWordSpec with Matchers:
 
@@ -70,14 +73,24 @@ class TuiSpec extends AnyWordSpec with Matchers:
 
       val outputStream = new ByteArrayOutputStream()
       Console.withOut(new PrintStream(outputStream)) {
-        tui.printHelp
+        tui.printHelp(app.state)
       }
 
       val output = outputStream.toString
-      TuiKeys.values.foreach { key =>
+
+      // Only check keys that are allowed in the current state
+      val allowedKeys = TuiKeys.values.filter(_.allowed(app.state))
+      allowedKeys.foreach { key =>
         output should include(key.key)
       }
+
+      // Optionally, ensure disallowed keys are NOT printed
+      val disallowedKeys = TuiKeys.values.filterNot(_.allowed(app.state))
+      disallowedKeys.foreach { key =>
+        output should not include key.key
+      }
     }
+
 
     "print full overview correctly" in {
       val alice      = Person("Alice")

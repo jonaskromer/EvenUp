@@ -27,33 +27,35 @@ class Tui(controller: Controller) extends Observer {
   def spacer = "_" * 40
 
   def printHelp(state: AppState): Unit =
-    val keys = TuiKeys.values.filter(_.allowed(state))
+    val keys              = TuiKeys.values.filter(_.allowed(state))
     val maxDescriptionLen = keys.map(_.description.length).max
-    val maxKeyLen = keys.map(_.key.length).max
+    val maxKeyLen         = keys.map(_.key.length).max
 
-    val helpText = keys.map { key =>
-      String.format(
-        s"%-${maxDescriptionLen}s ==> %-${maxKeyLen}s %s",
-        key.description,
-        key.key,
-        key.usage
-      )
-    }.mkString("\n")
+    val helpText = keys
+      .map { key =>
+        String.format(
+          s"%-${maxDescriptionLen}s ==> %-${maxKeyLen}s %s",
+          key.description,
+          key.key,
+          key.usage
+        )
+      }
+      .mkString("\n")
 
-    val decoratedHelp = new HeaderFooterDecorator(
-      new ColorDecorator(
-        new BorderDecorator(
-          new TextComponent(helpText),
-          "="
+    val decoratedHelp =
+      new HeaderFooterDecorator(
+        new ColorDecorator(
+          new BorderDecorator(
+            new TextComponent(helpText),
+            "="
+          ),
+          ConsoleColors.BRIGHT_YELLOW
         ),
-        ConsoleColors.BRIGHT_YELLOW
-      ),
-      header = Some("Available Commands"),
-      footer = Some("Type a command to get started")
-  )
+        header = Some("Available Commands"),
+        footer = Some("Type a command to get started")
+      )
 
     println(decoratedHelp.render)
-
 
   def buildFullOverviewString: String = Seq(
     spacer,
@@ -128,14 +130,12 @@ class Tui(controller: Controller) extends Observer {
 
   val debtHandler: PartialFunction[ControllerEvent, String] =
     case ControllerEvent.CalculateDebts(debts) =>
-      if debts.isEmpty then
-        "No debts to settle. Group is Evend Up!"
+      if debts.isEmpty then "No debts to settle. Group is Evend Up!"
       else
         val transactionStrings = debts.map(_.toString).mkString("\n ")
         s"Calculated debts:\n ${transactionStrings}"
 
-    case ControllerEvent.SwitchStrategy(strategyName) =>
-      s"Switched to ${strategyName} debt calculation strategy."
+    case ControllerEvent.SwitchStrategy(strategyName) => s"Switched to ${strategyName} debt calculation strategy."
 
   val commandHandler: PartialFunction[ControllerEvent, String] =
     case ControllerEvent.Quit     => s"Goodbye!"
@@ -161,9 +161,10 @@ class Tui(controller: Controller) extends Observer {
   def processInput(input: String): Unit =
     val in = input.split(" ").toList
     in.head match
-      case TuiKeys.help.key           => printHelp(controller.app.state)
-      case TuiKeys.quit.key           => controller.quit
-      case TuiKeys.newGroup.key       => controller.addGroup(Group(in.drop(1).mkString(" "), Nil, Nil, Nil, NormalDebtStrategy()))
+      case TuiKeys.help.key     => printHelp(controller.app.state)
+      case TuiKeys.quit.key     => controller.quit
+      case TuiKeys.newGroup.key =>
+        controller.addGroup(Group(in.drop(1).mkString(" "), Nil, Nil, Nil, NormalDebtStrategy()))
       case TuiKeys.addUserToGroup.key =>
         in.drop(1)
           .foreach(person_name => controller.addUserToGroup(Person(person_name)))
@@ -175,10 +176,11 @@ class Tui(controller: Controller) extends Observer {
           shares = parser.parseShares(in.lift(4))
         )
       case TuiKeys.MainMenu.key  => controller.gotoMainMenu
-      case TuiKeys.gotoGroup.key => controller.gotoGroup(Group(in.drop(1).mkString(" "), Nil, Nil, Nil, NormalDebtStrategy()))
+      case TuiKeys.gotoGroup.key =>
+        controller.gotoGroup(Group(in.drop(1).mkString(" "), Nil, Nil, Nil, NormalDebtStrategy()))
       case TuiKeys.calculateDebts.key => controller.calculateDebts()
-      case TuiKeys.setStrategy.key => controller.setDebtStrategy(in.drop(1).mkString(" "))
-      case _                     =>
+      case TuiKeys.setStrategy.key    => controller.setDebtStrategy(in.drop(1).mkString(" "))
+      case _                          =>
         println("This key is not supported... yet :)")
         print(">")
 

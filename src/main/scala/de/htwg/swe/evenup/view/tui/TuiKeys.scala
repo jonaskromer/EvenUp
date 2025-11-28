@@ -35,7 +35,9 @@ enum TuiKeys(val key: String, val usage: String, val description: String, val al
       )
 
   case calculateDebts extends TuiKeys(":debts", "", "Calculate debts for group", _.canCalculateDebts)
-  case setStrategy extends TuiKeys(":strategy", "<simplified|normal>", "Set debt calculation strategy", _.canSetStrategy)
+
+  case setStrategy
+      extends TuiKeys(":strategy", "<simplified|normal>", "Set debt calculation strategy", _.canSetStrategy)
 
   case help     extends TuiKeys(":h", "", "Help", _.canShowHelp)
   case quit     extends TuiKeys(":q", "", "Quit", _.canQuit)

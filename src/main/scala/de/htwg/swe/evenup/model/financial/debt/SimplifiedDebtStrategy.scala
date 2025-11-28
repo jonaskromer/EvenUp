@@ -3,6 +3,7 @@ package de.htwg.swe.evenup.model.financial.debt
 import de.htwg.swe.evenup.model.{Group, Person}
 
 class SimplifiedDebtStrategy extends DebtCalculationStrategy:
+
   /*
   TODO: create a simplified Debt calculation
   Example:
@@ -10,7 +11,7 @@ class SimplifiedDebtStrategy extends DebtCalculationStrategy:
     - Bob owes Carlos 10€
 
     -> Alice owes Carlos 10€
-    */
+   */
   override def calculateDebts(group: Group): List[Debt] =
     val balances = calculateBalances(group)
 
@@ -27,7 +28,7 @@ class SimplifiedDebtStrategy extends DebtCalculationStrategy:
     val processedPairs = scala.collection.mutable.Set[(Person, Person)]()
 
     debtMap.flatMap { case ((from, to), amount) =>
-      val pair = (from, to)
+      val pair        = (from, to)
       val reversePair = (to, from)
 
       if !processedPairs.contains(pair) && !processedPairs.contains(reversePair) then
@@ -35,14 +36,10 @@ class SimplifiedDebtStrategy extends DebtCalculationStrategy:
         processedPairs.add(reversePair)
 
         val reverseAmount = debtMap.getOrElse(reversePair, 0.0)
-        val netAmount = amount - reverseAmount
+        val netAmount     = amount - reverseAmount
 
-        if netAmount > 0 then
-          Some(Debt(from = from, to = to, amount = netAmount))
-        else if netAmount < 0 then
-          Some(Debt(from = to, to = from, amount = -netAmount))
-        else
-          None
-      else
-        None
+        if netAmount > 0 then Some(Debt(from = from, to = to, amount = netAmount))
+        else if netAmount < 0 then Some(Debt(from = to, to = from, amount = -netAmount))
+        else None
+      else None
     }.toList

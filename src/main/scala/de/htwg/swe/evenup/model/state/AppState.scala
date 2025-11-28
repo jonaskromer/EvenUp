@@ -5,8 +5,8 @@ import de.htwg.swe.evenup.control.Controller
 trait AppState:
   def execute(controller: Controller): Unit
 
-  def canLogin: Boolean             = false
-  def canLogout: Boolean            = true
+  def canLogin: Boolean  = false
+  def canLogout: Boolean = true
 
   def canAddGroup: Boolean
   def canRemoveGroup: Boolean
@@ -30,4 +30,3 @@ trait AppState:
   def canQuit: Boolean     = true
 
   def canGoToMainMenu: Boolean = true
-

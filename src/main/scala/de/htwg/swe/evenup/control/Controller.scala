@@ -7,8 +7,8 @@ import de.htwg.swe.evenup.model.Person
 import de.htwg.swe.evenup.model.financial.Expense
 import de.htwg.swe.evenup.model.Date
 import de.htwg.swe.evenup.model.Share
-import de.htwg.swe.evenup.model.financial.{Expense, Transaction, ExpenseBuilder}
-import de.htwg.swe.evenup.model.financial.debt.{NormalDebtStrategy, SimplifiedDebtStrategy, Debt}
+import de.htwg.swe.evenup.model.financial.{Expense, ExpenseBuilder, Transaction}
+import de.htwg.swe.evenup.model.financial.debt.{Debt, NormalDebtStrategy, SimplifiedDebtStrategy}
 import de.htwg.swe.evenup.model.state.*
 
 enum ControllerEvent extends ObservableEvent:
@@ -191,6 +191,7 @@ class Controller(var app: App) extends Observable {
               ControllerEvent.AddExpense(AddExpenseResult.Success, newExpense)
             )
       case None => println("No active group.")
+
   /*
   def newTransaction(
     amount: Double,
@@ -220,4 +221,5 @@ class Controller(var app: App) extends Observable {
             notifyObservers(ControllerEvent.SwitchStrategy("Simplified"))
           case _ => println("No such strategy.")
       case None => println("No active group.")
+
 }

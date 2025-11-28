@@ -1,7 +1,12 @@
 package de.htwg.swe.evenup.model
 
 import de.htwg.swe.evenup.model.Person
-import de.htwg.swe.evenup.model.financial.debt.{DebtCalculationStrategy, SimplifiedDebtStrategy, NormalDebtStrategy, Debt}
+import de.htwg.swe.evenup.model.financial.debt.{
+  Debt,
+  DebtCalculationStrategy,
+  NormalDebtStrategy,
+  SimplifiedDebtStrategy
+}
 import de.htwg.swe.evenup.model.financial.{Expense, Transaction}
 
 final case class Group(
@@ -50,5 +55,4 @@ final case class Group(
 
   def changeDebtCalculationStrategy(debtstrategy: DebtCalculationStrategy): Group = copy(debtstrategy = debtstrategy)
 
-  def calculateDebt(): List[Debt] =
-    debtstrategy.calculateDebts(this)
+  def calculateDebt(): List[Debt] = debtstrategy.calculateDebts(this)

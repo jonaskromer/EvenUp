@@ -7,6 +7,9 @@ import java.io.{ByteArrayOutputStream, PrintStream}
 
 import de.htwg.swe.evenup.control._
 import de.htwg.swe.evenup.model._
+import de.htwg.swe.evenup.model.financial.Expense
+import de.htwg.swe.evenup.model.state.MainMenuState
+import de.htwg.swe.evenup.model.financial.debt.NormalDebtStrategy
 import de.htwg.swe.evenup.util.ObservableEvent
 
 class TuiSpec extends AnyWordSpec with Matchers:
@@ -14,15 +17,15 @@ class TuiSpec extends AnyWordSpec with Matchers:
   "Tui" should {
 
     "print welcome message on init" in {
-      val controller = new Controller(App(Nil, None, None))
+      val controller = new Controller(App(Nil, None, None, MainMenuState()))
       val tui        = new Tui(controller)
       tui.spacer.length should be > 0
     }
 
     "process new group input" in {
-      val controller = new Controller(App(Nil, None, None))
+      val controller = new Controller(App(Nil, None, None, MainMenuState()))
       val tui        = new Tui(controller)
-      val group      = Group("TestGroup", Nil, Nil, Nil)
+      val group      = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
       val msg        = tui.addGroupHandler(
         ControllerEvent.AddGroup(AddGroupResult.Success, group)
       )
@@ -30,8 +33,8 @@ class TuiSpec extends AnyWordSpec with Matchers:
     }
 
     "process add user input" in {
-      val group      = Group("TestGroup", Nil, Nil, Nil)
-      val controller = new Controller(App(List(group), None, Some(group)))
+      val group      = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
+      val controller = new Controller(App(List(group), None, Some(group), MainMenuState()))
       val tui        = new Tui(controller)
       val user       = Person("Alice")
       val msg        = tui.addUserToGroupHandler(
@@ -43,8 +46,8 @@ class TuiSpec extends AnyWordSpec with Matchers:
     "handle add expense with shares" in {
       val alice      = Person("Alice")
       val bob        = Person("Bob")
-      val group      = Group("Trip", List(alice, bob), Nil, Nil)
-      val controller = new Controller(App(List(group), None, Some(group)))
+      val group      = Group("Trip", List(alice, bob), Nil, Nil, NormalDebtStrategy())
+      val controller = new Controller(App(List(group), None, Some(group), MainMenuState()))
       val tui        = new Tui(controller)
       val shares     = List(Share(alice, 20.0), Share(bob, 10.0))
       val expense    = Expense("Dinner", 30.0, Date(1, 1, 2025), alice, shares)
@@ -55,13 +58,13 @@ class TuiSpec extends AnyWordSpec with Matchers:
     }
 
     "handle unknown command" in {
-      val controller = new Controller(App(Nil, None, None))
+      val controller = new Controller(App(Nil, None, None, MainMenuState()))
       val tui        = new Tui(controller)
       noException should be thrownBy tui.processInput(":unknown")
     }
 
     "print help correctly" in {
-      val app        = App(Nil, None, None)
+      val app        = App(Nil, None, None, MainMenuState())
       val controller = new Controller(app)
       val tui        = new Tui(controller)
 
@@ -79,9 +82,9 @@ class TuiSpec extends AnyWordSpec with Matchers:
     "print full overview correctly" in {
       val alice      = Person("Alice")
       val bob        = Person("Bob")
-      val group1     = Group("Trip", List(alice, bob), Nil, Nil)
-      val group2     = Group("Party", List(alice), Nil, Nil)
-      val app        = App(List(group1, group2), None, None)
+      val group1     = Group("Trip", List(alice, bob), Nil, Nil, NormalDebtStrategy())
+      val group2     = Group("Party", List(alice), Nil, Nil, NormalDebtStrategy())
+      val app        = App(List(group1, group2), None, None, MainMenuState())
       val controller = new Controller(app)
       val tui        = new Tui(controller)
 
@@ -94,9 +97,9 @@ class TuiSpec extends AnyWordSpec with Matchers:
     }
 
     "print available groups correctly" in {
-      val group1     = Group("Trip", Nil, Nil, Nil)
-      val group2     = Group("Party", Nil, Nil, Nil)
-      val app        = App(List(group1, group2), None, None)
+      val group1     = Group("Trip", Nil, Nil, Nil, NormalDebtStrategy())
+      val group2     = Group("Party", Nil, Nil, Nil, NormalDebtStrategy())
+      val app        = App(List(group1, group2), None, None, MainMenuState())
       val controller = new Controller(app)
       val tui        = new Tui(controller)
 
@@ -109,8 +112,8 @@ class TuiSpec extends AnyWordSpec with Matchers:
 
     "print message when user is already added to group" in {
       val user       = Person("Alice")
-      val group      = Group("Trip", List(user), Nil, Nil)
-      val app        = App(List(group), None, Some(group))
+      val group      = Group("Trip", List(user), Nil, Nil, NormalDebtStrategy())
+      val app        = App(List(group), None, Some(group), MainMenuState())
       val controller = new Controller(app)
       val tui        = new Tui(controller)
 
@@ -126,7 +129,7 @@ class TuiSpec extends AnyWordSpec with Matchers:
 
     "print message when no active group exists" in {
       val user       = Person("Alice")
-      val app        = App(Nil, None, None)
+      val app        = App(Nil, None, None, MainMenuState())
       val controller = new Controller(app)
       val tui        = new Tui(controller)
 
@@ -148,7 +151,7 @@ class TuiSpec extends AnyWordSpec with Matchers:
         Person("Alice"),
         Nil
       )
-      val app        = App(Nil, None, None)
+      val app        = App(Nil, None, None, MainMenuState())
       val controller = new Controller(app)
       val tui        = new Tui(controller)
 
@@ -170,7 +173,7 @@ class TuiSpec extends AnyWordSpec with Matchers:
         Person("Alice"),
         Nil
       )
-      val app        = App(Nil, None, None)
+      val app        = App(Nil, None, None, MainMenuState())
       val controller = new Controller(app)
       val tui        = new Tui(controller)
 
@@ -191,7 +194,7 @@ class TuiSpec extends AnyWordSpec with Matchers:
         Person("Alice"),
         Nil
       )
-      val app        = App(Nil, None, None)
+      val app        = App(Nil, None, None, MainMenuState())
       val controller = new Controller(app)
       val tui        = new Tui(controller)
 
@@ -214,7 +217,7 @@ class TuiSpec extends AnyWordSpec with Matchers:
         alice,
         Nil
       )
-      val app        = App(Nil, None, None)
+      val app        = App(Nil, None, None, MainMenuState())
       val controller = new Controller(app)
       val tui        = new Tui(controller)
 
@@ -231,8 +234,8 @@ class TuiSpec extends AnyWordSpec with Matchers:
   "gotoGroupHandler" should {
 
     "print message when group is successfully set" in {
-      val group      = Group("Trip", Nil, Nil, Nil)
-      val app        = App(List(group), None, Some(group))
+      val group      = Group("Trip", Nil, Nil, Nil, NormalDebtStrategy())
+      val app        = App(List(group), None, Some(group), MainMenuState())
       val controller = new Controller(app)
       val tui        = new Tui(controller)
 
@@ -244,8 +247,8 @@ class TuiSpec extends AnyWordSpec with Matchers:
     }
 
     "print message when group is not found" in {
-      val group      = Group("Holiday", Nil, Nil, Nil)
-      val app        = App(Nil, None, None)
+      val group      = Group("Holiday", Nil, Nil, Nil, NormalDebtStrategy())
+      val app        = App(Nil, None, None, MainMenuState())
       val controller = new Controller(app)
       val tui        = new Tui(controller)
 
@@ -260,7 +263,7 @@ class TuiSpec extends AnyWordSpec with Matchers:
   "Tui.processInput" should {
 
     "call printHelp when input is help key" in {
-      val app        = App(Nil, None, None)
+      val app        = App(Nil, None, None, MainMenuState())
       val controller = new Controller(app)
       val tui        = new Tui(controller)
 
@@ -274,7 +277,7 @@ class TuiSpec extends AnyWordSpec with Matchers:
     }
 
     "call controller.quit when input is quit key" in {
-      val app        = App(Nil, None, None)
+      val app        = App(Nil, None, None, MainMenuState())
       var quitCalled = 0
 
       val controllerStub =
@@ -291,7 +294,7 @@ class TuiSpec extends AnyWordSpec with Matchers:
     }
 
     "call controller.gotoMainMenu when input is MainMenu key" in {
-      val app            = App(Nil, None, None)
+      val app            = App(Nil, None, None, MainMenuState())
       var mainMenuCalled = false
 
       val controllerStub =
@@ -306,7 +309,7 @@ class TuiSpec extends AnyWordSpec with Matchers:
     }
 
     "call controller.gotoGroup when input is gotoGroup key" in {
-      val app                            = App(Nil, None, None)
+      val app                            = App(Nil, None, None, MainMenuState())
       var gotoGroupCalled: Option[Group] = None
 
       val controllerStub =
@@ -322,7 +325,7 @@ class TuiSpec extends AnyWordSpec with Matchers:
     }
 
     "call controller.addGroup when input is newGroup key" in {
-      val app                           = App(Nil, None, None)
+      val app                           = App(Nil, None, None, MainMenuState())
       var addGroupCalled: Option[Group] = None
 
       val controllerStub =
@@ -338,7 +341,7 @@ class TuiSpec extends AnyWordSpec with Matchers:
     }
 
     "call controller.addUserToGroup for each person when input is addUserToGroup key" in {
-      val app                      = App(Nil, None, None)
+      val app                      = App(Nil, None, None, MainMenuState())
       var addedUsers: List[Person] = Nil
 
       val controllerStub =
@@ -353,7 +356,7 @@ class TuiSpec extends AnyWordSpec with Matchers:
     }
 
     "call controller.addExpenseToGroup when input is addExpense key" in {
-      val app                                 = App(Nil, None, None)
+      val app                                 = App(Nil, None, None, MainMenuState())
       var capturedDescription: String         = ""
       var capturedPaidBy: Person              = null
       var capturedAmount: Double              = 0.0
@@ -389,8 +392,8 @@ class TuiSpec extends AnyWordSpec with Matchers:
 
     "return formatted string with spacer when active group exists" in {
       val alice      = Person("Alice")
-      val group      = Group("Trip", List(alice), Nil, Nil)
-      val app        = App(List(group), None, Some(group))
+      val group      = Group("Trip", List(alice), Nil, Nil, NormalDebtStrategy())
+      val app        = App(List(group), None, Some(group), MainMenuState())
       val controller = new Controller(app)
       val tui        = new Tui(controller)
 
@@ -401,7 +404,7 @@ class TuiSpec extends AnyWordSpec with Matchers:
     }
 
     "return empty string when no active group exists" in {
-      val app        = App(Nil, None, None)
+      val app        = App(Nil, None, None, MainMenuState())
       val controller = new Controller(app)
       val tui        = new Tui(controller)
 
@@ -414,7 +417,7 @@ class TuiSpec extends AnyWordSpec with Matchers:
   "Tui.update" should {
 
     "handle MainMenu event and print available groups" in {
-      val app        = App(Nil, None, None)
+      val app        = App(Nil, None, None, MainMenuState())
       val controller = new Controller(app)
       val tui        = new Tui(controller)
 
@@ -427,7 +430,7 @@ class TuiSpec extends AnyWordSpec with Matchers:
     }
 
     "handle Quit event and print Goodbye!" in {
-      val app        = App(Nil, None, None)
+      val app        = App(Nil, None, None, MainMenuState())
       val controller = new Controller(app)
       val tui        = new Tui(controller)
 
@@ -440,7 +443,7 @@ class TuiSpec extends AnyWordSpec with Matchers:
     }
 
     "handle unhandled event" in {
-      val app        = App(Nil, None, None)
+      val app        = App(Nil, None, None, MainMenuState())
       val controller = new Controller(app)
       val tui        = new Tui(controller)
 

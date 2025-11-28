@@ -5,6 +5,8 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 import de.htwg.swe.evenup.model._
+import de.htwg.swe.evenup.model.state.MainMenuState
+import de.htwg.swe.evenup.model.financial.debt.NormalDebtStrategy
 import de.htwg.swe.evenup.control._
 import de.htwg.swe.evenup.util._
 
@@ -15,7 +17,7 @@ class ControllerSpec extends AnyWordSpec with Matchers:
   "Controller" should {
 
     "add a group and notify AddGroup event" in:
-      val app        = App(Nil, None, None)
+      val app        = App(Nil, None, None, MainMenuState())
       val controller = Controller(app)
 
       val events = ListBuffer.empty[ControllerEvent]
@@ -25,7 +27,7 @@ class ControllerSpec extends AnyWordSpec with Matchers:
         )
       })
 
-      val group = Group("Trip", List(Person("John")), Nil, Nil)
+      val group = Group("Trip", List(Person("John")), Nil, Nil, NormalDebtStrategy())
       controller.addGroup(group)
 
       events.head shouldBe ControllerEvent.AddGroup(
@@ -36,8 +38,8 @@ class ControllerSpec extends AnyWordSpec with Matchers:
 
     "goto existing group and notify GotoGroup event" in:
       val john       = Person("John")
-      val group      = Group("Trip", List(john), Nil, Nil)
-      val app        = App(List(group), None, None)
+      val group      = Group("Trip", List(john), Nil, Nil, NormalDebtStrategy())
+      val app        = App(List(group), None, None, MainMenuState())
       val controller = Controller(app)
 
       val events = ListBuffer.empty[ControllerEvent]
@@ -56,7 +58,7 @@ class ControllerSpec extends AnyWordSpec with Matchers:
       controller.app.active_group.get shouldBe group
 
     "goto non-existing group and notify GroupNotFound" in:
-      val app        = App(Nil, None, None)
+      val app        = App(Nil, None, None, MainMenuState())
       val controller = Controller(app)
 
       val events = ListBuffer.empty[ControllerEvent]
@@ -66,7 +68,7 @@ class ControllerSpec extends AnyWordSpec with Matchers:
         )
       })
 
-      val group = Group("Trip", Nil, Nil, Nil)
+      val group = Group("Trip", Nil, Nil, Nil, NormalDebtStrategy())
       controller.gotoGroup(group)
 
       events.head shouldBe ControllerEvent.GotoGroup(
@@ -78,8 +80,8 @@ class ControllerSpec extends AnyWordSpec with Matchers:
     "add user to group and notify Success" in:
       val john       = Person("John")
       val jane       = Person("Jane")
-      val group      = Group("Trip", List(john), Nil, Nil)
-      val app        = App(List(group), None, Some(group))
+      val group      = Group("Trip", List(john), Nil, Nil, NormalDebtStrategy())
+      val app        = App(List(group), None, Some(group), MainMenuState())
       val controller = Controller(app)
 
       val events = ListBuffer.empty[ControllerEvent]
@@ -99,8 +101,8 @@ class ControllerSpec extends AnyWordSpec with Matchers:
 
     "not add a user twice and notify UserAlreadyAdded" in:
       val john       = Person("John")
-      val group      = Group("Trip", List(john), Nil, Nil)
-      val app        = App(List(group), None, Some(group))
+      val group      = Group("Trip", List(john), Nil, Nil, NormalDebtStrategy())
+      val app        = App(List(group), None, Some(group), MainMenuState())
       val controller = Controller(app)
 
       val events = ListBuffer.empty[ControllerEvent]
@@ -121,8 +123,8 @@ class ControllerSpec extends AnyWordSpec with Matchers:
     "add an expense with shares and notify Success" in:
       val john       = Person("John")
       val jane       = Person("Jane")
-      val group      = Group("Trip", List(john, jane), Nil, Nil)
-      val app        = App(List(group), None, Some(group))
+      val group      = Group("Trip", List(john, jane), Nil, Nil, NormalDebtStrategy())
+      val app        = App(List(group), None, Some(group), MainMenuState())
       val controller = Controller(app)
 
       val events = ListBuffer.empty[ControllerEvent]
@@ -148,8 +150,8 @@ class ControllerSpec extends AnyWordSpec with Matchers:
     "add an expense without shares and distribute evenly" in:
       val john       = Person("John")
       val jane       = Person("Jane")
-      val group      = Group("Trip", List(john, jane), Nil, Nil)
-      val app        = App(List(group), None, Some(group))
+      val group      = Group("Trip", List(john, jane), Nil, Nil, NormalDebtStrategy())
+      val app        = App(List(group), None, Some(group), MainMenuState())
       val controller = Controller(app)
 
       val events = ListBuffer.empty[ControllerEvent]
@@ -168,18 +170,18 @@ class ControllerSpec extends AnyWordSpec with Matchers:
         case _ => fail("Expected AddExpenseSuccess event")
 
     "return all groups" in:
-      val group1     = Group("Trip", Nil, Nil, Nil)
-      val group2     = Group("Party", Nil, Nil, Nil)
-      val app        = App(List(group1, group2), None, None)
+      val group1     = Group("Trip", Nil, Nil, Nil, NormalDebtStrategy())
+      val group2     = Group("Party", Nil, Nil, Nil, NormalDebtStrategy())
+      val app        = App(List(group1, group2), None, None, MainMenuState())
       val controller = new Controller(app)
       controller.allGroups should contain theSameElementsAs List(group1, group2)
 
     "return all distinct users" in:
       val alice      = Person("Alice")
       val bob        = Person("Bob")
-      val group1     = Group("Trip", List(alice, bob), Nil, Nil)
-      val group2     = Group("Party", List(bob), Nil, Nil)
-      val app        = App(List(group1, group2), None, None)
+      val group1     = Group("Trip", List(alice, bob), Nil, Nil, NormalDebtStrategy())
+      val group2     = Group("Party", List(bob), Nil, Nil, NormalDebtStrategy())
+      val app        = App(List(group1, group2), None, None, MainMenuState())
       val controller = new Controller(app)
       controller.allUsers should contain theSameElementsAs List(alice, bob)
 
@@ -195,7 +197,7 @@ class ControllerSpec extends AnyWordSpec with Matchers:
                 case ControllerEvent.MainMenu => true
                 case _                        => false
 
-      val controller = new Controller(App(Nil, None, None))
+      val controller = new Controller(App(Nil, None, None, MainMenuState()))
       controller.add(observer)
       controller.gotoMainMenu
       notified shouldBe true
@@ -214,7 +216,7 @@ class ControllerSpec extends AnyWordSpec with Matchers:
 
       // Subclass Controller to override System.exit
       val controller =
-        new Controller(App(Nil, None, None)) {
+        new Controller(App(Nil, None, None, MainMenuState())) {
           override def quit: Unit = notifyObservers(
             ControllerEvent.Quit
           ) // skip System.exit
@@ -226,8 +228,8 @@ class ControllerSpec extends AnyWordSpec with Matchers:
 
     "notify Success when gotoGroup on non-empty group" in:
       val user                                   = Person("Alice")
-      val group                                  = Group("Trip", List(user, Person("Bob")), Nil, Nil)
-      val app                                    = App(List(group), None, None)
+      val group                                  = Group("Trip", List(user, Person("Bob")), Nil, Nil, NormalDebtStrategy())
+      val app                                    = App(List(group), None, None, MainMenuState())
       var notifiedEvent: Option[ControllerEvent] = None
 
       val controller = new Controller(app)
@@ -246,7 +248,7 @@ class ControllerSpec extends AnyWordSpec with Matchers:
 
     "notify NoActiveGroup when adding user without active group" in:
       val user                                   = Person("Alice")
-      val controller                             = new Controller(App(Nil, None, None))
+      val controller                             = new Controller(App(Nil, None, None, MainMenuState()))
       var notifiedEvent: Option[ControllerEvent] = None
 
       val observer =
@@ -263,8 +265,8 @@ class ControllerSpec extends AnyWordSpec with Matchers:
       )
 
     "notify PaidByNotFound when adding expense with invalid payer" in:
-      val group                                  = Group("Trip", List(Person("Bob")), Nil, Nil)
-      val app                                    = App(List(group), None, Some(group))
+      val group                                  = Group("Trip", List(Person("Bob")), Nil, Nil, NormalDebtStrategy())
+      val app                                    = App(List(group), None, Some(group), MainMenuState())
       var notifiedEvent: Option[ControllerEvent] = None
 
       val controller = new Controller(app)
@@ -290,8 +292,8 @@ class ControllerSpec extends AnyWordSpec with Matchers:
     "correctly adjust remainder shares when dividing expense among members" in:
       val alice                                  = Person("Alice")
       val bob                                    = Person("Bob")
-      val group                                  = Group("Trip", List(alice, bob), Nil, Nil)
-      val app                                    = App(List(group), None, Some(group))
+      val group                                  = Group("Trip", List(alice, bob), Nil, Nil, NormalDebtStrategy())
+      val app                                    = App(List(group), None, Some(group), MainMenuState())
       var notifiedEvent: Option[ControllerEvent] = None
 
       val controller = new Controller(app)
@@ -314,15 +316,15 @@ class ControllerSpec extends AnyWordSpec with Matchers:
         case _ => fail("Expected Success expense event")
 
     "handle no active group on addExpense" in:
-      val controller = new Controller(App(Nil, None, None))
+      val controller = new Controller(App(Nil, None, None, MainMenuState()))
       controller.addExpenseToGroup("Dinner", Person("Alice"), 50.0)
       succeed
 
     "correctly assign remainder to first member when dividing expense" in:
       val alice                                  = Person("Alice")
       val bob                                    = Person("Bob")
-      val group                                  = Group("Trip", List(alice, bob), Nil, Nil)
-      val app                                    = App(List(group), None, Some(group))
+      val group                                  = Group("Trip", List(alice, bob), Nil, Nil, NormalDebtStrategy())
+      val app                                    = App(List(group), None, Some(group), MainMenuState())
       var notifiedEvent: Option[ControllerEvent] = None
 
       val controller = new Controller(app)

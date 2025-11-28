@@ -37,4 +37,25 @@ class SimplifiedDebtStrategySpec extends AnyWordSpec with Matchers:
       val debts = balancedGroup.debtstrategy.calculateDebts(balancedGroup)
       debts shouldBe empty
     }
+
+    "invert debt when netAmount is negative" in {
+      val alice = Person("Alice")
+      val bob   = Person("Bob")
+
+      // Alice owes Bob 10, Bob owes Alice 20 => netAmount = -10, should invert
+      val expense1 = Expense("Expense1", 10.0, Date(1,1,2025), alice, List(Share(bob, 10.0)))
+      val expense2 = Expense("Expense2", 20.0, Date(2,1,2025), bob, List(Share(alice, 20.0)))
+
+      val group = Group("TestGroup", List(alice, bob), List(expense1, expense2), List(), SimplifiedDebtStrategy())
+
+      val strategy = group.debtstrategy
+      val debts = strategy.calculateDebts(group)
+
+      debts should have size 1
+      val debt = debts.head
+
+      debt.from shouldBe alice
+      debt.to shouldBe bob
+      debt.amount shouldBe 10.0
+    }
   }

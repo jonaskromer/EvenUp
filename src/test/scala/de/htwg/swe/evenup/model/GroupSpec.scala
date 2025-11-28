@@ -3,6 +3,7 @@ package de.htwg.swe.evenup.model
 import org.scalatest.wordspec.AnyWordSpec
 import de.htwg.swe.evenup.model.financial.{Expense, Transaction}
 import de.htwg.swe.evenup.model.financial.debt.NormalDebtStrategy
+import org.scalatest.matchers.should.Matchers
 
 class GroupSpec extends AnyWordSpec with Matchers:
 

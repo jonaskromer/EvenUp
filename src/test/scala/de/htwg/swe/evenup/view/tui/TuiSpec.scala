@@ -14,6 +14,8 @@ import de.htwg.swe.evenup.util.ObservableEvent
 import de.htwg.swe.evenup.model.state.MainMenuState
 import de.htwg.swe.evenup.model.financial.debt.NormalDebtStrategy
 import de.htwg.swe.evenup.model.financial.Expense
+import de.htwg.swe.evenup.model.financial.debt.Debt
+import de.htwg.swe.evenup.model.financial.debt.SimplifiedDebtStrategy
 
 class TuiSpec extends AnyWordSpec with Matchers:
 
@@ -467,5 +469,47 @@ class TuiSpec extends AnyWordSpec with Matchers:
       }
 
       out.toString should include("Unhandled event")
+    }
+  }
+  "Tui debtHandler" should {
+
+    val alice = Person("Alice")
+    val bob   = Person("Bob")
+    val group = Group("Trip", List(alice, bob), Nil, Nil, NormalDebtStrategy())
+    val app   = App(List(group), None, Some(group), null)
+    val controller = Controller(app)
+    val tui = new Tui(controller)
+
+    "print message for empty debts" in {
+      val outputStream = new ByteArrayOutputStream()
+      Console.withOut(new PrintStream(outputStream)) {
+        tui.update(ControllerEvent.CalculateDebts(Nil))
+      }
+
+      val output = outputStream.toString
+      output should include("No debts to settle. Group is Evend Up!")
+    }
+
+    "print calculated debts correctly" in {
+      val debt = Debt(from = bob, to = alice, amount = 20.0)
+
+      val outputStream = new ByteArrayOutputStream()
+      Console.withOut(new PrintStream(outputStream)) {
+        tui.update(ControllerEvent.CalculateDebts(List(debt)))
+      }
+
+      val output = outputStream.toString
+      output should include("Calculated debts:")
+      output should include(debt.toString)
+    }
+
+    "print strategy switch message correctly" in {
+      val outputStream = new ByteArrayOutputStream()
+      Console.withOut(new PrintStream(outputStream)) {
+        tui.update(ControllerEvent.SwitchStrategy("Simplified"))
+      }
+
+      val output = outputStream.toString
+      output should include("Switched to Simplified debt calculation strategy.")
     }
   }

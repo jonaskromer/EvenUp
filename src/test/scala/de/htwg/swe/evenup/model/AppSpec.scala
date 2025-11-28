@@ -5,6 +5,7 @@ import org.scalatest.wordspec.AnyWordSpec
 import de.htwg.swe.evenup.model.{App, Group, Person}
 import de.htwg.swe.evenup.model.state.MainMenuState
 import de.htwg.swe.evenup.model.financial.debt.NormalDebtStrategy
+import org.scalatest.matchers.should.Matchers
 
 class AppSpec extends AnyWordSpec with Matchers:
 

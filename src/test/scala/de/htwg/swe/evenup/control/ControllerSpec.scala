@@ -229,9 +229,9 @@ class ControllerSpec extends AnyWordSpec with Matchers:
       notified shouldBe true
 
     "notify Success when gotoGroup on non-empty group" in:
-      val user                                   = Person("Alice")
-      val group                                  = Group("Trip", List(user, Person("Bob")), Nil, Nil, NormalDebtStrategy())
-      val app                                    = App(List(group), None, None, MainMenuState())
+      val user  = Person("Alice")
+      val group = Group("Trip", List(user, Person("Bob")), Nil, Nil, NormalDebtStrategy())
+      val app   = App(List(group), None, None, MainMenuState())
       var notifiedEvent: Option[ControllerEvent] = None
 
       val controller = new Controller(app)

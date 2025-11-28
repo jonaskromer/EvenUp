@@ -9,7 +9,7 @@ class DebtSpec extends AnyWordSpec with Matchers:
   "A Debt" should {
 
     val alice = Person("Alice")
-    val bob = Person("Bob")
+    val bob   = Person("Bob")
 
     val debt = Debt(alice, bob, 50.0)
 

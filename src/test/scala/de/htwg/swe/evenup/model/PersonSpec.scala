@@ -18,7 +18,7 @@ class PersonSpec extends AnyWordSpec with Matchers:
     }
 
     "support equality by name" in {
-      val samePerson = Person("Alice")
+      val samePerson      = Person("Alice")
       val differentPerson = Person("Bob")
       person shouldBe samePerson
       person should not be differentPerson

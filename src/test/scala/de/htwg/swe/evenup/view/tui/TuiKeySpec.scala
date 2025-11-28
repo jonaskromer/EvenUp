@@ -45,8 +45,8 @@ class TuiKeysSpec extends AnyWordSpec with Matchers:
       keyMap(":q") shouldBe TuiKeys.quit
       keyMap(":l") shouldBe TuiKeys.login
 
-    val mainMenuState = MainMenuState()
-    val inGroupState = InGroupState()
+    val mainMenuState     = MainMenuState()
+    val inGroupState      = InGroupState()
     val inEmptyGroupState = InEmptyGroupState()
 
     "have correct keys, usage, and description" in {
@@ -87,5 +87,3 @@ class TuiKeysSpec extends AnyWordSpec with Matchers:
       allKeys.distinct.size shouldBe TuiKeys.values.size
     }
   }
-
-

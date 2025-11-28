@@ -4,7 +4,8 @@ import org.scalatest._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-import de.htwg.swe.evenup.model.{Person, Date, Share}
+import de.htwg.swe.evenup.model.{Date, Person, Share}
+
 class ExpenseSpec extends AnyWordSpec with Matchers:
 
   "The String of an expense should print as follows" in:

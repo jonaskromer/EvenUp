@@ -11,23 +11,23 @@ class AppStateSpec extends AnyWordSpec with Matchers:
 
   class TestState extends AppState:
     def execute(controller: Controller): Unit = ()
-    def canAddGroup: Boolean          = true
-    def canRemoveGroup: Boolean       = false
-    def canGotoGroup: Boolean         = true
+    def canAddGroup: Boolean                  = true
+    def canRemoveGroup: Boolean               = false
+    def canGotoGroup: Boolean                 = true
 
-    def canAddUser: Boolean           = false
-    def canRemoveUser: Boolean        = false
+    def canAddUser: Boolean    = false
+    def canRemoveUser: Boolean = false
 
-    def canAddExpense: Boolean        = true
-    def canRemoveExpense: Boolean     = false
-    def canEditExpense: Boolean       = true
+    def canAddExpense: Boolean    = true
+    def canRemoveExpense: Boolean = false
+    def canEditExpense: Boolean   = true
 
     def canAddTransaction: Boolean    = false
     def canRemoveTransaction: Boolean = false
     def canEditTransaction: Boolean   = false
 
-    def canCalculateDebts: Boolean    = true
-    def canSetStrategy: Boolean       = false
+    def canCalculateDebts: Boolean = true
+    def canSetStrategy: Boolean    = false
 
   "An AppState implementation" should {
 

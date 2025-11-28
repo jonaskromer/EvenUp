@@ -93,7 +93,6 @@ class TuiSpec extends AnyWordSpec with Matchers:
       }
     }
 
-
     "print full overview correctly" in {
       val alice      = Person("Alice")
       val bob        = Person("Bob")
@@ -471,14 +470,15 @@ class TuiSpec extends AnyWordSpec with Matchers:
       out.toString should include("Unhandled event")
     }
   }
+
   "Tui debtHandler" should {
 
-    val alice = Person("Alice")
-    val bob   = Person("Bob")
-    val group = Group("Trip", List(alice, bob), Nil, Nil, NormalDebtStrategy())
-    val app   = App(List(group), None, Some(group), null)
+    val alice      = Person("Alice")
+    val bob        = Person("Bob")
+    val group      = Group("Trip", List(alice, bob), Nil, Nil, NormalDebtStrategy())
+    val app        = App(List(group), None, Some(group), null)
     val controller = Controller(app)
-    val tui = new Tui(controller)
+    val tui        = new Tui(controller)
 
     "print message for empty debts" in {
       val outputStream = new ByteArrayOutputStream()

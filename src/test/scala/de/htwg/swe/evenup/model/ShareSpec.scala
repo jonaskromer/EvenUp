@@ -7,7 +7,7 @@ class ShareSpec extends AnyWordSpec with Matchers:
 
   "A Share" should {
 
-    val p1 = Person("Alice")
+    val p1    = Person("Alice")
     val share = Share(p1, 12.34)
 
     "store the correct person and amount" in {

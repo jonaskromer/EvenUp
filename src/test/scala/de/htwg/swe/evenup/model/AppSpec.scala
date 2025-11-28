@@ -36,8 +36,8 @@ class AppSpec extends AnyWordSpec with Matchers:
     val p_1         = Person("John")
     val g_1         = Group("Trip", List(p_1), List(), List(), NormalDebtStrategy())
     val g_1_updated = g_1.updateName("Trip") // same name, potentially updated members/expenses
-    val state   = App(List(g_1), None, None, MainMenuState())
-    val updated = state.updateGroup(g_1_updated)
+    val state       = App(List(g_1), None, None, MainMenuState())
+    val updated     = state.updateGroup(g_1_updated)
     updated.groups should contain(g_1_updated)
 
   "When updating a group that does not exist it should remain unchanged" in:

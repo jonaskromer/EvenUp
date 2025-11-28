@@ -2,15 +2,15 @@ package de.htwg.swe.evenup.model.financial
 
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
-import de.htwg.swe.evenup.model.{Person, Date, Share}
+import de.htwg.swe.evenup.model.{Date, Person, Share}
 
 class ExpenseBuilderSpec extends AnyWordSpec with Matchers:
 
   "An ExpenseBuilder" should {
 
-    val alice = Person("Alice")
-    val bob = Person("Bob")
-    val date = Date(1, 1, 2025)
+    val alice  = Person("Alice")
+    val bob    = Person("Bob")
+    val date   = Date(1, 1, 2025)
     val shares = List(Share(alice, 10.0), Share(bob, 20.0))
 
     "build an Expense with all fields set correctly" in {

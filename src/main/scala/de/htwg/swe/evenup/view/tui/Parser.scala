@@ -3,7 +3,7 @@ package de.htwg.swe.evenup.view.tui
 import scala.util.Try
 import scala.util.Success
 import scala.util.Failure
-import de.htwg.swe.evenup.model.Share
+import de.htwg.swe.evenup.model.financial.Share
 import de.htwg.swe.evenup.model.Person
 
 class Parser {

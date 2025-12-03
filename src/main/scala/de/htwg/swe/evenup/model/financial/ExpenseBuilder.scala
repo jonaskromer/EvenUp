@@ -1,6 +1,6 @@
 package de.htwg.swe.evenup.model.financial
 
-import de.htwg.swe.evenup.model.{Date, Person, Share}
+import de.htwg.swe.evenup.model.{Date, Person}
 
 class ExpenseBuilder:
   private var name: String        = "noexpensenameset"

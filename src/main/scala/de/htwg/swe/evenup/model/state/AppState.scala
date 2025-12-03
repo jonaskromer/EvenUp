@@ -1,6 +1,7 @@
 package de.htwg.swe.evenup.model.state
 
 import de.htwg.swe.evenup.control.Controller
+import scala.compiletime.ops.boolean
 
 trait AppState:
   def execute(controller: Controller): Unit
@@ -28,5 +29,7 @@ trait AppState:
 
   def canShowHelp: Boolean = true
   def canQuit: Boolean     = true
+  def canUndo: Boolean     = true
+  def canRedo: Boolean     = true
 
   def canGoToMainMenu: Boolean = true

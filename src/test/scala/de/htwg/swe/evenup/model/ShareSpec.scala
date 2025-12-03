@@ -2,6 +2,7 @@ package de.htwg.swe.evenup.model
 
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
+import de.htwg.swe.evenup.model.financial.Share
 
 class ShareSpec extends AnyWordSpec with Matchers:
 

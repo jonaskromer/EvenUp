@@ -41,5 +41,7 @@ enum TuiKeys(val key: String, val usage: String, val description: String, val al
 
   case help     extends TuiKeys(":h", "", "Help", _.canShowHelp)
   case quit     extends TuiKeys(":q", "", "Quit", _.canQuit)
+  case undo     extends TuiKeys(":undo", "", "Undo the latest action", _.canUndo)
+  case redo     extends TuiKeys(":redo", "", "Redo the latest undo action", _.canRedo)
   case MainMenu extends TuiKeys(":m", "", "Go into the main menu", _.canGoToMainMenu)
   case login    extends TuiKeys(":l", "<user name>", "Login", _.canLogin)

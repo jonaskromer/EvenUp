@@ -4,7 +4,7 @@ import org.scalatest._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-import de.htwg.swe.evenup.model.{Date, Person, Share}
+import de.htwg.swe.evenup.model.{Date, Person}
 
 class ExpenseSpec extends AnyWordSpec with Matchers:
 

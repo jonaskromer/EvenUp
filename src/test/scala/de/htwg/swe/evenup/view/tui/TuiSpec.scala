@@ -16,6 +16,7 @@ import de.htwg.swe.evenup.model.financial.debt.NormalDebtStrategy
 import de.htwg.swe.evenup.model.financial.Expense
 import de.htwg.swe.evenup.model.financial.debt.Debt
 import de.htwg.swe.evenup.model.financial.debt.SimplifiedDebtStrategy
+import de.htwg.swe.evenup.model.financial.Share
 
 class TuiSpec extends AnyWordSpec with Matchers:
 

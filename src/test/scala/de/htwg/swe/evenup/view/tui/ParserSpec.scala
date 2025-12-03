@@ -4,7 +4,8 @@ import org.scalatest._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-import de.htwg.swe.evenup.model.{Person, Share}
+import de.htwg.swe.evenup.model.Person
+import de.htwg.swe.evenup.model.financial.Share
 import java.io.PrintStream
 import java.io.ByteArrayOutputStream
 

@@ -14,7 +14,7 @@ final case class Group(
   members: List[Person],
   expenses: List[Expense],
   transactions: List[Transaction],
-  debtstrategy: DebtCalculationStrategy
+  debt_strategy: DebtCalculationStrategy
 ):
 
   override def toString(): String =
@@ -53,6 +53,8 @@ final case class Group(
     else
       this
 
-  def changeDebtCalculationStrategy(debtstrategy: DebtCalculationStrategy): Group = copy(debtstrategy = debtstrategy)
+  def updateDebtCalculationStrategy(strategy: DebtCalculationStrategy): Group = copy(debt_strategy = strategy)
 
-  def calculateDebt(): List[Debt] = debtstrategy.calculateDebts(this)
+  def calculateDebt(): List[Debt] = debt_strategy.calculateDebts(this)
+
+  def containsUser(user_name: String): Boolean = members.exists(_.name == user_name)

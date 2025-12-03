@@ -2,7 +2,7 @@ package de.htwg.swe.evenup.model.financial
 
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
-import de.htwg.swe.evenup.model.{Date, Person, Share}
+import de.htwg.swe.evenup.model.{Date, Person}
 
 class ExpenseBuilderSpec extends AnyWordSpec with Matchers:
 

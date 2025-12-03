@@ -23,6 +23,8 @@ final case class App(
 
   def updateActiveGroup(active_group: Option[Group]): App = copy(active_group = active_group)
 
-  def findGroup(group: Group): Option[Group] = groups.find(_.name == group.name)
-
   def updateAppState(state: AppState): App = copy(state = state)
+
+  def containsGroup(group_name: String): Boolean = groups.exists(_.name == group_name)
+
+  def getGroup(group_name: String): Option[Group] = groups.find(_.name == group_name)

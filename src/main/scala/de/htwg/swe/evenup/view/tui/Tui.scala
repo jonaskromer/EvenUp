@@ -75,19 +75,39 @@ class Tui(controller: Controller) extends Observer {
   def getActiveGroupString: String =
     controller.app.active_group match
       case Some(group) =>
-        Seq(
-          spacer,
-          group.toString,
-          spacer
-        ).mkString("\n")
+        val decoratedHeader =
+          new ColorDecorator(
+            new TextComponent(s"Active Group: ${group.name}"),
+            ConsoleColors.BRIGHT_CYAN
+          )
+        val decoratedGroup =
+          new HeaderFooterDecorator(
+            new ColorDecorator(
+              new BorderDecorator(
+                new TextComponent(group.toString)
+              ),
+              ConsoleColors.BRIGHT_GREEN
+            ),
+            header = Some(decoratedHeader.render)
+          )
+        decoratedGroup.render
       case None => ""
 
-  println("Welcome to EvenUp!")
+  val welcomeText = "Welcome to EvenUp!"
+  val instructionText = s"Start by adding a group with => ${TuiKeys.newGroup.key} <group name>"
 
-  println(
-    s"Start by adding a group with => ${TuiKeys.newGroup.key} <group name>"
-  )
+  val decoratedWelcome =
+    new HeaderFooterDecorator(
+      new ColorDecorator(
+        new BorderDecorator(
+          new TextComponent(welcomeText)
+        ),
+        ConsoleColors.BRIGHT_GREEN
+      ),
+      footer = Some(instructionText)
+    )
 
+  println(decoratedWelcome.render)
   print(">")
 
   val tuiStringBuilder = new TuiStringBuilder(controller)

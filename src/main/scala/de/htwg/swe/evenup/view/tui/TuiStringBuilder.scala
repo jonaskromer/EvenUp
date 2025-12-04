@@ -12,6 +12,8 @@ import de.htwg.swe.evenup.control.CalculateDebtsResult
 import de.htwg.swe.evenup.control.SetDebtStrategyResult
 import de.htwg.swe.evenup.model.Group
 import de.htwg.swe.evenup.control.Controller
+import de.htwg.swe.evenup.model.financial.debt.NormalDebtStrategy
+import de.htwg.swe.evenup.model.financial.debt.SimplifiedDebtStrategy
 
 class TuiStringBuilder(controller: Controller):
   val addGroupHandler: PartialFunction[EventResponse, String] =
@@ -66,7 +68,10 @@ class TuiStringBuilder(controller: Controller):
         s"Calculated debts:\n ${transactionStrings}"
     case EventResponse.CalculateDebts(CalculateDebtsResult.NoActiveGroup, debts) =>
       "Currently no active group is set."
-    case EventResponse.SetDebtStrategy(SetDebtStrategyResult.Success, strategy) => s"Switched to ${strategy} debt calculation strategy."
+    case EventResponse.SetDebtStrategy(SetDebtStrategyResult.Success, strategy: SimplifiedDebtStrategy) =>
+      s"Switched to simplified debt calculation strategy."
+    case EventResponse.SetDebtStrategy(SetDebtStrategyResult.Success, strategy: NormalDebtStrategy) =>
+      s"Switched to normal debt calculation strategy"
     case EventResponse.SetDebtStrategy(SetDebtStrategyResult.NoActiveGroup, strategy) => "No active group. Cannot set calculation strategy."
   val commandHandler: PartialFunction[EventResponse, String] =
     case EventResponse.Quit     => s"Goodbye!"

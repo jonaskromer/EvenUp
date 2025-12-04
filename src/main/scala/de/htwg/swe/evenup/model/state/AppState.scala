@@ -33,3 +33,4 @@ trait AppState:
   def canRedo: Boolean     = true
 
   def canGoToMainMenu: Boolean = true
+  def unsupportedKey: Boolean = false

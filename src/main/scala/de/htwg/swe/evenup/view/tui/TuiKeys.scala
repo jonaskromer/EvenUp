@@ -45,3 +45,4 @@ enum TuiKeys(val key: String, val usage: String, val description: String, val al
   case redo     extends TuiKeys(":redo", "", "Redo the latest undo action", _.canRedo)
   case MainMenu extends TuiKeys(":m", "", "Go into the main menu", _.canGoToMainMenu)
   case login    extends TuiKeys(":l", "<user name>", "Login", _.canLogin)
+  case unsupportedKey extends TuiKeys("","This key is not supported... yet :)","unsupportedKey", _.unsupportedKey)

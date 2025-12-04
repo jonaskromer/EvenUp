@@ -34,7 +34,7 @@ class DebtCalculationStrategySpec extends AnyWordSpec with Matchers:
     )
 
     "calculate balances correctly" in {
-      val strategy = group.debtstrategy
+      val strategy = group.debt_strategy
       val balances = strategy.calculateBalances(group)
 
       balances(alice) shouldBe 0.0     // Alice paid 30, owes 10+20=30

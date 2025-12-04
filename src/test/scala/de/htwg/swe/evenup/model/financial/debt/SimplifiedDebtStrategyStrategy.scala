@@ -21,7 +21,7 @@ class SimplifiedDebtStrategySpec extends AnyWordSpec with Matchers:
     val group = Group("Trip", List(alice, bob, charlie), List(expense1, expense2), List(), SimplifiedDebtStrategy())
 
     "calculate debts correctly" in {
-      val strategy = group.debtstrategy
+      val strategy = group.debt_strategy
       val debts    = strategy.calculateDebts(group)
 
       // Debts according to NormalDebtStrategy (direct debts, no simplification)
@@ -41,7 +41,7 @@ class SimplifiedDebtStrategySpec extends AnyWordSpec with Matchers:
         SimplifiedDebtStrategy()
       )
 
-      val debts = balancedGroup.debtstrategy.calculateDebts(balancedGroup)
+      val debts = balancedGroup.debt_strategy.calculateDebts(balancedGroup)
       debts shouldBe empty
     }
 
@@ -55,7 +55,7 @@ class SimplifiedDebtStrategySpec extends AnyWordSpec with Matchers:
 
       val group = Group("TestGroup", List(alice, bob), List(expense1, expense2), List(), SimplifiedDebtStrategy())
 
-      val strategy = group.debtstrategy
+      val strategy = group.debt_strategy
       val debts    = strategy.calculateDebts(group)
 
       debts should have size 1

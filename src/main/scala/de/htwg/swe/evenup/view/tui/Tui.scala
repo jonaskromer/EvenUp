@@ -65,7 +65,7 @@ class Tui(controller: Controller) extends Observer:
       case e: EventResponse if tuiStringBuilder.isDefined(e) =>
         print(
           Seq(
-            "\n",
+            "",
             tuiStringBuilder.handle(e),
             ">"
           ).mkString("\n")

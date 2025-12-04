@@ -52,14 +52,14 @@ class AppSpec extends AnyWordSpec with Matchers:
     val p_1   = Person("John")
     val g_1   = Group("Trip", List(p_1), List(), List(), NormalDebtStrategy())
     val state = App(List(g_1), None, None, MainMenuState())
-    state.findGroup(g_1) shouldBe Some(g_1)
+    state.getGroup("Trip") shouldBe Some(g_1)
 
   "When searching for a non-existing group it should return None" in:
     val p_1   = Person("John")
     val g_1   = Group("Trip", List(p_1), List(), List(), NormalDebtStrategy())
     val g_2   = Group("Party", List(p_1), List(), List(), NormalDebtStrategy())
     val state = App(List(g_1), None, None, MainMenuState())
-    state.findGroup(g_2) shouldBe None
+    state.getGroup("Party") shouldBe None
 
   "The active group should be updated correctly" in:
     val p_1      = Person("John")

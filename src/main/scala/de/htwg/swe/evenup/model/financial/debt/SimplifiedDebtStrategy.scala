@@ -10,6 +10,9 @@ class SimplifiedDebtStrategy extends DebtCalculationStrategy:
 
     -> Alice owes Carlos 10€
    */
+
+  override def toString(): String = "simplified"
+
   override def calculateDebts(group: Group): List[Debt] =
     val balances = calculateBalances(group)
     

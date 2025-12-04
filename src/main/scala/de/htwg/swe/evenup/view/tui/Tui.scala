@@ -90,79 +90,15 @@ class Tui(controller: Controller) extends Observer {
 
   print(">")
 
-  val addGroupHandler: PartialFunction[EventResponse, String] =
-    case EventResponse.AddGroup(AddGroupResult.Success, group)     => s"Added group ${group.name}"
-    case EventResponse.AddGroup(AddGroupResult.GroupExists, group) => s"The group ${group.name} already exists"
-
-  val gotoGroupHandler: PartialFunction[EventResponse, String] =
-    case EventResponse.GotoGroup(GotoGroupResult.Success, group)           => s"Set active group to ${group.name}"
-    case EventResponse.GotoGroup(GotoGroupResult.SuccessEmptyGroup, group) =>
-      s"The group ${group.name} is empty. Add some users..."
-    case EventResponse.GotoGroup(GotoGroupResult.GroupNotFound, group) => s"Unable to find group ${group.name}"
-
-  val addUserToGroupHandler: PartialFunction[EventResponse, String] =
-    case EventResponse.AddUserToGroup(AddUserToGroupResult.Success, user) =>
-      s"Added ${user.name} to ${controller.app.active_group.get.name}." // IS THIS VALID OR SHOULD I RETURN ALSO A GROUP???
-    case EventResponse.AddUserToGroup(
-          AddUserToGroupResult.UserAlreadyAdded,
-          user
-        ) =>
-      s"User ${user.name} already added to group ${controller.app.active_group.get.name}!"
-
-    case EventResponse.AddUserToGroup(
-          AddUserToGroupResult.NoActiveGroup,
-          user
-        ) =>
-      s"Cannot add ${user.name} because there is no active group!"
-
-  val expenseHandler: PartialFunction[EventResponse, String] =
-    case EventResponse.AddExpenseToGroup(AddExpenseToGroupResult.Success, expense) => s"Added expense ${expense}"
-    case EventResponse.AddExpenseToGroup(
-          AddExpenseToGroupResult.NoActiveGroup,
-          expense
-        ) =>
-      "Please first goto a group."
-    case EventResponse.AddExpenseToGroup(AddExpenseToGroupResult.SharesSumWrong, expense) =>
-      "The sum of the shares do not match with the sum of the expense."
-    case EventResponse.AddExpenseToGroup(
-          AddExpenseToGroupResult.SharesPersonNotFound,
-          expense
-        ) =>
-      s"Wrong user in shares."
-    case EventResponse.AddExpenseToGroup(AddExpenseToGroupResult.PaidByNotFound, expense) =>
-      s"Please first add ${expense.paid_by} to the group before using in expense."
-
-  val debtHandler: PartialFunction[EventResponse, String] =
-    case EventResponse.CalculateDebts(CalculateDebtsResult.Success, debts) =>
-      if debts.isEmpty then "No debts to settle. Group is Evend Up!"
-      else
-        val transactionStrings = debts.map(_.toString).mkString("\n ")
-        s"Calculated debts:\n ${transactionStrings}"
-    case EventResponse.CalculateDebts(CalculateDebtsResult.NoActiveGroup, debts) =>
-      "Currently no active group is set."
-    case EventResponse.SetDebtStrategy(SetDebtStrategyResult.Success, strategy) => s"Switched to ${strategy} debt calculation strategy."
-    case EventResponse.SetDebtStrategy(SetDebtStrategyResult.NoActiveGroup, strategy) => "No active group. Cannot set calculation strategy."
-  val commandHandler: PartialFunction[EventResponse, String] =
-    case EventResponse.Quit     => s"Goodbye!"
-    case EventResponse.MainMenu =>
-      s"Go to a group by using ${TuiKeys.gotoGroup.key} ${TuiKeys.gotoGroup.usage}\n${getAvailableGroupsString}"
-
-  val undoRedoHandler: PartialFunction[EventResponse, String] =
-    case EventResponse.Undo(UndoResult.Success, stack_size)    => s"Undo successfull. Remaining stack $stack_size"
-    case EventResponse.Undo(UndoResult.EmptyStack, stack_size) => s"Nothing to undo"
-    case EventResponse.Redo(RedoResult.Success, stack_size)    => s"Redo successfull. Remaining stack $stack_size"
-    case EventResponse.Redo(RedoResult.EmptyStack, stack_size) => s"Nothing to redo"
-
-  val handler: PartialFunction[EventResponse, String] =
-    addGroupHandler orElse gotoGroupHandler orElse expenseHandler orElse addUserToGroupHandler orElse debtHandler orElse commandHandler orElse undoRedoHandler
+  val tuiStringBuilder = new TuiStringBuilder(controller)
 
   override def update(event: ObservableEvent): Unit =
     event match
-      case e: EventResponse if handler.isDefinedAt(e) =>
+      case e: EventResponse if tuiStringBuilder.isDefined(e) =>
         print(
           Seq(
             ".\n.\n",
-            handler(e),
+            tuiStringBuilder.handle(e),
             getActiveGroupString,
             ">"
           ).mkString("\n")

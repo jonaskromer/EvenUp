@@ -12,23 +12,35 @@ import de.htwg.swe.evenup.control.CalculateDebtsResult
 import de.htwg.swe.evenup.control.SetDebtStrategyResult
 import de.htwg.swe.evenup.model.Group
 import de.htwg.swe.evenup.control.Controller
-import de.htwg.swe.evenup.model.financial.debt.NormalDebtStrategy
-import de.htwg.swe.evenup.model.financial.debt.SimplifiedDebtStrategy
+
 
 class TuiStringBuilder(controller: Controller):
+
+  def getActiveGroupString: String =
+    controller.app.active_group match
+      case Some(group) =>
+        new ColorDecorator(
+          new BorderDecorator(
+            new TextComponent(group.toString()),
+            "="
+          ),
+        ConsoleColors.BRIGHT_CYAN
+        ).render
+      case None => ""
+
   val addGroupHandler: PartialFunction[EventResponse, String] =
     case EventResponse.AddGroup(AddGroupResult.Success, group)     => s"Added group ${group.name}"
     case EventResponse.AddGroup(AddGroupResult.GroupExists, group) => s"The group ${group.name} already exists"
 
   val gotoGroupHandler: PartialFunction[EventResponse, String] =
-    case EventResponse.GotoGroup(GotoGroupResult.Success, group)           => s"Set active group to ${group.name}"
+    case EventResponse.GotoGroup(GotoGroupResult.Success, group)           => s"Set active group to ${group.name}\n${getActiveGroupString}"
     case EventResponse.GotoGroup(GotoGroupResult.SuccessEmptyGroup, group) =>
       s"The group ${group.name} is empty. Add some users..."
     case EventResponse.GotoGroup(GotoGroupResult.GroupNotFound, group) => s"Unable to find group ${group.name}"
 
   val addUserToGroupHandler: PartialFunction[EventResponse, String] =
     case EventResponse.AddUserToGroup(AddUserToGroupResult.Success, user, group) =>
-      s"Added ${user.name} to ${group.name}."
+      s"Added ${user.name} to ${group.name}\n${getActiveGroupString}"
     case EventResponse.AddUserToGroup(
           AddUserToGroupResult.UserAlreadyAdded,
           user,
@@ -44,7 +56,7 @@ class TuiStringBuilder(controller: Controller):
       s"Cannot add ${user.name} because there is no active group!"
 
   val expenseHandler: PartialFunction[EventResponse, String] =
-    case EventResponse.AddExpenseToGroup(AddExpenseToGroupResult.Success, expense) => s"Added expense ${expense}"
+    case EventResponse.AddExpenseToGroup(AddExpenseToGroupResult.Success, expense) => s"Added expense ${expense}\n${getActiveGroupString}"
     case EventResponse.AddExpenseToGroup(
           AddExpenseToGroupResult.NoActiveGroup,
           expense
@@ -66,32 +78,29 @@ class TuiStringBuilder(controller: Controller):
       else
         val transactionStrings = debts.map(_.toString).mkString("\n ")
         s"Calculated debts:\n ${transactionStrings}"
-    case EventResponse.CalculateDebts(CalculateDebtsResult.NoActiveGroup, debts) =>
-      "Currently no active group is set."
-    case EventResponse.SetDebtStrategy(SetDebtStrategyResult.Success, strategy: SimplifiedDebtStrategy) =>
-      s"Switched to simplified debt calculation strategy."
-    case EventResponse.SetDebtStrategy(SetDebtStrategyResult.Success, strategy: NormalDebtStrategy) =>
-      s"Switched to normal debt calculation strategy"
-    case EventResponse.SetDebtStrategy(SetDebtStrategyResult.NoActiveGroup, strategy) => "No active group. Cannot set calculation strategy."
+    case EventResponse.CalculateDebts(CalculateDebtsResult.NoActiveGroup, debts) => "Currently no active group is set."
+    case EventResponse.SetDebtStrategy(SetDebtStrategyResult.Success, strategy)  =>
+      s"Switched to ${strategy} debt calculation strategy."
+    case EventResponse.SetDebtStrategy(SetDebtStrategyResult.NoActiveGroup, strategy) =>
+      "No active group. Cannot set calculation strategy."
+
   val commandHandler: PartialFunction[EventResponse, String] =
     case EventResponse.Quit     => s"Goodbye!"
     case EventResponse.MainMenu =>
       s"Go to a group by using ${TuiKeys.gotoGroup.key} ${TuiKeys.gotoGroup.usage}\n${getAvailableGroupsString}"
 
   val undoRedoHandler: PartialFunction[EventResponse, String] =
-    case EventResponse.Undo(UndoResult.Success, stack_size)    => s"Undo successfull. Remaining stack $stack_size"
+    case EventResponse.Undo(UndoResult.Success, stack_size)    => s"Undo successfull. Remaining stack $stack_size\n${getActiveGroupString}"
     case EventResponse.Undo(UndoResult.EmptyStack, stack_size) => s"Nothing to undo"
-    case EventResponse.Redo(RedoResult.Success, stack_size)    => s"Redo successfull. Remaining stack $stack_size"
+    case EventResponse.Redo(RedoResult.Success, stack_size)    => s"Redo successfull. Remaining stack $stack_size\n${getActiveGroupString}"
     case EventResponse.Redo(RedoResult.EmptyStack, stack_size) => s"Nothing to redo"
 
   val handler: PartialFunction[EventResponse, String] =
     addGroupHandler orElse gotoGroupHandler orElse expenseHandler orElse addUserToGroupHandler orElse debtHandler orElse commandHandler orElse undoRedoHandler
 
-  def isDefined(event: EventResponse): Boolean =
-    handler.isDefinedAt(event)
+  def isDefined(event: EventResponse): Boolean = handler.isDefinedAt(event)
 
-  def handle(event: EventResponse): String =
-    handler(event)
+  def handle(event: EventResponse): String = handler(event)
 
   def getAvailableGroupsString: String = Seq(
     spacer,

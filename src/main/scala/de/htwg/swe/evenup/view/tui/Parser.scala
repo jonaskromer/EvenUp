@@ -6,32 +6,54 @@ import scala.util.Failure
 import de.htwg.swe.evenup.model.financial.Share
 import de.htwg.swe.evenup.model.Person
 
-class Parser {
+class Parser:
 
-  def parseNewUser(input: String): Option[String] = {
-    val tryParse = Try(input.trim())
+  def validSharePattern(input: String): Boolean =
+    val pattern = """^([A-Za-z]+:\d+(\.\d+)?)(_[A-Za-z]+:\d+(\.\d+)?)*$""".r
+    pattern.matches(input)
 
-    tryParse match
-      case Success(user)      => Some(user)
-      case Failure(exception) =>
-        println("Wrong Usage")
-        None
-  }
+  def decorateErrorMessage(key: TuiKeys) =
+    new ColorDecorator(
+      new BorderDecorator(
+        new TextComponent(
+          s"${if key.description != "unsupportedKey" then s"Wrong usage of ${key.key}!\n" else ""}> ${key.key} ${key.usage}"
+        ),
+        "="
+      ),
+      ConsoleColors.BRIGHT_RED
+    ).render
 
-  def parseShares(input: Option[String]): Option[List[Share]] =
-    def getShares(input: String) = input.split("_").toList.map { s =>
-      s.split(":") match
-        case Array(name, amount) => Share(Person(name), amount.toDouble)
-        case _                   => throw new IllegalArgumentException(s"Invalid share: $s")
-    }
-    input match
-      case Some(in) =>
-        val tryParse = Try(getShares(in))
-        tryParse match
-          case Success(shares)    => Some(shares)
-          case Failure(exception) =>
-            println("Wrong Usage of shares")
-            None
-      case None => None
+  def parseInput(input: String): Try[List[String]] =
+    val tokens = input.split(" ").toList
+    tokens.head match
+      case TuiKeys.help.key           => Success(tokens)
+      case TuiKeys.quit.key           => Success(tokens)
+      case TuiKeys.undo.key           => Success(tokens)
+      case TuiKeys.redo.key           => Success(tokens)
+      case TuiKeys.MainMenu.key       => Success(tokens)
+      case TuiKeys.calculateDebts.key => Success(tokens)
+      case TuiKeys.newGroup.key       =>
+        if tokens.length != 2 then Failure(new Exception(decorateErrorMessage(TuiKeys.newGroup)))
+        else Success(tokens)
+      case TuiKeys.addUserToGroup.key =>
+        if tokens.length < 2 then Failure(new Exception(decorateErrorMessage(TuiKeys.addUserToGroup)))
+        else Success(tokens)
+      case TuiKeys.gotoGroup.key =>
+        if tokens.length != 2 then Failure(new Exception(decorateErrorMessage(TuiKeys.gotoGroup)))
+        else Success(tokens)
+      case TuiKeys.setStrategy.key =>
+        if tokens.length != 2 then Failure(new Exception(decorateErrorMessage(TuiKeys.setStrategy)))
+        else Success(tokens)
+      case TuiKeys.addExpense.key =>
+        tokens.length match
+          case 4 => // no shares and no date given
+            if tokens(3).toDoubleOption == None then Failure(new Exception(decorateErrorMessage(TuiKeys.addExpense)))
+            else Success(tokens)
+          case 5 => // share given
+            if tokens(3).toDoubleOption == None then Failure(new Exception(decorateErrorMessage(TuiKeys.addExpense)))
+            else if !validSharePattern(tokens(4)) then Failure(new Exception(decorateErrorMessage(TuiKeys.addExpense)))
+            else Success(tokens)
+          // TODO: add case for date given
+          case _ => Failure(new Exception(decorateErrorMessage(TuiKeys.addExpense)))
 
-}
+      case _ => Failure(new Exception(decorateErrorMessage(TuiKeys.unsupportedKey)))

@@ -4,6 +4,8 @@ import de.htwg.swe.evenup.model.{Group, Person}
 
 class NormalDebtStrategy extends DebtCalculationStrategy:
 
+  override def toString(): String = "normal"
+
   override def calculateDebts(group: Group): List[Debt] =
     val balances = calculateBalances(group)
 

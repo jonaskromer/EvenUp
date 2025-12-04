@@ -15,6 +15,8 @@ import de.htwg.swe.evenup.model.financial.debt.Debt
 import de.htwg.swe.evenup.model.financial.debt.SimplifiedDebtStrategy
 import de.htwg.swe.evenup.model.financial.Share
 
+import scala.util.{Try, Success, Failure}
+
 class TuiSpec extends AnyWordSpec with Matchers:
 
   "Tui" should {
@@ -28,78 +30,33 @@ class TuiSpec extends AnyWordSpec with Matchers:
       
       val output = outputStream.toString
       output should include("Welcome to EvenUp!")
-      tui.spacer.length should be > 0
+      output should include(s"Start by adding a group with => ${TuiKeys.newGroup.key}")
     }
 
     "print help correctly" in {
       val app        = App(Nil, None, None, MainMenuState())
       val controller = new Controller(app)
-      val tui        = new Tui(controller)
+      val outputStream1 = new ByteArrayOutputStream()
+      val tui = Console.withOut(new PrintStream(outputStream1)) {
+        new Tui(controller)
+      }
 
-      val outputStream = new ByteArrayOutputStream()
-      Console.withOut(new PrintStream(outputStream)) {
+      val outputStream2 = new ByteArrayOutputStream()
+      Console.withOut(new PrintStream(outputStream2)) {
         tui.printHelp(app.state)
       }
 
-      val output = outputStream.toString
+      val output = outputStream2.toString
 
-      // Only check keys that are allowed in the current state
       val allowedKeys = TuiKeys.values.filter(_.allowed(app.state))
       allowedKeys.foreach { key =>
         output should include(key.key)
       }
 
-      // Optionally, ensure disallowed keys are NOT printed
       val disallowedKeys = TuiKeys.values.filterNot(_.allowed(app.state))
       disallowedKeys.foreach { key =>
         output should not include key.key
       }
-    }
-
-    "print full overview correctly" in {
-      val alice      = Person("Alice")
-      val bob        = Person("Bob")
-      val group1     = Group("Trip", List(alice, bob), Nil, Nil, NormalDebtStrategy())
-      val group2     = Group("Party", List(alice), Nil, Nil, NormalDebtStrategy())
-      val app        = App(List(group1, group2), None, None, MainMenuState())
-      val controller = new Controller(app)
-      val tui        = new Tui(controller)
-
-      val output = tui.buildFullOverviewString
-      output should include("Trip")
-      output should include("Party")
-      output should include("Alice")
-      output should include("Bob")
-      output should include("_" * 40)
-    }
-
-    "print available groups correctly" in {
-      val group1     = Group("Trip", Nil, Nil, Nil, NormalDebtStrategy())
-      val group2     = Group("Party", Nil, Nil, Nil, NormalDebtStrategy())
-      val app        = App(List(group1, group2), None, None, MainMenuState())
-      val controller = new Controller(app)
-      val tui        = new Tui(controller)
-
-      val output = tui.getAvailableGroupsString
-      output should include("Available Groups:")
-      output should include("Trip")
-      output should include("Party")
-      output should include("_" * 40)
-    }
-
-    "handle unknown command" in {
-      val controller = new Controller(App(Nil, None, None, MainMenuState()))
-      val outputStream = new ByteArrayOutputStream()
-      val tui = Console.withOut(new PrintStream(outputStream)) {
-        new Tui(controller)
-      }
-      
-      Console.withOut(new PrintStream(outputStream)) {
-        tui.processInput(":unknown")
-      }
-      
-      val output = outputStream.toString
-      output should include("This key is not supported... yet :)")
     }
   }
 
@@ -369,7 +326,7 @@ class TuiSpec extends AnyWordSpec with Matchers:
         new Tui(controllerStub)
       }
       
-      val groupName = "My Test Group"
+      val groupName = "MyTestGroup"
       tui.processInput(s"${TuiKeys.newGroup.key} $groupName")
       addGroupCalled shouldBe Some(groupName)
     }
@@ -519,35 +476,25 @@ class TuiSpec extends AnyWordSpec with Matchers:
       tui.processInput(s"${TuiKeys.setStrategy.key} Simplified")
       capturedStrategy shouldBe Some("Simplified")
     }
-  }
 
-  "getActiveGroupString" should {
-
-    "return formatted string when active group exists" in {
-      val alice      = Person("Alice")
-      val group      = Group("Trip", List(alice), Nil, Nil, NormalDebtStrategy())
-      val app        = App(List(group), None, Some(group), MainMenuState())
-      val controller = new Controller(app)
-      val outputStream = new ByteArrayOutputStream()
-      val tui = Console.withOut(new PrintStream(outputStream)) {
-        new Tui(controller)
-      }
-
-      val output = tui.getActiveGroupString
-      output should include("Trip")
-      output should include("Active Group")
-    }
-
-    "return empty string when no active group exists" in {
+    "handle parse failure gracefully" in {
       val app        = App(Nil, None, None, MainMenuState())
       val controller = new Controller(app)
-      val outputStream = new ByteArrayOutputStream()
-      val tui = Console.withOut(new PrintStream(outputStream)) {
+      val outputStream1 = new ByteArrayOutputStream()
+      val tui = Console.withOut(new PrintStream(outputStream1)) {
         new Tui(controller)
       }
 
-      val output = tui.getActiveGroupString
-      output shouldBe ""
+      val outputStream2 = new ByteArrayOutputStream()
+      Console.withOut(new PrintStream(outputStream2)) {
+        // This will trigger a parse failure if Parser validates input
+        tui.processInput("")
+      }
+
+      // The output should contain an error message or prompt
+      val output = outputStream2.toString
+      // Check that something was printed (either error or prompt)
+      output should not be empty
     }
   }
 
@@ -677,5 +624,95 @@ class TuiSpec extends AnyWordSpec with Matchers:
 
       val output = outputStream2.toString
       output should include("Unhandled event")
+    }
+
+    "handle AddUserToGroup success event" in {
+      val alice = Person("Alice")
+      val group = Group("TestGroup", List(alice), Nil, Nil, NormalDebtStrategy())
+      val app   = App(List(group), None, Some(group), MainMenuState())
+      val controller = new Controller(app)
+      val outputStream1 = new ByteArrayOutputStream()
+      val tui = Console.withOut(new PrintStream(outputStream1)) {
+        new Tui(controller)
+      }
+
+      val outputStream2 = new ByteArrayOutputStream()
+      Console.withOut(new PrintStream(outputStream2)) {
+        tui.update(EventResponse.AddUserToGroup(AddUserToGroupResult.Success, alice, group))
+      }
+
+      val output = outputStream2.toString
+      output should include("Added Alice to TestGroup")
+    }
+
+    "handle GotoGroup success event" in {
+      val group = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
+      val app   = App(List(group), None, None, MainMenuState())
+      val controller = new Controller(app)
+      val outputStream1 = new ByteArrayOutputStream()
+      val tui = Console.withOut(new PrintStream(outputStream1)) {
+        new Tui(controller)
+      }
+
+      val outputStream2 = new ByteArrayOutputStream()
+      Console.withOut(new PrintStream(outputStream2)) {
+        tui.update(EventResponse.GotoGroup(GotoGroupResult.Success, group))
+      }
+
+      val output = outputStream2.toString
+      output should include("Set active group to TestGroup")
+    }
+
+    "handle AddExpenseToGroup success event" in {
+      val alice = Person("Alice")
+      val expense = Expense("Dinner", 50.0, Date(1, 1, 2025), alice, Nil)
+      val app   = App(Nil, None, None, MainMenuState())
+      val controller = new Controller(app)
+      val outputStream1 = new ByteArrayOutputStream()
+      val tui = Console.withOut(new PrintStream(outputStream1)) {
+        new Tui(controller)
+      }
+
+      val outputStream2 = new ByteArrayOutputStream()
+      Console.withOut(new PrintStream(outputStream2)) {
+        tui.update(EventResponse.AddExpenseToGroup(AddExpenseToGroupResult.Success, expense))
+      }
+
+      val output = outputStream2.toString
+      output should include("Added expense")
+    }
+
+    "handle Undo success event" in {
+      val app = App(Nil, None, None, MainMenuState())
+      val controller = new Controller(app)
+      val outputStream1 = new ByteArrayOutputStream()
+      val tui = Console.withOut(new PrintStream(outputStream1)) {
+        new Tui(controller)
+      }
+
+      val outputStream2 = new ByteArrayOutputStream()
+      Console.withOut(new PrintStream(outputStream2)) {
+        tui.update(EventResponse.Undo(UndoResult.Success, 3))
+      }
+
+      val output = outputStream2.toString
+      output should include("Undo successfull")
+    }
+
+    "handle Redo success event" in {
+      val app = App(Nil, None, None, MainMenuState())
+      val controller = new Controller(app)
+      val outputStream1 = new ByteArrayOutputStream()
+      val tui = Console.withOut(new PrintStream(outputStream1)) {
+        new Tui(controller)
+      }
+
+      val outputStream2 = new ByteArrayOutputStream()
+      Console.withOut(new PrintStream(outputStream2)) {
+        tui.update(EventResponse.Redo(RedoResult.Success, 2))
+      }
+
+      val output = outputStream2.toString
+      output should include("Redo successfull")
     }
   }

@@ -45,7 +45,7 @@ case class AddUserToGroupCommand(controller: Controller, user: Person) extends C
     val updated_group = controller.app.active_group.get.addMember(user)
     controller.app = controller.app.updateGroup(updated_group)
     controller.app = controller.app.updateActiveGroup(Some(updated_group)) // <-- fix
-    controller.notifyObservers(EventResponse.AddUserToGroup(AddUserToGroupResult.Success, user))
+    controller.notifyObservers(EventResponse.AddUserToGroup(AddUserToGroupResult.Success, user, updated_group))
 
 case class AddExpenseToGroupCommand(controller: Controller, expense: Expense) extends Command(controller):
 

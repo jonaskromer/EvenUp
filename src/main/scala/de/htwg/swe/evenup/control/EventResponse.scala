@@ -15,7 +15,7 @@ enum EventResponse extends ObservableEvent:
   case MainMenu
   case AddGroup(result: AddGroupResult, group: Group)
   case GotoGroup(result: GotoGroupResult, group: Group)
-  case AddUserToGroup(result: AddUserToGroupResult, user: Person)
+  case AddUserToGroup(result: AddUserToGroupResult, user: Person, group: Group)
   case AddExpenseToGroup(result: AddExpenseToGroupResult, expense: Expense)
   case CalculateDebts(result: CalculateDebtsResult, debts: List[Debt])
   case SetDebtStrategy(result: SetDebtStrategyResult, strategy: DebtCalculationStrategy)

@@ -82,9 +82,9 @@ case class AddUserToGroupHandler(next: Option[HandlerTemplate]) extends HandlerT
               case Some(group) =>
                 val user_already_in_group = group.containsUser(user_name)
                 if user_already_in_group then
-                  EventResponse.AddUserToGroup(AddUserToGroupResult.UserAlreadyAdded, Person(user_name))
-                else EventResponse.AddUserToGroup(AddUserToGroupResult.Success, Person(user_name))
-              case None => EventResponse.AddUserToGroup(AddUserToGroupResult.NoActiveGroup, Person(user_name))
+                  EventResponse.AddUserToGroup(AddUserToGroupResult.UserAlreadyAdded, Person(user_name), group)
+                else EventResponse.AddUserToGroup(AddUserToGroupResult.Success, Person(user_name), Group("", Nil, Nil, Nil, NormalDebtStrategy()))
+              case None => EventResponse.AddUserToGroup(AddUserToGroupResult.NoActiveGroup, Person(user_name), Group("", Nil, Nil, Nil, NormalDebtStrategy()))
           case _ => EventResponse.UncoveredFailure("AddUserToGroupHandler")
       case _ => EventResponse.NextHandler
 

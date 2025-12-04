@@ -71,12 +71,12 @@ class Controller(var app: App) extends Observable:
   def addUserToGroup(user_name: String): Unit =
     val response = argsHandler.checkOrDelegate(Map("operation" -> "addUserToGroup", "user_name" -> user_name), app)
     response match
-      case (EventResponse.AddUserToGroup(AddUserToGroupResult.Success, user)) =>
+      case (EventResponse.AddUserToGroup(AddUserToGroupResult.Success, user, group)) =>
         undoManager.doStep(AddUserToGroupCommand(this, user))
-      case EventResponse.AddUserToGroup(AddUserToGroupResult.UserAlreadyAdded, user) =>
-        notifyObservers(EventResponse.AddUserToGroup(AddUserToGroupResult.UserAlreadyAdded, user))
-      case EventResponse.AddUserToGroup(AddUserToGroupResult.NoActiveGroup, user) =>
-        notifyObservers(EventResponse.AddUserToGroup(AddUserToGroupResult.NoActiveGroup, user))
+      case EventResponse.AddUserToGroup(AddUserToGroupResult.UserAlreadyAdded, user, group) =>
+        notifyObservers(EventResponse.AddUserToGroup(AddUserToGroupResult.UserAlreadyAdded, user, group))
+      case EventResponse.AddUserToGroup(AddUserToGroupResult.NoActiveGroup, user, group) =>
+        notifyObservers(EventResponse.AddUserToGroup(AddUserToGroupResult.NoActiveGroup, user, group))
       case _ => EventResponse.UncoveredFailure("addUserToGroup")
 
   def addExpenseToGroup(

@@ -3,9 +3,7 @@ package de.htwg.swe.evenup.model.financial.debt
 import de.htwg.swe.evenup.model.{Group, Person}
 
 class SimplifiedDebtStrategy extends DebtCalculationStrategy:
-
   /*
-  TODO: create a simplified Debt calculation
   Example:
     - Alice owes Bob 10€
     - Bob owes Carlos 10€
@@ -14,32 +12,31 @@ class SimplifiedDebtStrategy extends DebtCalculationStrategy:
    */
   override def calculateDebts(group: Group): List[Debt] =
     val balances = calculateBalances(group)
-
-    val debtMap = scala.collection.mutable.Map[(Person, Person), Double]()
-
-    group.expenses.foreach { expense =>
-      expense.shares.foreach { share =>
-        if share.person != expense.paid_by then
-          val key = (share.person, expense.paid_by)
-          debtMap(key) = debtMap.getOrElse(key, 0.0) + share.amount
-      }
+    
+    var creditors = balances.filter(_._2 > 0.01).toList.sortBy(-_._2)
+    var debtors = balances.filter(_._2 < -0.01).toList.sortBy(_._2)
+    
+    val debts = scala.collection.mutable.ListBuffer[Debt]()
+    
+    var creditorIdx = 0
+    var debtorIdx = 0
+    
+    while (creditorIdx < creditors.length && debtorIdx < debtors.length) {
+      val (creditor, creditAmount) = creditors(creditorIdx)
+      val (debtor, debtAmount) = debtors(debtorIdx)
+      
+      val settleAmount = math.min(creditAmount, -debtAmount)
+      
+      debts += Debt(from = debtor, to = creditor, amount = settleAmount)
+      
+      val newCreditAmount = creditAmount - settleAmount
+      val newDebtAmount = debtAmount + settleAmount
+      
+      creditors = creditors.updated(creditorIdx, (creditor, newCreditAmount))
+      debtors = debtors.updated(debtorIdx, (debtor, newDebtAmount))
+      
+      if (newCreditAmount < 0.01) creditorIdx += 1
+      if (newDebtAmount > -0.01) debtorIdx += 1
     }
-
-    val processedPairs = scala.collection.mutable.Set[(Person, Person)]()
-
-    debtMap.flatMap { case ((from, to), amount) =>
-      val pair        = (from, to)
-      val reversePair = (to, from)
-
-      if !processedPairs.contains(pair) && !processedPairs.contains(reversePair) then
-        processedPairs.add(pair)
-        processedPairs.add(reversePair)
-
-        val reverseAmount = debtMap.getOrElse(reversePair, 0.0)
-        val netAmount     = amount - reverseAmount
-
-        if netAmount > 0 then Some(Debt(from = from, to = to, amount = netAmount))
-        else if netAmount < 0 then Some(Debt(from = to, to = from, amount = -netAmount))
-        else None
-      else None
-    }.toList
+    
+    debts.toList

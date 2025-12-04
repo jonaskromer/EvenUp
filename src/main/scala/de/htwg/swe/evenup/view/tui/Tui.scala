@@ -97,7 +97,7 @@ class Tui(controller: Controller) extends Observer {
       case e: EventResponse if tuiStringBuilder.isDefined(e) =>
         print(
           Seq(
-            ".\n.\n",
+            "\n",
             tuiStringBuilder.handle(e),
             getActiveGroupString,
             ">"

@@ -13,7 +13,6 @@ import de.htwg.swe.evenup.control.SetDebtStrategyResult
 import de.htwg.swe.evenup.model.Group
 import de.htwg.swe.evenup.control.Controller
 
-
 class TuiStringBuilder(controller: Controller):
 
   def getActiveGroupString: String =
@@ -24,7 +23,7 @@ class TuiStringBuilder(controller: Controller):
             new TextComponent(group.toString()),
             "="
           ),
-        ConsoleColors.BRIGHT_CYAN
+          ConsoleColors.BRIGHT_CYAN
         ).render
       case None => ""
 
@@ -33,7 +32,8 @@ class TuiStringBuilder(controller: Controller):
     case EventResponse.AddGroup(AddGroupResult.GroupExists, group) => s"The group ${group.name} already exists"
 
   val gotoGroupHandler: PartialFunction[EventResponse, String] =
-    case EventResponse.GotoGroup(GotoGroupResult.Success, group)           => s"Set active group to ${group.name}\n${getActiveGroupString}"
+    case EventResponse.GotoGroup(GotoGroupResult.Success, group) =>
+      s"Set active group to ${group.name}\n${getActiveGroupString}"
     case EventResponse.GotoGroup(GotoGroupResult.SuccessEmptyGroup, group) =>
       s"The group ${group.name} is empty. Add some users..."
     case EventResponse.GotoGroup(GotoGroupResult.GroupNotFound, group) => s"Unable to find group ${group.name}"
@@ -56,7 +56,8 @@ class TuiStringBuilder(controller: Controller):
       s"Cannot add ${user.name} because there is no active group!"
 
   val expenseHandler: PartialFunction[EventResponse, String] =
-    case EventResponse.AddExpenseToGroup(AddExpenseToGroupResult.Success, expense) => s"Added expense ${expense}\n${getActiveGroupString}"
+    case EventResponse.AddExpenseToGroup(AddExpenseToGroupResult.Success, expense) =>
+      s"Added expense ${expense}\n${getActiveGroupString}"
     case EventResponse.AddExpenseToGroup(
           AddExpenseToGroupResult.NoActiveGroup,
           expense
@@ -90,9 +91,11 @@ class TuiStringBuilder(controller: Controller):
       s"Go to a group by using ${TuiKeys.gotoGroup.key} ${TuiKeys.gotoGroup.usage}\n${getAvailableGroupsString}"
 
   val undoRedoHandler: PartialFunction[EventResponse, String] =
-    case EventResponse.Undo(UndoResult.Success, stack_size)    => s"Undo successfull. Remaining stack $stack_size\n${getActiveGroupString}"
+    case EventResponse.Undo(UndoResult.Success, stack_size) =>
+      s"Undo successfull. Remaining stack $stack_size\n${getActiveGroupString}"
     case EventResponse.Undo(UndoResult.EmptyStack, stack_size) => s"Nothing to undo"
-    case EventResponse.Redo(RedoResult.Success, stack_size)    => s"Redo successfull. Remaining stack $stack_size\n${getActiveGroupString}"
+    case EventResponse.Redo(RedoResult.Success, stack_size)    =>
+      s"Redo successfull. Remaining stack $stack_size\n${getActiveGroupString}"
     case EventResponse.Redo(RedoResult.EmptyStack, stack_size) => s"Nothing to redo"
 
   val handler: PartialFunction[EventResponse, String] =

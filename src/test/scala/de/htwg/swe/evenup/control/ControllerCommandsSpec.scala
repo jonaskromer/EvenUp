@@ -6,8 +6,8 @@ import org.scalatest.wordspec.AnyWordSpec
 
 import de.htwg.swe.evenup.model._
 import de.htwg.swe.evenup.model.financial.Expense
-import de.htwg.swe.evenup.model.financial.debt.{NormalDebtStrategy, SimplifiedDebtStrategy, Debt}
-import de.htwg.swe.evenup.model.state.{MainMenuState, InGroupState}
+import de.htwg.swe.evenup.model.financial.debt.{Debt, NormalDebtStrategy, SimplifiedDebtStrategy}
+import de.htwg.swe.evenup.model.state.{InGroupState, MainMenuState}
 import de.htwg.swe.evenup.util.ObservableEvent
 
 class ControllerCommandsSpec extends AnyWordSpec with Matchers:
@@ -15,10 +15,10 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
   "AddGroupCommand" should {
 
     "add group to app and set it as active group" in {
-      val app = App(Nil, None, None, MainMenuState())
+      val app        = App(Nil, None, None, MainMenuState())
       val controller = new Controller(app)
-      val group = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
-      val command = AddGroupCommand(controller, group)
+      val group      = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
+      val command    = AddGroupCommand(controller, group)
 
       command.doStep
 
@@ -27,10 +27,10 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
     }
 
     "update app state to InGroupState" in {
-      val app = App(Nil, None, None, MainMenuState())
+      val app        = App(Nil, None, None, MainMenuState())
       val controller = new Controller(app)
-      val group = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
-      val command = AddGroupCommand(controller, group)
+      val group      = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
+      val command    = AddGroupCommand(controller, group)
 
       command.doStep
 
@@ -38,10 +38,10 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
     }
 
     "notify observers with success event" in {
-      val app = App(Nil, None, None, MainMenuState())
+      val app        = App(Nil, None, None, MainMenuState())
       val controller = new Controller(app)
-      val group = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
-      val command = AddGroupCommand(controller, group)
+      val group      = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
+      val command    = AddGroupCommand(controller, group)
 
       var notifiedEvent: Option[ObservableEvent] = None
       controller.add((event: ObservableEvent) => notifiedEvent = Some(event))
@@ -52,10 +52,10 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
     }
 
     "be undoable" in {
-      val app = App(Nil, None, None, MainMenuState())
+      val app        = App(Nil, None, None, MainMenuState())
       val controller = new Controller(app)
-      val group = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
-      val command = AddGroupCommand(controller, group)
+      val group      = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
+      val command    = AddGroupCommand(controller, group)
 
       command.doStep
       controller.app.allGroups should contain(group)
@@ -66,10 +66,10 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
     }
 
     "be redoable" in {
-      val app = App(Nil, None, None, MainMenuState())
+      val app        = App(Nil, None, None, MainMenuState())
       val controller = new Controller(app)
-      val group = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
-      val command = AddGroupCommand(controller, group)
+      val group      = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
+      val command    = AddGroupCommand(controller, group)
 
       command.doStep
       command.undoStep
@@ -83,10 +83,10 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
   "GotoMainMenuCommand" should {
 
     "clear active group" in {
-      val group = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
-      val app = App(List(group), None, Some(group), InGroupState())
+      val group      = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
+      val app        = App(List(group), None, Some(group), InGroupState())
       val controller = new Controller(app)
-      val command = GotoMainMenuCommand(controller)
+      val command    = GotoMainMenuCommand(controller)
 
       command.doStep
 
@@ -94,10 +94,10 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
     }
 
     "update app state to MainMenuState" in {
-      val group = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
-      val app = App(List(group), None, Some(group), InGroupState())
+      val group      = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
+      val app        = App(List(group), None, Some(group), InGroupState())
       val controller = new Controller(app)
-      val command = GotoMainMenuCommand(controller)
+      val command    = GotoMainMenuCommand(controller)
 
       command.doStep
 
@@ -105,10 +105,10 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
     }
 
     "notify observers with MainMenu event" in {
-      val group = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
-      val app = App(List(group), None, Some(group), InGroupState())
+      val group      = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
+      val app        = App(List(group), None, Some(group), InGroupState())
       val controller = new Controller(app)
-      val command = GotoMainMenuCommand(controller)
+      val command    = GotoMainMenuCommand(controller)
 
       var notifiedEvent: Option[ObservableEvent] = None
       controller.add((event: ObservableEvent) => notifiedEvent = Some(event))
@@ -119,10 +119,10 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
     }
 
     "be undoable" in {
-      val group = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
-      val app = App(List(group), None, Some(group), InGroupState())
+      val group      = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
+      val app        = App(List(group), None, Some(group), InGroupState())
       val controller = new Controller(app)
-      val command = GotoMainMenuCommand(controller)
+      val command    = GotoMainMenuCommand(controller)
 
       command.doStep
       controller.app.active_group shouldBe None
@@ -135,10 +135,10 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
   "GotoGroupCommand" should {
 
     "set active group" in {
-      val group = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
-      val app = App(List(group), None, None, MainMenuState())
+      val group      = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
+      val app        = App(List(group), None, None, MainMenuState())
       val controller = new Controller(app)
-      val command = GotoGroupCommand(controller, group)
+      val command    = GotoGroupCommand(controller, group)
 
       command.doStep
 
@@ -146,10 +146,10 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
     }
 
     "notify observers with success event" in {
-      val group = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
-      val app = App(List(group), None, None, MainMenuState())
+      val group      = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
+      val app        = App(List(group), None, None, MainMenuState())
       val controller = new Controller(app)
-      val command = GotoGroupCommand(controller, group)
+      val command    = GotoGroupCommand(controller, group)
 
       var notifiedEvent: Option[ObservableEvent] = None
       controller.add((event: ObservableEvent) => notifiedEvent = Some(event))
@@ -160,10 +160,10 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
     }
 
     "be undoable" in {
-      val group = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
-      val app = App(List(group), None, None, MainMenuState())
+      val group      = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
+      val app        = App(List(group), None, None, MainMenuState())
       val controller = new Controller(app)
-      val command = GotoGroupCommand(controller, group)
+      val command    = GotoGroupCommand(controller, group)
 
       command.doStep
       controller.app.active_group shouldBe Some(group)
@@ -176,10 +176,10 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
   "GotoEmptyGroupCommand" should {
 
     "set active group" in {
-      val group = Group("EmptyGroup", Nil, Nil, Nil, NormalDebtStrategy())
-      val app = App(List(group), None, None, MainMenuState())
+      val group      = Group("EmptyGroup", Nil, Nil, Nil, NormalDebtStrategy())
+      val app        = App(List(group), None, None, MainMenuState())
       val controller = new Controller(app)
-      val command = GotoEmptyGroupCommand(controller, group)
+      val command    = GotoEmptyGroupCommand(controller, group)
 
       command.doStep
 
@@ -187,10 +187,10 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
     }
 
     "notify observers with SuccessEmptyGroup event" in {
-      val group = Group("EmptyGroup", Nil, Nil, Nil, NormalDebtStrategy())
-      val app = App(List(group), None, None, MainMenuState())
+      val group      = Group("EmptyGroup", Nil, Nil, Nil, NormalDebtStrategy())
+      val app        = App(List(group), None, None, MainMenuState())
       val controller = new Controller(app)
-      val command = GotoEmptyGroupCommand(controller, group)
+      val command    = GotoEmptyGroupCommand(controller, group)
 
       var notifiedEvent: Option[ObservableEvent] = None
       controller.add((event: ObservableEvent) => notifiedEvent = Some(event))
@@ -201,10 +201,10 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
     }
 
     "be undoable" in {
-      val group = Group("EmptyGroup", Nil, Nil, Nil, NormalDebtStrategy())
-      val app = App(List(group), None, None, MainMenuState())
+      val group      = Group("EmptyGroup", Nil, Nil, Nil, NormalDebtStrategy())
+      val app        = App(List(group), None, None, MainMenuState())
       val controller = new Controller(app)
-      val command = GotoEmptyGroupCommand(controller, group)
+      val command    = GotoEmptyGroupCommand(controller, group)
 
       command.doStep
       controller.app.active_group shouldBe Some(group)
@@ -217,11 +217,11 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
   "AddUserToGroupCommand" should {
 
     "add user to active group" in {
-      val alice = Person("Alice")
-      val group = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
-      val app = App(List(group), None, Some(group), InGroupState())
+      val alice      = Person("Alice")
+      val group      = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
+      val app        = App(List(group), None, Some(group), InGroupState())
       val controller = new Controller(app)
-      val command = AddUserToGroupCommand(controller, alice)
+      val command    = AddUserToGroupCommand(controller, alice)
 
       command.doStep
 
@@ -229,11 +229,11 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
     }
 
     "update the group in app's group list" in {
-      val alice = Person("Alice")
-      val group = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
-      val app = App(List(group), None, Some(group), InGroupState())
+      val alice      = Person("Alice")
+      val group      = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
+      val app        = App(List(group), None, Some(group), InGroupState())
       val controller = new Controller(app)
-      val command = AddUserToGroupCommand(controller, alice)
+      val command    = AddUserToGroupCommand(controller, alice)
 
       command.doStep
 
@@ -242,11 +242,11 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
     }
 
     "update active group reference" in {
-      val alice = Person("Alice")
-      val group = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
-      val app = App(List(group), None, Some(group), InGroupState())
+      val alice      = Person("Alice")
+      val group      = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
+      val app        = App(List(group), None, Some(group), InGroupState())
       val controller = new Controller(app)
-      val command = AddUserToGroupCommand(controller, alice)
+      val command    = AddUserToGroupCommand(controller, alice)
 
       command.doStep
 
@@ -254,11 +254,11 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
     }
 
     "notify observers with success event" in {
-      val alice = Person("Alice")
-      val group = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
-      val app = App(List(group), None, Some(group), InGroupState())
+      val alice      = Person("Alice")
+      val group      = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
+      val app        = App(List(group), None, Some(group), InGroupState())
       val controller = new Controller(app)
-      val command = AddUserToGroupCommand(controller, alice)
+      val command    = AddUserToGroupCommand(controller, alice)
 
       var notifiedEvent: Option[ObservableEvent] = None
       controller.add((event: ObservableEvent) => notifiedEvent = Some(event))
@@ -273,11 +273,11 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
     }
 
     "be undoable" in {
-      val alice = Person("Alice")
-      val group = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
-      val app = App(List(group), None, Some(group), InGroupState())
+      val alice      = Person("Alice")
+      val group      = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
+      val app        = App(List(group), None, Some(group), InGroupState())
       val controller = new Controller(app)
-      val command = AddUserToGroupCommand(controller, alice)
+      val command    = AddUserToGroupCommand(controller, alice)
 
       command.doStep
       controller.app.active_group.get.members should contain(alice)
@@ -290,12 +290,12 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
   "AddExpenseToGroupCommand" should {
 
     "add expense to active group" in {
-      val alice = Person("Alice")
-      val group = Group("TestGroup", List(alice), Nil, Nil, NormalDebtStrategy())
-      val expense = Expense("Dinner", 50.0, Date(1, 1, 2025), alice, Nil)
-      val app = App(List(group), None, Some(group), InGroupState())
+      val alice      = Person("Alice")
+      val group      = Group("TestGroup", List(alice), Nil, Nil, NormalDebtStrategy())
+      val expense    = Expense("Dinner", 50.0, Date(1, 1, 2025), alice, Nil)
+      val app        = App(List(group), None, Some(group), InGroupState())
       val controller = new Controller(app)
-      val command = AddExpenseToGroupCommand(controller, expense)
+      val command    = AddExpenseToGroupCommand(controller, expense)
 
       command.doStep
 
@@ -303,12 +303,12 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
     }
 
     "update the group in app's group list" in {
-      val alice = Person("Alice")
-      val group = Group("TestGroup", List(alice), Nil, Nil, NormalDebtStrategy())
-      val expense = Expense("Dinner", 50.0, Date(1, 1, 2025), alice, Nil)
-      val app = App(List(group), None, Some(group), InGroupState())
+      val alice      = Person("Alice")
+      val group      = Group("TestGroup", List(alice), Nil, Nil, NormalDebtStrategy())
+      val expense    = Expense("Dinner", 50.0, Date(1, 1, 2025), alice, Nil)
+      val app        = App(List(group), None, Some(group), InGroupState())
       val controller = new Controller(app)
-      val command = AddExpenseToGroupCommand(controller, expense)
+      val command    = AddExpenseToGroupCommand(controller, expense)
 
       command.doStep
 
@@ -317,12 +317,12 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
     }
 
     "notify observers with success event" in {
-      val alice = Person("Alice")
-      val group = Group("TestGroup", List(alice), Nil, Nil, NormalDebtStrategy())
-      val expense = Expense("Dinner", 50.0, Date(1, 1, 2025), alice, Nil)
-      val app = App(List(group), None, Some(group), InGroupState())
+      val alice      = Person("Alice")
+      val group      = Group("TestGroup", List(alice), Nil, Nil, NormalDebtStrategy())
+      val expense    = Expense("Dinner", 50.0, Date(1, 1, 2025), alice, Nil)
+      val app        = App(List(group), None, Some(group), InGroupState())
       val controller = new Controller(app)
-      val command = AddExpenseToGroupCommand(controller, expense)
+      val command    = AddExpenseToGroupCommand(controller, expense)
 
       var notifiedEvent: Option[ObservableEvent] = None
       controller.add((event: ObservableEvent) => notifiedEvent = Some(event))
@@ -333,12 +333,12 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
     }
 
     "be undoable" in {
-      val alice = Person("Alice")
-      val group = Group("TestGroup", List(alice), Nil, Nil, NormalDebtStrategy())
-      val expense = Expense("Dinner", 50.0, Date(1, 1, 2025), alice, Nil)
-      val app = App(List(group), None, Some(group), InGroupState())
+      val alice      = Person("Alice")
+      val group      = Group("TestGroup", List(alice), Nil, Nil, NormalDebtStrategy())
+      val expense    = Expense("Dinner", 50.0, Date(1, 1, 2025), alice, Nil)
+      val app        = App(List(group), None, Some(group), InGroupState())
       val controller = new Controller(app)
-      val command = AddExpenseToGroupCommand(controller, expense)
+      val command    = AddExpenseToGroupCommand(controller, expense)
 
       command.doStep
       controller.app.active_group.get.expenses should contain(expense)
@@ -351,12 +351,12 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
   "SetDebtCalculationStrategy" should {
 
     "update strategy in active group" in {
-      val alice = Person("Alice")
-      val group = Group("TestGroup", List(alice), Nil, Nil, NormalDebtStrategy())
-      val app = App(List(group), None, Some(group), InGroupState())
-      val controller = new Controller(app)
+      val alice       = Person("Alice")
+      val group       = Group("TestGroup", List(alice), Nil, Nil, NormalDebtStrategy())
+      val app         = App(List(group), None, Some(group), InGroupState())
+      val controller  = new Controller(app)
       val newStrategy = SimplifiedDebtStrategy()
-      val command = SetDebtCalculationStrategy(controller, newStrategy)
+      val command     = SetDebtCalculationStrategy(controller, newStrategy)
 
       command.doStep
 
@@ -364,12 +364,12 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
     }
 
     "update the group in app's group list" in {
-      val alice = Person("Alice")
-      val group = Group("TestGroup", List(alice), Nil, Nil, NormalDebtStrategy())
-      val app = App(List(group), None, Some(group), InGroupState())
-      val controller = new Controller(app)
+      val alice       = Person("Alice")
+      val group       = Group("TestGroup", List(alice), Nil, Nil, NormalDebtStrategy())
+      val app         = App(List(group), None, Some(group), InGroupState())
+      val controller  = new Controller(app)
       val newStrategy = SimplifiedDebtStrategy()
-      val command = SetDebtCalculationStrategy(controller, newStrategy)
+      val command     = SetDebtCalculationStrategy(controller, newStrategy)
 
       command.doStep
 
@@ -378,12 +378,12 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
     }
 
     "notify observers with success event" in {
-      val alice = Person("Alice")
-      val group = Group("TestGroup", List(alice), Nil, Nil, NormalDebtStrategy())
-      val app = App(List(group), None, Some(group), InGroupState())
-      val controller = new Controller(app)
+      val alice       = Person("Alice")
+      val group       = Group("TestGroup", List(alice), Nil, Nil, NormalDebtStrategy())
+      val app         = App(List(group), None, Some(group), InGroupState())
+      val controller  = new Controller(app)
       val newStrategy = SimplifiedDebtStrategy()
-      val command = SetDebtCalculationStrategy(controller, newStrategy)
+      val command     = SetDebtCalculationStrategy(controller, newStrategy)
 
       var notifiedEvent: Option[ObservableEvent] = None
       controller.add((event: ObservableEvent) => notifiedEvent = Some(event))
@@ -394,13 +394,13 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
     }
 
     "be undoable" in {
-      val alice = Person("Alice")
-      val group = Group("TestGroup", List(alice), Nil, Nil, NormalDebtStrategy())
-      val app = App(List(group), None, Some(group), InGroupState())
-      val controller = new Controller(app)
+      val alice       = Person("Alice")
+      val group       = Group("TestGroup", List(alice), Nil, Nil, NormalDebtStrategy())
+      val app         = App(List(group), None, Some(group), InGroupState())
+      val controller  = new Controller(app)
       val oldStrategy = group.debt_strategy
       val newStrategy = SimplifiedDebtStrategy()
-      val command = SetDebtCalculationStrategy(controller, newStrategy)
+      val command     = SetDebtCalculationStrategy(controller, newStrategy)
 
       command.doStep
       controller.app.active_group.get.debt_strategy shouldBe newStrategy
@@ -413,13 +413,13 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
   "CalculateDebtsCommand" should {
 
     "notify observers with debts" in {
-      val alice = Person("Alice")
-      val bob = Person("Bob")
-      val group = Group("TestGroup", List(alice, bob), Nil, Nil, NormalDebtStrategy())
-      val app = App(List(group), None, Some(group), InGroupState())
+      val alice      = Person("Alice")
+      val bob        = Person("Bob")
+      val group      = Group("TestGroup", List(alice, bob), Nil, Nil, NormalDebtStrategy())
+      val app        = App(List(group), None, Some(group), InGroupState())
       val controller = new Controller(app)
-      val debts = List(Debt(bob, alice, 25.0))
-      val command = CalculateDebtsCommand(controller, debts)
+      val debts      = List(Debt(bob, alice, 25.0))
+      val command    = CalculateDebtsCommand(controller, debts)
 
       var notifiedEvent: Option[ObservableEvent] = None
       controller.add((event: ObservableEvent) => notifiedEvent = Some(event))
@@ -430,12 +430,12 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
     }
 
     "notify observers with empty debts list" in {
-      val alice = Person("Alice")
-      val group = Group("TestGroup", List(alice), Nil, Nil, NormalDebtStrategy())
-      val app = App(List(group), None, Some(group), InGroupState())
+      val alice      = Person("Alice")
+      val group      = Group("TestGroup", List(alice), Nil, Nil, NormalDebtStrategy())
+      val app        = App(List(group), None, Some(group), InGroupState())
       val controller = new Controller(app)
-      val debts = Nil
-      val command = CalculateDebtsCommand(controller, debts)
+      val debts      = Nil
+      val command    = CalculateDebtsCommand(controller, debts)
 
       var notifiedEvent: Option[ObservableEvent] = None
       controller.add((event: ObservableEvent) => notifiedEvent = Some(event))
@@ -446,13 +446,13 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
     }
 
     "be undoable (no-op for calculation)" in {
-      val alice = Person("Alice")
-      val bob = Person("Bob")
-      val group = Group("TestGroup", List(alice, bob), Nil, Nil, NormalDebtStrategy())
-      val app = App(List(group), None, Some(group), InGroupState())
+      val alice      = Person("Alice")
+      val bob        = Person("Bob")
+      val group      = Group("TestGroup", List(alice, bob), Nil, Nil, NormalDebtStrategy())
+      val app        = App(List(group), None, Some(group), InGroupState())
       val controller = new Controller(app)
-      val debts = List(Debt(bob, alice, 25.0))
-      val command = CalculateDebtsCommand(controller, debts)
+      val debts      = List(Debt(bob, alice, 25.0))
+      val command    = CalculateDebtsCommand(controller, debts)
 
       val initialState = controller.app
       command.doStep
@@ -465,26 +465,26 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
   "Command undo/redo chain" should {
 
     "support multiple undo operations in sequence" in {
-      var app = App(Nil, None, None, MainMenuState())
+      var app        = App(Nil, None, None, MainMenuState())
       var controller = new Controller(app)
-      
+
       val group1 = Group("Group1", Nil, Nil, Nil, NormalDebtStrategy())
       val group2 = Group("Group2", Nil, Nil, Nil, NormalDebtStrategy())
-      
+
       val command1 = AddGroupCommand(controller, group1)
       val command2 = AddGroupCommand(controller, group2)
 
       command1.doStep
       command2.doStep
-      
+
       controller.app.allGroups should have size 2
     }
 
     "support redo after undo" in {
-      val app = App(Nil, None, None, MainMenuState())
+      val app        = App(Nil, None, None, MainMenuState())
       val controller = new Controller(app)
-      
-      val group = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
+
+      val group   = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
       val command = AddGroupCommand(controller, group)
 
       command.doStep

@@ -54,13 +54,15 @@ case class AddExpenseToGroupCommand(controller: Controller, expense: Expense) ex
     controller.app = controller.app.updateActiveGroup(Some(controller.app.active_group.get.addExpense(expense)))
     controller.notifyObservers(EventResponse.AddExpenseToGroup(AddExpenseToGroupResult.Success, expense))
 
-case class SetDebtCalculationStrategy(controller: Controller, strategy: DebtCalculationStrategy) extends Command(controller):
-  def doStep: Unit = 
+case class SetDebtCalculationStrategy(controller: Controller, strategy: DebtCalculationStrategy)
+    extends Command(controller):
+
+  def doStep: Unit =
     controller.app = controller.app.updateGroup(controller.app.active_group.get.updateDebtCalculationStrategy(strategy))
-    controller.app = controller.app.updateActiveGroup(Some(controller.app.active_group.get.updateDebtCalculationStrategy(strategy)))
+    controller.app = controller.app.updateActiveGroup(
+      Some(controller.app.active_group.get.updateDebtCalculationStrategy(strategy))
+    )
     controller.notifyObservers(EventResponse.SetDebtStrategy(SetDebtStrategyResult.Success, strategy))
 
 case class CalculateDebtsCommand(controller: Controller, debts: List[Debt]) extends Command(controller):
-  def doStep: Unit = 
-    controller.notifyObservers(EventResponse.CalculateDebts(CalculateDebtsResult.Success, debts))
-    
+  def doStep: Unit = controller.notifyObservers(EventResponse.CalculateDebts(CalculateDebtsResult.Success, debts))

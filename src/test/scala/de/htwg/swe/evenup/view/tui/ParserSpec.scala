@@ -4,7 +4,7 @@ import org.scalatest._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-import scala.util.{Success, Failure}
+import scala.util.{Failure, Success}
 
 class ParserSpec extends AnyWordSpec with Matchers:
 
@@ -24,9 +24,9 @@ class ParserSpec extends AnyWordSpec with Matchers:
       parser.validSharePattern("Alice30") shouldBe false
       parser.validSharePattern("Alice:") shouldBe false
       parser.validSharePattern(":30") shouldBe false
-      parser.validSharePattern("Alice:30,Bob:20") shouldBe false // comma instead of underscore
-      parser.validSharePattern("Alice:30_") shouldBe false // trailing underscore
-      parser.validSharePattern("_Alice:30") shouldBe false // leading underscore
+      parser.validSharePattern("Alice:30,Bob:20") shouldBe false  // comma instead of underscore
+      parser.validSharePattern("Alice:30_") shouldBe false        // trailing underscore
+      parser.validSharePattern("_Alice:30") shouldBe false        // leading underscore
       parser.validSharePattern("Alice:30__Bob:20") shouldBe false // double underscore
       parser.validSharePattern("") shouldBe false
     }
@@ -59,7 +59,7 @@ class ParserSpec extends AnyWordSpec with Matchers:
       val result = parser.parseInput(s"${TuiKeys.addExpense.key} Dinner Alice fifty Alice:30_Bob:20")
       result shouldBe a[Failure[?]]
     }
-    
+
     "parse MainMenu command successfully" in {
       val result = parser.parseInput(TuiKeys.MainMenu.key)
       result shouldBe a[Success[?]]

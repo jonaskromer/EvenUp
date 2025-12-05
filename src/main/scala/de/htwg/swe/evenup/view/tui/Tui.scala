@@ -9,23 +9,24 @@ import de.htwg.swe.evenup.model.financial.debt.NormalDebtStrategy
 import de.htwg.swe.evenup.model.state.AppState
 import de.htwg.swe.evenup.model.Date
 
-import scala.util.{Try, Success, Failure}
+import scala.util.{Failure, Success, Try}
 
 class Tui(controller: Controller) extends Observer:
-  
+
   controller.add(this)
 
   val parser           = new Parser
   val tuiStringBuilder = new TuiStringBuilder(controller)
 
-  val welcome_message= new ColorDecorator(
-          new BorderDecorator(
-            new TextComponent(s"""|Welcome to EvenUp!
+  val welcome_message =
+    new ColorDecorator(
+      new BorderDecorator(
+        new TextComponent(s"""|Welcome to EvenUp!
                                   |Start by adding a group with => ${TuiKeys.newGroup.key} <group name>""".stripMargin),
-            "#"
-          ),
-          ConsoleColors.BRIGHT_BLUE
-        ).render
+        "#"
+      ),
+      ConsoleColors.BRIGHT_BLUE
+    ).render
 
   print(welcome_message + "\n>")
 
@@ -87,7 +88,8 @@ class Tui(controller: Controller) extends Observer:
           case TuiKeys.gotoGroup.key      => controller.gotoGroup(tokens(1))
           case TuiKeys.setStrategy.key    => controller.setDebtStrategy(tokens(1))
           case TuiKeys.addUserToGroup.key =>
-            tokens.drop(1)
+            tokens
+              .drop(1)
               .foreach(user_name => controller.addUserToGroup(user_name))
           case TuiKeys.addExpense.key =>
             controller.addExpenseToGroup(
@@ -97,6 +99,4 @@ class Tui(controller: Controller) extends Observer:
               date = Date(1, 1, 2000), // TODO: fix this
               shares = tokens.lift(4)
             )
-      case Failure(error) =>
-        print(s"${error.getMessage()}\n>")
-
+      case Failure(error) => print(s"${error.getMessage()}\n>")

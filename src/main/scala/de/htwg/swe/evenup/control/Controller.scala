@@ -114,11 +114,11 @@ class Controller(var app: App) extends Observable:
     val response = argsHandler.checkOrDelegate(Map("operation" -> "setDebtStrategy", "strategy" -> strategy), app)
     response match
       case EventResponse.SetDebtStrategy(SetDebtStrategyResult.Success, strategy) =>
-        undoManager.doStep(SetDebtCalculationStrategy(this, strategy)) 
+        undoManager.doStep(SetDebtCalculationStrategy(this, strategy))
       case EventResponse.SetDebtStrategy(SetDebtStrategyResult.NoActiveGroup, strategy) =>
         notifyObservers(EventResponse.SetDebtStrategy(SetDebtStrategyResult.NoActiveGroup, strategy))
       case _ => EventResponse.UncoveredFailure("setDebtStrategy")
-    
+
   def calculateDebts(): Unit =
     val response = argsHandler.checkOrDelegate(Map("operation" -> "calculateDebts"), app)
     response match
@@ -127,8 +127,7 @@ class Controller(var app: App) extends Observable:
       case EventResponse.CalculateDebts(CalculateDebtsResult.NoActiveGroup, debts) =>
         notifyObservers(EventResponse.CalculateDebts(CalculateDebtsResult.NoActiveGroup, debts))
       case _ => EventResponse.UncoveredFailure("calculateDebts")
-    
-  
+
   /*
   def newTransaction(
     amount: Double,
@@ -138,4 +137,4 @@ class Controller(var app: App) extends Observable:
   ): Unit = app.active_group.get.addTransaction(
     Transaction(from, Person("test"), 10.0, date)
   )
-  */
+   */

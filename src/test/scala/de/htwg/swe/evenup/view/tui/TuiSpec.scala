@@ -15,24 +15,26 @@ import de.htwg.swe.evenup.model.financial.debt.Debt
 import de.htwg.swe.evenup.model.financial.debt.SimplifiedDebtStrategy
 import de.htwg.swe.evenup.model.financial.Share
 
-import scala.util.{Try, Success, Failure}
+import scala.util.{Failure, Success, Try}
 
 class TuiSpec extends AnyWordSpec with Matchers:
 
   "Tui" should {
 
     "print welcome message on init" in {
-      val controller = new Controller(App(Nil, None, None, MainMenuState()))
+      val controller   = new Controller(App(Nil, None, None, MainMenuState()))
       val outputStream = new ByteArrayOutputStream()
-      val tui = Console.withOut(new PrintStream(outputStream)) {
-        new Tui(controller)
-      }
-      
+      val tui          =
+        Console.withOut(new PrintStream(outputStream)) {
+          new Tui(controller)
+        }
+
       val output = outputStream.toString
       output should include("Welcome to EvenUp!")
       output should include(s"Start by adding a group with => ${TuiKeys.newGroup.key}")
     }
   }
+
   "TuiStringBuilder handlers" should {
 
     val alice      = Person("Alice")
@@ -72,7 +74,7 @@ class TuiSpec extends AnyWordSpec with Matchers:
 
     "handle no active group when adding user" in {
       val emptyGroup = Group("", Nil, Nil, Nil, NormalDebtStrategy())
-      val msg = builder.addUserToGroupHandler(
+      val msg        = builder.addUserToGroupHandler(
         EventResponse.AddUserToGroup(AddUserToGroupResult.NoActiveGroup, alice, emptyGroup)
       )
       msg should include("Cannot add Alice because there is no active group")
@@ -81,7 +83,7 @@ class TuiSpec extends AnyWordSpec with Matchers:
     "handle add expense success" in {
       val shares  = List(Share(alice, 20.0), Share(bob, 10.0))
       val expense = Expense("Dinner", 30.0, Date(1, 1, 2025), alice, shares)
-      val msg = builder.expenseHandler(
+      val msg     = builder.expenseHandler(
         EventResponse.AddExpenseToGroup(AddExpenseToGroupResult.Success, expense)
       )
       msg should include("Added expense")
@@ -89,7 +91,7 @@ class TuiSpec extends AnyWordSpec with Matchers:
 
     "handle no active group when adding expense" in {
       val expense = Expense("Dinner", 100, Date(1, 1, 2025), alice, Nil)
-      val msg = builder.expenseHandler(
+      val msg     = builder.expenseHandler(
         EventResponse.AddExpenseToGroup(AddExpenseToGroupResult.NoActiveGroup, expense)
       )
       msg should include("Please first goto a group")
@@ -97,7 +99,7 @@ class TuiSpec extends AnyWordSpec with Matchers:
 
     "handle shares sum wrong" in {
       val expense = Expense("Dinner", 100, Date(1, 1, 2025), alice, Nil)
-      val msg = builder.expenseHandler(
+      val msg     = builder.expenseHandler(
         EventResponse.AddExpenseToGroup(AddExpenseToGroupResult.SharesSumWrong, expense)
       )
       msg should include("The sum of the shares do not match with the sum of the expense")
@@ -105,7 +107,7 @@ class TuiSpec extends AnyWordSpec with Matchers:
 
     "handle share references wrong user" in {
       val expense = Expense("Dinner", 100, Date(1, 1, 2025), alice, Nil)
-      val msg = builder.expenseHandler(
+      val msg     = builder.expenseHandler(
         EventResponse.AddExpenseToGroup(AddExpenseToGroupResult.SharesPersonNotFound, expense)
       )
       msg should include("Wrong user in shares")
@@ -113,7 +115,7 @@ class TuiSpec extends AnyWordSpec with Matchers:
 
     "handle paidBy user not in group" in {
       val expense = Expense("Dinner", 100, Date(1, 1, 2025), alice, Nil)
-      val msg = builder.expenseHandler(
+      val msg     = builder.expenseHandler(
         EventResponse.AddExpenseToGroup(AddExpenseToGroupResult.PaidByNotFound, expense)
       )
       msg should include("Please first add Alice to the group before using in expense")
@@ -135,7 +137,7 @@ class TuiSpec extends AnyWordSpec with Matchers:
 
     "handle goto empty group" in {
       val emptyGroup = Group("EmptyGroup", Nil, Nil, Nil, NormalDebtStrategy())
-      val msg = builder.gotoGroupHandler(
+      val msg        = builder.gotoGroupHandler(
         EventResponse.GotoGroup(GotoGroupResult.SuccessEmptyGroup, emptyGroup)
       )
       msg should include("The group EmptyGroup is empty")
@@ -150,7 +152,7 @@ class TuiSpec extends AnyWordSpec with Matchers:
 
     "handle calculated debts" in {
       val debt = Debt(from = bob, to = alice, amount = 20.0)
-      val msg = builder.debtHandler(
+      val msg  = builder.debtHandler(
         EventResponse.CalculateDebts(CalculateDebtsResult.Success, List(debt))
       )
       msg should include("Calculated debts:")
@@ -216,12 +218,13 @@ class TuiSpec extends AnyWordSpec with Matchers:
   "Tui.processInput" should {
 
     "call printHelp when input is help key" in {
-      val app        = App(Nil, None, None, MainMenuState())
-      val controller = new Controller(app)
+      val app           = App(Nil, None, None, MainMenuState())
+      val controller    = new Controller(app)
       val outputStream1 = new ByteArrayOutputStream()
-      val tui = Console.withOut(new PrintStream(outputStream1)) {
-        new Tui(controller)
-      }
+      val tui           =
+        Console.withOut(new PrintStream(outputStream1)) {
+          new Tui(controller)
+        }
 
       val outputStream2 = new ByteArrayOutputStream()
       Console.withOut(new PrintStream(outputStream2)) {
@@ -236,17 +239,19 @@ class TuiSpec extends AnyWordSpec with Matchers:
       val app        = App(Nil, None, None, MainMenuState())
       var quitCalled = 0
 
-      val controllerStub = new Controller(app) {
-        override def quit: Unit = {
-          quitCalled += 1
+      val controllerStub =
+        new Controller(app) {
+          override def quit: Unit = {
+            quitCalled += 1
+          }
         }
-      }
 
       val outputStream = new ByteArrayOutputStream()
-      val tui = Console.withOut(new PrintStream(outputStream)) {
-        new Tui(controllerStub)
-      }
-      
+      val tui          =
+        Console.withOut(new PrintStream(outputStream)) {
+          new Tui(controllerStub)
+        }
+
       tui.processInput(TuiKeys.quit.key)
       quitCalled shouldBe 1
     }
@@ -255,99 +260,109 @@ class TuiSpec extends AnyWordSpec with Matchers:
       val app            = App(Nil, None, None, MainMenuState())
       var mainMenuCalled = false
 
-      val controllerStub = new Controller(app) {
-        override def gotoMainMenu: Unit = mainMenuCalled = true
-      }
+      val controllerStub =
+        new Controller(app) {
+          override def gotoMainMenu: Unit = mainMenuCalled = true
+        }
 
       val outputStream = new ByteArrayOutputStream()
-      val tui = Console.withOut(new PrintStream(outputStream)) {
-        new Tui(controllerStub)
-      }
-      
+      val tui          =
+        Console.withOut(new PrintStream(outputStream)) {
+          new Tui(controllerStub)
+        }
+
       tui.processInput(TuiKeys.MainMenu.key)
       mainMenuCalled shouldBe true
     }
 
     "call controller.gotoGroup when input is gotoGroup key" in {
-      val app                       = App(Nil, None, None, MainMenuState())
+      val app                             = App(Nil, None, None, MainMenuState())
       var gotoGroupCalled: Option[String] = None
 
-      val controllerStub = new Controller(app) {
-        override def gotoGroup(groupName: String): Unit = gotoGroupCalled = Some(groupName)
-      }
+      val controllerStub =
+        new Controller(app) {
+          override def gotoGroup(groupName: String): Unit = gotoGroupCalled = Some(groupName)
+        }
 
       val outputStream = new ByteArrayOutputStream()
-      val tui = Console.withOut(new PrintStream(outputStream)) {
-        new Tui(controllerStub)
-      }
-      
+      val tui          =
+        Console.withOut(new PrintStream(outputStream)) {
+          new Tui(controllerStub)
+        }
+
       val groupName = "TestGroup"
       tui.processInput(s"${TuiKeys.gotoGroup.key} $groupName")
       gotoGroupCalled shouldBe Some(groupName)
     }
 
     "call controller.addGroup when input is newGroup key" in {
-      val app                        = App(Nil, None, None, MainMenuState())
+      val app                            = App(Nil, None, None, MainMenuState())
       var addGroupCalled: Option[String] = None
 
-      val controllerStub = new Controller(app) {
-        override def addGroup(groupName: String): Unit = addGroupCalled = Some(groupName)
-      }
+      val controllerStub =
+        new Controller(app) {
+          override def addGroup(groupName: String): Unit = addGroupCalled = Some(groupName)
+        }
 
       val outputStream = new ByteArrayOutputStream()
-      val tui = Console.withOut(new PrintStream(outputStream)) {
-        new Tui(controllerStub)
-      }
-      
+      val tui          =
+        Console.withOut(new PrintStream(outputStream)) {
+          new Tui(controllerStub)
+        }
+
       val groupName = "MyTestGroup"
       tui.processInput(s"${TuiKeys.newGroup.key} $groupName")
       addGroupCalled shouldBe Some(groupName)
     }
 
     "call controller.addUserToGroup for each person when input is addUserToGroup key" in {
-      val app                   = App(Nil, None, None, MainMenuState())
+      val app                      = App(Nil, None, None, MainMenuState())
       var addedUsers: List[String] = Nil
 
-      val controllerStub = new Controller(app) {
-        override def addUserToGroup(userName: String): Unit = addedUsers = addedUsers :+ userName
-      }
+      val controllerStub =
+        new Controller(app) {
+          override def addUserToGroup(userName: String): Unit = addedUsers = addedUsers :+ userName
+        }
 
       val outputStream = new ByteArrayOutputStream()
-      val tui = Console.withOut(new PrintStream(outputStream)) {
-        new Tui(controllerStub)
-      }
-      
+      val tui          =
+        Console.withOut(new PrintStream(outputStream)) {
+          new Tui(controllerStub)
+        }
+
       tui.processInput(s"${TuiKeys.addUserToGroup.key} Alice Bob Charlie")
       addedUsers shouldBe List("Alice", "Bob", "Charlie")
     }
 
     "call controller.addExpenseToGroup when input is addExpense key" in {
-      val app                          = App(Nil, None, None, MainMenuState())
-      var capturedDescription: String  = ""
-      var capturedPaidBy: String       = ""
-      var capturedAmount: Double       = 0.0
+      val app                            = App(Nil, None, None, MainMenuState())
+      var capturedDescription: String    = ""
+      var capturedPaidBy: String         = ""
+      var capturedAmount: Double         = 0.0
       var capturedShares: Option[String] = None
 
-      val controllerStub = new Controller(app) {
-        override def addExpenseToGroup(
-          description: String,
-          paid_by: String,
-          sum: Double,
-          date: Date = Date(1, 1, 2000),
-          shares: Option[String] = None
-        ): Unit = {
-          capturedDescription = description
-          capturedPaidBy = paid_by
-          capturedAmount = sum
-          capturedShares = shares
+      val controllerStub =
+        new Controller(app) {
+          override def addExpenseToGroup(
+            description: String,
+            paid_by: String,
+            sum: Double,
+            date: Date = Date(1, 1, 2000),
+            shares: Option[String] = None
+          ): Unit = {
+            capturedDescription = description
+            capturedPaidBy = paid_by
+            capturedAmount = sum
+            capturedShares = shares
+          }
         }
-      }
 
       val outputStream = new ByteArrayOutputStream()
-      val tui = Console.withOut(new PrintStream(outputStream)) {
-        new Tui(controllerStub)
-      }
-      
+      val tui          =
+        Console.withOut(new PrintStream(outputStream)) {
+          new Tui(controllerStub)
+        }
+
       tui.processInput(s"${TuiKeys.addExpense.key} Dinner Alice 50.0")
 
       capturedDescription shouldBe "Dinner"
@@ -357,26 +372,28 @@ class TuiSpec extends AnyWordSpec with Matchers:
     }
 
     "call controller.addExpenseToGroup with shares when provided" in {
-      val app                          = App(Nil, None, None, MainMenuState())
+      val app                            = App(Nil, None, None, MainMenuState())
       var capturedShares: Option[String] = None
 
-      val controllerStub = new Controller(app) {
-        override def addExpenseToGroup(
-          description: String,
-          paid_by: String,
-          sum: Double,
-          date: Date = Date(1, 1, 2000),
-          shares: Option[String] = None
-        ): Unit = {
-          capturedShares = shares
+      val controllerStub =
+        new Controller(app) {
+          override def addExpenseToGroup(
+            description: String,
+            paid_by: String,
+            sum: Double,
+            date: Date = Date(1, 1, 2000),
+            shares: Option[String] = None
+          ): Unit = {
+            capturedShares = shares
+          }
         }
-      }
 
       val outputStream = new ByteArrayOutputStream()
-      val tui = Console.withOut(new PrintStream(outputStream)) {
-        new Tui(controllerStub)
-      }
-      
+      val tui          =
+        Console.withOut(new PrintStream(outputStream)) {
+          new Tui(controllerStub)
+        }
+
       tui.processInput(s"${TuiKeys.addExpense.key} Dinner Alice 50.0 Alice:30_Bob:20")
       capturedShares shouldBe Some("Alice:30_Bob:20")
     }
@@ -385,15 +402,17 @@ class TuiSpec extends AnyWordSpec with Matchers:
       val app        = App(Nil, None, None, MainMenuState())
       var undoCalled = false
 
-      val controllerStub = new Controller(app) {
-        override def undo(): Unit = undoCalled = true
-      }
+      val controllerStub =
+        new Controller(app) {
+          override def undo(): Unit = undoCalled = true
+        }
 
       val outputStream = new ByteArrayOutputStream()
-      val tui = Console.withOut(new PrintStream(outputStream)) {
-        new Tui(controllerStub)
-      }
-      
+      val tui          =
+        Console.withOut(new PrintStream(outputStream)) {
+          new Tui(controllerStub)
+        }
+
       tui.processInput(TuiKeys.undo.key)
       undoCalled shouldBe true
     }
@@ -402,61 +421,67 @@ class TuiSpec extends AnyWordSpec with Matchers:
       val app        = App(Nil, None, None, MainMenuState())
       var redoCalled = false
 
-      val controllerStub = new Controller(app) {
-        override def redo(): Unit = redoCalled = true
-      }
+      val controllerStub =
+        new Controller(app) {
+          override def redo(): Unit = redoCalled = true
+        }
 
       val outputStream = new ByteArrayOutputStream()
-      val tui = Console.withOut(new PrintStream(outputStream)) {
-        new Tui(controllerStub)
-      }
-      
+      val tui          =
+        Console.withOut(new PrintStream(outputStream)) {
+          new Tui(controllerStub)
+        }
+
       tui.processInput(TuiKeys.redo.key)
       redoCalled shouldBe true
     }
 
     "call controller.calculateDebts when input is calculateDebts key" in {
-      val app               = App(Nil, None, None, MainMenuState())
-      var calculateCalled   = false
+      val app             = App(Nil, None, None, MainMenuState())
+      var calculateCalled = false
 
-      val controllerStub = new Controller(app) {
-        override def calculateDebts(): Unit = calculateCalled = true
-      }
+      val controllerStub =
+        new Controller(app) {
+          override def calculateDebts(): Unit = calculateCalled = true
+        }
 
       val outputStream = new ByteArrayOutputStream()
-      val tui = Console.withOut(new PrintStream(outputStream)) {
-        new Tui(controllerStub)
-      }
-      
+      val tui          =
+        Console.withOut(new PrintStream(outputStream)) {
+          new Tui(controllerStub)
+        }
+
       tui.processInput(TuiKeys.calculateDebts.key)
       calculateCalled shouldBe true
     }
 
     "call controller.setDebtStrategy when input is setStrategy key" in {
-      val app                         = App(Nil, None, None, MainMenuState())
+      val app                              = App(Nil, None, None, MainMenuState())
       var capturedStrategy: Option[String] = None
 
-      val controllerStub = new Controller(app) {
-        override def setDebtStrategy(strategy: String): Unit = 
-          capturedStrategy = Some(strategy)
-      }
+      val controllerStub =
+        new Controller(app) {
+          override def setDebtStrategy(strategy: String): Unit = capturedStrategy = Some(strategy)
+        }
 
       val outputStream = new ByteArrayOutputStream()
-      val tui = Console.withOut(new PrintStream(outputStream)) {
-        new Tui(controllerStub)
-      }
-      
+      val tui          =
+        Console.withOut(new PrintStream(outputStream)) {
+          new Tui(controllerStub)
+        }
+
       tui.processInput(s"${TuiKeys.setStrategy.key} Simplified")
       capturedStrategy shouldBe Some("Simplified")
     }
 
     "handle parse failure gracefully" in {
-      val app        = App(Nil, None, None, MainMenuState())
-      val controller = new Controller(app)
+      val app           = App(Nil, None, None, MainMenuState())
+      val controller    = new Controller(app)
       val outputStream1 = new ByteArrayOutputStream()
-      val tui = Console.withOut(new PrintStream(outputStream1)) {
-        new Tui(controller)
-      }
+      val tui           =
+        Console.withOut(new PrintStream(outputStream1)) {
+          new Tui(controller)
+        }
 
       val outputStream2 = new ByteArrayOutputStream()
       Console.withOut(new PrintStream(outputStream2)) {
@@ -474,12 +499,13 @@ class TuiSpec extends AnyWordSpec with Matchers:
   "Tui.update" should {
 
     "handle MainMenu event and print available groups" in {
-      val app        = App(Nil, None, None, MainMenuState())
-      val controller = new Controller(app)
+      val app           = App(Nil, None, None, MainMenuState())
+      val controller    = new Controller(app)
       val outputStream1 = new ByteArrayOutputStream()
-      val tui = Console.withOut(new PrintStream(outputStream1)) {
-        new Tui(controller)
-      }
+      val tui           =
+        Console.withOut(new PrintStream(outputStream1)) {
+          new Tui(controller)
+        }
 
       val outputStream2 = new ByteArrayOutputStream()
       Console.withOut(new PrintStream(outputStream2)) {
@@ -491,12 +517,13 @@ class TuiSpec extends AnyWordSpec with Matchers:
     }
 
     "handle Quit event and print Goodbye!" in {
-      val app        = App(Nil, None, None, MainMenuState())
-      val controller = new Controller(app)
+      val app           = App(Nil, None, None, MainMenuState())
+      val controller    = new Controller(app)
       val outputStream1 = new ByteArrayOutputStream()
-      val tui = Console.withOut(new PrintStream(outputStream1)) {
-        new Tui(controller)
-      }
+      val tui           =
+        Console.withOut(new PrintStream(outputStream1)) {
+          new Tui(controller)
+        }
 
       val outputStream2 = new ByteArrayOutputStream()
       Console.withOut(new PrintStream(outputStream2)) {
@@ -508,13 +535,14 @@ class TuiSpec extends AnyWordSpec with Matchers:
     }
 
     "handle AddGroup success event" in {
-      val group      = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
-      val app        = App(Nil, None, None, MainMenuState())
-      val controller = new Controller(app)
+      val group         = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
+      val app           = App(Nil, None, None, MainMenuState())
+      val controller    = new Controller(app)
       val outputStream1 = new ByteArrayOutputStream()
-      val tui = Console.withOut(new PrintStream(outputStream1)) {
-        new Tui(controller)
-      }
+      val tui           =
+        Console.withOut(new PrintStream(outputStream1)) {
+          new Tui(controller)
+        }
 
       val outputStream2 = new ByteArrayOutputStream()
       Console.withOut(new PrintStream(outputStream2)) {
@@ -526,12 +554,13 @@ class TuiSpec extends AnyWordSpec with Matchers:
     }
 
     "handle CalculateDebts with empty list" in {
-      val app        = App(Nil, None, None, MainMenuState())
-      val controller = new Controller(app)
+      val app           = App(Nil, None, None, MainMenuState())
+      val controller    = new Controller(app)
       val outputStream1 = new ByteArrayOutputStream()
-      val tui = Console.withOut(new PrintStream(outputStream1)) {
-        new Tui(controller)
-      }
+      val tui           =
+        Console.withOut(new PrintStream(outputStream1)) {
+          new Tui(controller)
+        }
 
       val outputStream2 = new ByteArrayOutputStream()
       Console.withOut(new PrintStream(outputStream2)) {
@@ -543,15 +572,16 @@ class TuiSpec extends AnyWordSpec with Matchers:
     }
 
     "handle CalculateDebts with debts" in {
-      val alice = Person("Alice")
-      val bob   = Person("Bob")
-      val debt  = Debt(from = bob, to = alice, amount = 20.0)
-      val app        = App(Nil, None, None, MainMenuState())
-      val controller = new Controller(app)
+      val alice         = Person("Alice")
+      val bob           = Person("Bob")
+      val debt          = Debt(from = bob, to = alice, amount = 20.0)
+      val app           = App(Nil, None, None, MainMenuState())
+      val controller    = new Controller(app)
       val outputStream1 = new ByteArrayOutputStream()
-      val tui = Console.withOut(new PrintStream(outputStream1)) {
-        new Tui(controller)
-      }
+      val tui           =
+        Console.withOut(new PrintStream(outputStream1)) {
+          new Tui(controller)
+        }
 
       val outputStream2 = new ByteArrayOutputStream()
       Console.withOut(new PrintStream(outputStream2)) {
@@ -564,12 +594,13 @@ class TuiSpec extends AnyWordSpec with Matchers:
     }
 
     "handle UncoveredFailure event" in {
-      val app        = App(Nil, None, None, MainMenuState())
-      val controller = new Controller(app)
+      val app           = App(Nil, None, None, MainMenuState())
+      val controller    = new Controller(app)
       val outputStream1 = new ByteArrayOutputStream()
-      val tui = Console.withOut(new PrintStream(outputStream1)) {
-        new Tui(controller)
-      }
+      val tui           =
+        Console.withOut(new PrintStream(outputStream1)) {
+          new Tui(controller)
+        }
 
       val outputStream2 = new ByteArrayOutputStream()
       Console.withOut(new PrintStream(outputStream2)) {
@@ -582,14 +613,15 @@ class TuiSpec extends AnyWordSpec with Matchers:
     }
 
     "handle unhandled event" in {
-      val app        = App(Nil, None, None, MainMenuState())
-      val controller = new Controller(app)
+      val app           = App(Nil, None, None, MainMenuState())
+      val controller    = new Controller(app)
       val outputStream1 = new ByteArrayOutputStream()
-      val tui = Console.withOut(new PrintStream(outputStream1)) {
-        new Tui(controller)
-      }
+      val tui           =
+        Console.withOut(new PrintStream(outputStream1)) {
+          new Tui(controller)
+        }
 
-      val dummyEvent = new ObservableEvent {}
+      val dummyEvent    = new ObservableEvent {}
       val outputStream2 = new ByteArrayOutputStream()
       Console.withOut(new PrintStream(outputStream2)) {
         tui.update(dummyEvent)
@@ -600,14 +632,15 @@ class TuiSpec extends AnyWordSpec with Matchers:
     }
 
     "handle AddUserToGroup success event" in {
-      val alice = Person("Alice")
-      val group = Group("TestGroup", List(alice), Nil, Nil, NormalDebtStrategy())
-      val app   = App(List(group), None, Some(group), MainMenuState())
-      val controller = new Controller(app)
+      val alice         = Person("Alice")
+      val group         = Group("TestGroup", List(alice), Nil, Nil, NormalDebtStrategy())
+      val app           = App(List(group), None, Some(group), MainMenuState())
+      val controller    = new Controller(app)
       val outputStream1 = new ByteArrayOutputStream()
-      val tui = Console.withOut(new PrintStream(outputStream1)) {
-        new Tui(controller)
-      }
+      val tui           =
+        Console.withOut(new PrintStream(outputStream1)) {
+          new Tui(controller)
+        }
 
       val outputStream2 = new ByteArrayOutputStream()
       Console.withOut(new PrintStream(outputStream2)) {
@@ -619,13 +652,14 @@ class TuiSpec extends AnyWordSpec with Matchers:
     }
 
     "handle GotoGroup success event" in {
-      val group = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
-      val app   = App(List(group), None, None, MainMenuState())
-      val controller = new Controller(app)
+      val group         = Group("TestGroup", Nil, Nil, Nil, NormalDebtStrategy())
+      val app           = App(List(group), None, None, MainMenuState())
+      val controller    = new Controller(app)
       val outputStream1 = new ByteArrayOutputStream()
-      val tui = Console.withOut(new PrintStream(outputStream1)) {
-        new Tui(controller)
-      }
+      val tui           =
+        Console.withOut(new PrintStream(outputStream1)) {
+          new Tui(controller)
+        }
 
       val outputStream2 = new ByteArrayOutputStream()
       Console.withOut(new PrintStream(outputStream2)) {
@@ -637,14 +671,15 @@ class TuiSpec extends AnyWordSpec with Matchers:
     }
 
     "handle AddExpenseToGroup success event" in {
-      val alice = Person("Alice")
-      val expense = Expense("Dinner", 50.0, Date(1, 1, 2025), alice, Nil)
-      val app   = App(Nil, None, None, MainMenuState())
-      val controller = new Controller(app)
+      val alice         = Person("Alice")
+      val expense       = Expense("Dinner", 50.0, Date(1, 1, 2025), alice, Nil)
+      val app           = App(Nil, None, None, MainMenuState())
+      val controller    = new Controller(app)
       val outputStream1 = new ByteArrayOutputStream()
-      val tui = Console.withOut(new PrintStream(outputStream1)) {
-        new Tui(controller)
-      }
+      val tui           =
+        Console.withOut(new PrintStream(outputStream1)) {
+          new Tui(controller)
+        }
 
       val outputStream2 = new ByteArrayOutputStream()
       Console.withOut(new PrintStream(outputStream2)) {
@@ -656,12 +691,13 @@ class TuiSpec extends AnyWordSpec with Matchers:
     }
 
     "handle Undo success event" in {
-      val app = App(Nil, None, None, MainMenuState())
-      val controller = new Controller(app)
+      val app           = App(Nil, None, None, MainMenuState())
+      val controller    = new Controller(app)
       val outputStream1 = new ByteArrayOutputStream()
-      val tui = Console.withOut(new PrintStream(outputStream1)) {
-        new Tui(controller)
-      }
+      val tui           =
+        Console.withOut(new PrintStream(outputStream1)) {
+          new Tui(controller)
+        }
 
       val outputStream2 = new ByteArrayOutputStream()
       Console.withOut(new PrintStream(outputStream2)) {
@@ -673,12 +709,13 @@ class TuiSpec extends AnyWordSpec with Matchers:
     }
 
     "handle Redo success event" in {
-      val app = App(Nil, None, None, MainMenuState())
-      val controller = new Controller(app)
+      val app           = App(Nil, None, None, MainMenuState())
+      val controller    = new Controller(app)
       val outputStream1 = new ByteArrayOutputStream()
-      val tui = Console.withOut(new PrintStream(outputStream1)) {
-        new Tui(controller)
-      }
+      val tui           =
+        Console.withOut(new PrintStream(outputStream1)) {
+          new Tui(controller)
+        }
 
       val outputStream2 = new ByteArrayOutputStream()
       Console.withOut(new PrintStream(outputStream2)) {

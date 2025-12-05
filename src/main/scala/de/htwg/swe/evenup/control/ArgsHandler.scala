@@ -24,13 +24,13 @@ trait HandlerTemplate:
       case result => result
 
 class ArgsHandler:
-  val calculateDebtsHandler = CalculateDebtsHandler(None)
-  val setDebtStrategyHandler = SetDebtStrategyHandler(Option(calculateDebtsHandler))
+  val calculateDebtsHandler    = CalculateDebtsHandler(None)
+  val setDebtStrategyHandler   = SetDebtStrategyHandler(Option(calculateDebtsHandler))
   val addExpenseToGroupHandler = AddExpenseToGroupHandler(Option(setDebtStrategyHandler))
-  val undoRedoHandler       = UndoRedoHandler(Option(addExpenseToGroupHandler))
-  val addUserToGroupHandler = AddUserToGroupHandler(Option(undoRedoHandler))
-  val gotoGroupHandler      = GotoGroupHandler(Option(addUserToGroupHandler))
-  val addGroupHandler       = AddGroupHandler(Option(gotoGroupHandler))
+  val undoRedoHandler          = UndoRedoHandler(Option(addExpenseToGroupHandler))
+  val addUserToGroupHandler    = AddUserToGroupHandler(Option(undoRedoHandler))
+  val gotoGroupHandler         = GotoGroupHandler(Option(addUserToGroupHandler))
+  val addGroupHandler          = AddGroupHandler(Option(gotoGroupHandler))
 
   def checkOrDelegate(args: Map[String, Any], app: App): EventResponse = addGroupHandler.checkOrDelegate(
     args,
@@ -83,8 +83,18 @@ case class AddUserToGroupHandler(next: Option[HandlerTemplate]) extends HandlerT
                 val user_already_in_group = group.containsUser(user_name)
                 if user_already_in_group then
                   EventResponse.AddUserToGroup(AddUserToGroupResult.UserAlreadyAdded, Person(user_name), group)
-                else EventResponse.AddUserToGroup(AddUserToGroupResult.Success, Person(user_name), Group("", Nil, Nil, Nil, NormalDebtStrategy()))
-              case None => EventResponse.AddUserToGroup(AddUserToGroupResult.NoActiveGroup, Person(user_name), Group("", Nil, Nil, Nil, NormalDebtStrategy()))
+                else
+                  EventResponse.AddUserToGroup(
+                    AddUserToGroupResult.Success,
+                    Person(user_name),
+                    Group("", Nil, Nil, Nil, NormalDebtStrategy())
+                  )
+              case None =>
+                EventResponse.AddUserToGroup(
+                  AddUserToGroupResult.NoActiveGroup,
+                  Person(user_name),
+                  Group("", Nil, Nil, Nil, NormalDebtStrategy())
+                )
           case _ => EventResponse.UncoveredFailure("AddUserToGroupHandler")
       case _ => EventResponse.NextHandler
 
@@ -217,28 +227,26 @@ case class AddExpenseToGroupHandler(next: Option[HandlerTemplate]) extends Handl
       case _ => EventResponse.NextHandler
 
 case class SetDebtStrategyHandler(next: Option[HandlerTemplate]) extends HandlerTemplate:
-  def check(args: Map[String, Any], app: App): EventResponse = 
+
+  def check(args: Map[String, Any], app: App): EventResponse =
     args.get("operation") match
       case Some("setDebtStrategy") =>
         app.active_group match
           case Some(group) =>
             args.get("strategy") match
-              case Some("normal") =>
-                EventResponse.SetDebtStrategy(SetDebtStrategyResult.Success, NormalDebtStrategy())
-              case Some("simplified") => 
+              case Some("normal") => EventResponse.SetDebtStrategy(SetDebtStrategyResult.Success, NormalDebtStrategy())
+              case Some("simplified") =>
                 EventResponse.SetDebtStrategy(SetDebtStrategyResult.Success, SimplifiedDebtStrategy())
               case _ => return EventResponse.UncoveredFailure("SetDebtStrategyHandler")
-          case None => 
-            EventResponse.SetDebtStrategy(SetDebtStrategyResult.NoActiveGroup, NormalDebtStrategy())
+          case None => EventResponse.SetDebtStrategy(SetDebtStrategyResult.NoActiveGroup, NormalDebtStrategy())
       case _ => EventResponse.NextHandler
 
 case class CalculateDebtsHandler(next: Option[HandlerTemplate]) extends HandlerTemplate:
-  def check(args: Map[String, Any], app: App): EventResponse = 
+
+  def check(args: Map[String, Any], app: App): EventResponse =
     args.get("operation") match
       case Some("calculateDebts") =>
         app.active_group match
-          case Some(group) =>
-            EventResponse.CalculateDebts(CalculateDebtsResult.Success, group.calculateDebt())
-          case None => 
-            EventResponse.CalculateDebts(CalculateDebtsResult.NoActiveGroup, Nil)
+          case Some(group) => EventResponse.CalculateDebts(CalculateDebtsResult.Success, group.calculateDebt())
+          case None        => EventResponse.CalculateDebts(CalculateDebtsResult.NoActiveGroup, Nil)
       case _ => EventResponse.NextHandler

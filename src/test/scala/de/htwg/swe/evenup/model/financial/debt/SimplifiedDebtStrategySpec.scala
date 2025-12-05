@@ -61,16 +61,16 @@ class SimplifiedDebtStrategySpec extends AnyWordSpec with Matchers:
       debt.to shouldBe bob
       debt.amount shouldBe 10.0
     }
-    
+
     "handle multiple creditors and debtors with exact settlements" in {
-      val alice = Person("Alice")
-      val bob = Person("Bob")
+      val alice   = Person("Alice")
+      val bob     = Person("Bob")
       val charlie = Person("Charlie")
-      val dave = Person("Dave")
-      
+      val dave    = Person("Dave")
+
       val expense1 = Expense("Expense1", 100.0, Date(1, 1, 2025), alice, List(Share(bob, 50.0), Share(charlie, 50.0)))
       val expense2 = Expense("Expense2", 100.0, Date(2, 1, 2025), dave, List(Share(bob, 50.0), Share(charlie, 50.0)))
-      
+
       val group = Group(
         "MultiParty",
         List(alice, bob, charlie, dave),
@@ -78,21 +78,21 @@ class SimplifiedDebtStrategySpec extends AnyWordSpec with Matchers:
         List(),
         SimplifiedDebtStrategy()
       )
-      
+
       val debts = group.debt_strategy.calculateDebts(group)
-      
+
       debts should have size 2
       debts.map(_.amount).sum shouldBe 200.0
     }
-    
+
     "handle case where creditor amount becomes less than 0.01" in {
-      val alice = Person("Alice")
-      val bob = Person("Bob")
+      val alice   = Person("Alice")
+      val bob     = Person("Bob")
       val charlie = Person("Charlie")
-      
+
       val expense1 = Expense("Expense1", 10.0, Date(1, 1, 2025), alice, List(Share(bob, 10.0)))
       val expense2 = Expense("Expense2", 5.0, Date(2, 1, 2025), charlie, List(Share(bob, 5.0)))
-      
+
       val group = Group(
         "TestGroup",
         List(alice, bob, charlie),
@@ -100,22 +100,22 @@ class SimplifiedDebtStrategySpec extends AnyWordSpec with Matchers:
         List(),
         SimplifiedDebtStrategy()
       )
-      
+
       val debts = group.debt_strategy.calculateDebts(group)
-      
+
       debts should have size 2
       debts.map(_.from).toSet should contain(bob)
     }
-    
+
     "handle case where debtor amount becomes greater than -0.01" in {
-      val alice = Person("Alice")
-      val bob = Person("Bob")
+      val alice   = Person("Alice")
+      val bob     = Person("Bob")
       val charlie = Person("Charlie")
-      val dave = Person("Dave")
-      
+      val dave    = Person("Dave")
+
       val expense1 = Expense("Expense1", 30.0, Date(1, 1, 2025), alice, List(Share(bob, 15.0), Share(charlie, 15.0)))
       val expense2 = Expense("Expense2", 20.0, Date(2, 1, 2025), dave, List(Share(bob, 20.0)))
-      
+
       val group = Group(
         "TestGroup",
         List(alice, bob, charlie, dave),
@@ -123,22 +123,28 @@ class SimplifiedDebtStrategySpec extends AnyWordSpec with Matchers:
         List(),
         SimplifiedDebtStrategy()
       )
-      
+
       val debts = group.debt_strategy.calculateDebts(group)
-      
+
       debts.map(_.amount).sum shouldBe 50.0
     }
-    
+
     "handle complex scenario with multiple settlements" in {
-      val alice = Person("Alice")
-      val bob = Person("Bob")
+      val alice   = Person("Alice")
+      val bob     = Person("Bob")
       val charlie = Person("Charlie")
-      val dave = Person("Dave")
-      val eve = Person("Eve")
-      
-      val expense1 = Expense("Expense1", 100.0, Date(1, 1, 2025), alice, List(Share(bob, 50.0), Share(charlie, 25.0), Share(dave, 25.0)))
+      val dave    = Person("Dave")
+      val eve     = Person("Eve")
+
+      val expense1 = Expense(
+        "Expense1",
+        100.0,
+        Date(1, 1, 2025),
+        alice,
+        List(Share(bob, 50.0), Share(charlie, 25.0), Share(dave, 25.0))
+      )
       val expense2 = Expense("Expense2", 50.0, Date(2, 1, 2025), eve, List(Share(bob, 25.0), Share(charlie, 25.0)))
-      
+
       val group = Group(
         "Complex",
         List(alice, bob, charlie, dave, eve),
@@ -146,9 +152,9 @@ class SimplifiedDebtStrategySpec extends AnyWordSpec with Matchers:
         List(),
         SimplifiedDebtStrategy()
       )
-      
+
       val debts = group.debt_strategy.calculateDebts(group)
-      
+
       debts should not be empty
       val totalDebt = debts.map(_.amount).sum
       totalDebt shouldBe 150.0 +- 0.02

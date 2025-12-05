@@ -14,17 +14,17 @@ class UndoManager:
     redoStack = Nil
 
   def undoStep =
-    undoStack match 
+    undoStack match
       case Nil           =>
       case head :: stack =>
         head.undoStep
         undoStack = stack
         redoStack = head :: redoStack
 
-  def redoStep = 
-    redoStack match 
+  def redoStep =
+    redoStack match
       case Nil           =>
-      case head :: stack => 
+      case head :: stack =>
         head.redoStep
         redoStack = stack
         undoStack = head :: undoStack

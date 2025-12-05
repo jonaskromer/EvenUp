@@ -12,7 +12,7 @@ import de.htwg.swe.evenup.util.Observer
 class ControllerSpec extends AnyWordSpec with Matchers:
 
   class TestObserver extends Observer:
-    var lastEvent: Option[EventResponse]                         = None
+    var lastEvent: Option[EventResponse] = None
 
     def update(e: de.htwg.swe.evenup.util.ObservableEvent): Unit =
       e match

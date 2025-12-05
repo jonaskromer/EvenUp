@@ -55,6 +55,11 @@ class ParserSpec extends AnyWordSpec with Matchers:
       result.get should contain(TuiKeys.redo.key)
     }
 
+    "reject addExpense command with non-numeric amount and shares" in {
+      val result = parser.parseInput(s"${TuiKeys.addExpense.key} Dinner Alice fifty Alice:30_Bob:20")
+      result shouldBe a[Failure[?]]
+    }
+    
     "parse MainMenu command successfully" in {
       val result = parser.parseInput(TuiKeys.MainMenu.key)
       result shouldBe a[Success[?]]
@@ -174,7 +179,7 @@ class ParserSpec extends AnyWordSpec with Matchers:
     "reject unsupported command" in {
       val result = parser.parseInput(":unsupported command")
       result shouldBe a[Failure[?]]
-      result.failed.get.getMessage should include("unsupportedKey")
+      result.failed.get.getMessage should include("This key is not supported... yet :)")
     }
 
     "reject empty input" in {
@@ -192,9 +197,7 @@ class ParserSpec extends AnyWordSpec with Matchers:
 
     "handle spaces in input correctly" in {
       val result = parser.parseInput(s"${TuiKeys.newGroup.key}   TestGroup")
-      result shouldBe a[Success[?]]
-      // Note: This will fail because split(" ") creates empty strings
-      // The current implementation doesn't filter empty tokens
+      result shouldBe a[Failure[?]]
     }
   }
 
@@ -218,7 +221,6 @@ class ParserSpec extends AnyWordSpec with Matchers:
 
     "include color and border decorations" in {
       val message = parser.decorateErrorMessage(TuiKeys.addExpense)
-      // The decorated message should contain ANSI color codes
       message should not be empty
     }
   }

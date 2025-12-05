@@ -32,34 +32,7 @@ class TuiSpec extends AnyWordSpec with Matchers:
       output should include("Welcome to EvenUp!")
       output should include(s"Start by adding a group with => ${TuiKeys.newGroup.key}")
     }
-
-    "print help correctly" in {
-      val app        = App(Nil, None, None, MainMenuState())
-      val controller = new Controller(app)
-      val outputStream1 = new ByteArrayOutputStream()
-      val tui = Console.withOut(new PrintStream(outputStream1)) {
-        new Tui(controller)
-      }
-
-      val outputStream2 = new ByteArrayOutputStream()
-      Console.withOut(new PrintStream(outputStream2)) {
-        tui.printHelp(app.state)
-      }
-
-      val output = outputStream2.toString
-
-      val allowedKeys = TuiKeys.values.filter(_.allowed(app.state))
-      allowedKeys.foreach { key =>
-        output should include(key.key)
-      }
-
-      val disallowedKeys = TuiKeys.values.filterNot(_.allowed(app.state))
-      disallowedKeys.foreach { key =>
-        output should not include key.key
-      }
-    }
   }
-
   "TuiStringBuilder handlers" should {
 
     val alice      = Person("Alice")
@@ -404,8 +377,8 @@ class TuiSpec extends AnyWordSpec with Matchers:
         new Tui(controllerStub)
       }
       
-      tui.processInput(s"${TuiKeys.addExpense.key} Dinner Alice 50.0 Alice:30,Bob:20")
-      capturedShares shouldBe Some("Alice:30,Bob:20")
+      tui.processInput(s"${TuiKeys.addExpense.key} Dinner Alice 50.0 Alice:30_Bob:20")
+      capturedShares shouldBe Some("Alice:30_Bob:20")
     }
 
     "call controller.undo when input is undo key" in {

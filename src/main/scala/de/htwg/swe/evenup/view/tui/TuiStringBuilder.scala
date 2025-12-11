@@ -65,6 +65,8 @@ class TuiStringBuilder(controller: Controller):
       "Please first goto a group."
     case EventResponse.AddExpenseToGroup(AddExpenseToGroupResult.SharesSumWrong, expense) =>
       "The sum of the shares do not match with the sum of the expense."
+    case EventResponse.AddExpenseToGroup(AddExpenseToGroupResult.InvalidAmount, expense) =>
+      s"Invalid amount: ${expense.amount} (must be greater than 0)"
     case EventResponse.AddExpenseToGroup(
           AddExpenseToGroupResult.SharesPersonNotFound,
           expense

@@ -10,6 +10,7 @@ import de.htwg.swe.evenup.model.financial.Share
 import de.htwg.swe.evenup.model.financial.Expense
 import de.htwg.swe.evenup.model.financial.ExpenseBuilder
 import de.htwg.swe.evenup.model.financial.debt.SimplifiedDebtStrategy
+import de.htwg.swe.evenup.view.tui.ShareParser
 
 trait HandlerTemplate:
   val next: Option[HandlerTemplate]
@@ -141,7 +142,10 @@ case class AddExpenseToGroupHandler(next: Option[HandlerTemplate]) extends Handl
           case Some((expense_name, paid_by, amount, date, shares)) =>
             app.active_group match
               case None =>
-                return EventResponse.AddExpenseToGroup(AddExpenseToGroupResult.NoActiveGroup, failed_expense.build())
+                EventResponse.AddExpenseToGroup(
+                  AddExpenseToGroupResult.NoActiveGroup, 
+                  failed_expense.build()
+                )
 
               case Some(active_group) =>
                 val valid_paid_by = active_group.containsUser(paid_by)
@@ -159,28 +163,40 @@ case class AddExpenseToGroupHandler(next: Option[HandlerTemplate]) extends Handl
 
                 shares match
                   case Some(shares_string) =>
-                    val shares_list = shares_string.split("_").toList.map { s =>
-                      s.split(":") match
-                        case Array(name, amount) => Share(Person(name), amount.toDouble)
-                        case _                   => throw new IllegalArgumentException(s"Invalid share: $s")
-                    }
-                    // TODO: Validate that custom share is valid. All users in group. Sum matches
-                    if shares_list.exists(share => !active_group.members.contains(share.person)) then
-                      EventResponse.AddExpenseToGroup(
-                        AddExpenseToGroupResult.SharesPersonNotFound,
-                        failed_expense.build()
-                      )
-                    else
-                      EventResponse.AddExpenseToGroup(
-                        AddExpenseToGroupResult.Success,
-                        ExpenseBuilder()
-                          .withName(expense_name)
-                          .withAmount(amount)
-                          .onDate(date)
-                          .paidBy(Person(paid_by))
-                          .withShares(shares_list)
-                          .build()
-                      )
+                    ShareParser.parseAndValidate(
+                      shares_string,
+                      amount,
+                      active_group.members
+                    ) match
+                      case Right(shares_list) =>
+                        EventResponse.AddExpenseToGroup(
+                          AddExpenseToGroupResult.Success,
+                          ExpenseBuilder()
+                            .withName(expense_name)
+                            .withAmount(amount)
+                            .onDate(date)
+                            .paidBy(Person(paid_by))
+                            .withShares(shares_list)
+                            .build()
+                        )
+                      
+                      case Left(ShareParser.ParseError.PersonNotInGroup(_)) =>
+                        EventResponse.AddExpenseToGroup(
+                          AddExpenseToGroupResult.SharesPersonNotFound,
+                          failed_expense.build()
+                        )
+                      
+                      case Left(ShareParser.ParseError.ShareSumMismatch(_, _)) =>
+                        EventResponse.AddExpenseToGroup(
+                          AddExpenseToGroupResult.SharesSumWrong,
+                          failed_expense.build()
+                        )
+                      
+                      case Left(error) =>
+                        EventResponse.AddExpenseToGroup(
+                          AddExpenseToGroupResult.InvalidAmount,
+                          failed_expense.build()
+                        )
 
                   case None =>
                     val n     = active_group.members.length
@@ -222,7 +238,7 @@ case class AddExpenseToGroupHandler(next: Option[HandlerTemplate]) extends Handl
                         .build()
                     )
 
-          case _ => return EventResponse.UncoveredFailure("AddExpenseToGroupHandler")
+          case _ => EventResponse.UncoveredFailure("AddExpenseToGroupHandler")
 
       case _ => EventResponse.NextHandler
 

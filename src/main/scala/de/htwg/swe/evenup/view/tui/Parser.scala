@@ -8,10 +8,6 @@ import de.htwg.swe.evenup.model.Person
 
 class Parser:
 
-  def validSharePattern(input: String): Boolean =
-    val pattern = """^([A-Za-z]+:\d+(\.\d+)?)(_[A-Za-z]+:\d+(\.\d+)?)*$""".r
-    pattern.matches(input)
-
   def decorateErrorMessage(key: TuiKeys) =
     new ColorDecorator(
       new BorderDecorator(
@@ -46,13 +42,30 @@ class Parser:
         else Success(tokens)
       case TuiKeys.addExpense.key =>
         tokens.length match
-          case 4 => // no shares and no date given
-            if tokens(3).toDoubleOption == None then Failure(new Exception(decorateErrorMessage(TuiKeys.addExpense)))
-            else Success(tokens)
-          case 5 => // share given
-            if tokens(3).toDoubleOption == None then Failure(new Exception(decorateErrorMessage(TuiKeys.addExpense)))
-            else if !validSharePattern(tokens(4)) then Failure(new Exception(decorateErrorMessage(TuiKeys.addExpense)))
-            else Success(tokens)
+          case 4 =>
+            tokens(3).toDoubleOption match
+              case Some(_) => Success(tokens)
+              case None    => Failure(new Exception(decorateErrorMessage(TuiKeys.addExpense)))
+          
+          case 5 =>
+            tokens(3).toDoubleOption match
+              case None => 
+                Failure(new Exception(decorateErrorMessage(TuiKeys.addExpense)))
+              case Some(_) =>
+                ShareParser.parseShares(tokens(4)) match
+                  case Right(_) => 
+                    Success(tokens)
+                  case Left(error) =>
+                    val errorMsg = new ColorDecorator(
+                      new BorderDecorator(
+                        new TextComponent(
+                          s"Invalid shares format!\n${error.toMessage}\n> ${TuiKeys.addExpense.key} ${TuiKeys.addExpense.usage}"
+                        ),
+                        "="
+                      ),
+                      ConsoleColors.BRIGHT_RED
+                    ).render
+                    Failure(new Exception(errorMsg))
           // TODO: add case for date given
           case _ => Failure(new Exception(decorateErrorMessage(TuiKeys.addExpense)))
 

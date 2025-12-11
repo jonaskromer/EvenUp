@@ -101,13 +101,15 @@ class Controller(var app: App) extends Observable:
       case EventResponse.AddExpenseToGroup(AddExpenseToGroupResult.Success, expense) =>
         undoManager.doStep(AddExpenseToGroupCommand(this, expense))
       case EventResponse.AddExpenseToGroup(AddExpenseToGroupResult.NoActiveGroup, expense) =>
-        notifyObservers(EventResponse.AddExpenseToGroup(AddExpenseToGroupResult.NoActiveGroup, expense))
+        notifyObservers(response)
       case EventResponse.AddExpenseToGroup(AddExpenseToGroupResult.PaidByNotFound, expense) =>
-        notifyObservers(EventResponse.AddExpenseToGroup(AddExpenseToGroupResult.PaidByNotFound, expense))
+        notifyObservers(response)
       case EventResponse.AddExpenseToGroup(AddExpenseToGroupResult.InvalidAmount, expense) =>
-        notifyObservers(EventResponse.AddExpenseToGroup(AddExpenseToGroupResult.InvalidAmount, expense))
+        notifyObservers(response)
       case EventResponse.AddExpenseToGroup(AddExpenseToGroupResult.SharesPersonNotFound, expense) =>
-        notifyObservers(EventResponse.AddExpenseToGroup(AddExpenseToGroupResult.SharesPersonNotFound, expense))
+        notifyObservers(response)
+      case EventResponse.AddExpenseToGroup(AddExpenseToGroupResult.SharesSumWrong, expense) =>
+        notifyObservers(response)
       case _ => EventResponse.UncoveredFailure("addExpenseToGroup")
 
   def setDebtStrategy(strategy: String): Unit =

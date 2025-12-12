@@ -13,6 +13,7 @@ import de.htwg.swe.evenup.control.*
 import de.htwg.swe.evenup.util.{Observer, ObservableEvent}
 import de.htwg.swe.evenup.model.{Date, Person, Group}
 import de.htwg.swe.evenup.model.state.*
+import scala.compiletime.uninitialized
 
 class Gui(controller: Controller) extends Observer with JFXApp3:
 
@@ -29,13 +30,12 @@ class Gui(controller: Controller) extends Observer with JFXApp3:
     font = Font.font("Arial", FontWeight.Bold, 14)
   }
 
-  // statt `= _`
-  private var currentScene: Scene = null
-  private var mainStage: JFXApp3.PrimaryStage = null
+  private var currentScene: Scene = uninitialized
+  private var mainStage: JFXApp3.PrimaryStage = uninitialized
 
   override def start(): Unit =
     mainStage = new JFXApp3.PrimaryStage {
-      title = "EvenUp - Expense Tracker"
+      title = "EvenUp - split expenses with friends"
       width = 800
       height = 600
     }
@@ -145,16 +145,6 @@ class Gui(controller: Controller) extends Observer with JFXApp3:
           groupNameField.text = ""
     }
 
-    val removeButton = new Button("Remove Group") {
-      onAction = _ =>
-        val selected = groupsListView.selectionModel().selectedItem.value
-        if selected != null then
-          // TODO: Implement remove group in controller
-          updateStatus(s"Remove functionality coming soon for: $selected", Color.Orange)
-        else
-          updateStatus("Please select a group to remove", Color.Red)
-    }
-
     val layout = new BorderPane {
       padding = Insets(20)
       top = new VBox(10) {
@@ -180,7 +170,6 @@ class Gui(controller: Controller) extends Observer with JFXApp3:
             children = List(
               groupNameField,
               addButton,
-              removeButton
             )
           },
           createStatusBar()

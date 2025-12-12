@@ -15,333 +15,271 @@ import de.htwg.swe.evenup.model.{Date, Person, Group}
 import de.htwg.swe.evenup.model.state.*
 
 class Gui(controller: Controller) extends Observer with JFXApp3:
-  
+
   controller.add(this)
-  
-  // Observable buffers for UI components
-  private val groupsList = ObservableBuffer[String]()
+
+  private val groupsList  = ObservableBuffer[String]()
   private val membersList = ObservableBuffer[String]()
   private val expensesList = ObservableBuffer[String]()
-  private val debtsList = ObservableBuffer[String]()
-  
-  // Status message text component
+  private val debtsList   = ObservableBuffer[String]()
+
   private val statusMessage = new Text {
     text = "Welcome to EvenUp!"
     fill = Color.Green
     font = Font.font("Arial", FontWeight.Bold, 14)
   }
-  
+
+  // statt `= _`
+  private var currentScene: Scene = null
+  private var mainStage: JFXApp3.PrimaryStage = null
+
   override def start(): Unit =
-    stage = new JFXApp3.PrimaryStage {
+    mainStage = new JFXApp3.PrimaryStage {
       title = "EvenUp - Expense Tracker"
-      width = 1000
-      height = 700
-      scene = new Scene {
-        content = createMainLayout()
-      }
+      width = 800
+      height = 600
     }
-    updateGroupsList()
-  
+    showGroupsPage()
+    stage = mainStage
+
   override def update(event: ObservableEvent): Unit =
     Platform.runLater {
       event match
         case EventResponse.AddGroup(AddGroupResult.Success, group) =>
           updateStatus(s"Added group: ${group.name}", Color.Green)
           updateGroupsList()
-          updateActiveGroupView()
-        
+
         case EventResponse.AddGroup(AddGroupResult.GroupExists, group) =>
           updateStatus(s"Group ${group.name} already exists!", Color.Red)
-        
+
         case EventResponse.GotoGroup(GotoGroupResult.Success, group) =>
           updateStatus(s"Switched to group: ${group.name}", Color.Green)
-          updateActiveGroupView()
-        
+          showGroupDetailPage(group)
+
         case EventResponse.GotoGroup(GotoGroupResult.SuccessEmptyGroup, group) =>
           updateStatus(s"Group ${group.name} is empty. Add some users!", Color.Orange)
-          updateActiveGroupView()
-        
+          showGroupDetailPage(group)
+
         case EventResponse.GotoGroup(GotoGroupResult.GroupNotFound, group) =>
           updateStatus(s"Group ${group.name} not found!", Color.Red)
-        
+
         case EventResponse.AddUserToGroup(AddUserToGroupResult.Success, user, group) =>
           updateStatus(s"Added ${user.name} to group", Color.Green)
-          updateActiveGroupView()
-        
+          updateMembersAndExpenses()
+
         case EventResponse.AddUserToGroup(AddUserToGroupResult.UserAlreadyAdded, user, _) =>
           updateStatus(s"User ${user.name} already in group!", Color.Red)
-        
+
         case EventResponse.AddUserToGroup(AddUserToGroupResult.NoActiveGroup, _, _) =>
           updateStatus("No active group selected!", Color.Red)
-        
+
         case EventResponse.AddExpenseToGroup(AddExpenseToGroupResult.Success, expense) =>
           updateStatus(s"Added expense: ${expense.name}", Color.Green)
-          updateActiveGroupView()
-        
+          updateMembersAndExpenses()
+
         case EventResponse.AddExpenseToGroup(AddExpenseToGroupResult.NoActiveGroup, _) =>
           updateStatus("No active group selected!", Color.Red)
-        
+
         case EventResponse.AddExpenseToGroup(AddExpenseToGroupResult.PaidByNotFound, expense) =>
           updateStatus(s"User ${expense.paid_by.name} not in group!", Color.Red)
-        
+
         case EventResponse.AddExpenseToGroup(AddExpenseToGroupResult.InvalidAmount, _) =>
           updateStatus("Invalid amount! Must be positive.", Color.Red)
-        
+
         case EventResponse.AddExpenseToGroup(AddExpenseToGroupResult.SharesPersonNotFound, _) =>
           updateStatus("Person in shares not found in group!", Color.Red)
-        
+
         case EventResponse.AddExpenseToGroup(AddExpenseToGroupResult.SharesSumWrong, _) =>
           updateStatus("Share amounts don't match total expense!", Color.Red)
-        
+
         case EventResponse.CalculateDebts(CalculateDebtsResult.Success, debts) =>
           updateDebtsView(debts)
           updateStatus(s"Calculated ${debts.length} debts", Color.Green)
-        
+
         case EventResponse.SetDebtStrategy(SetDebtStrategyResult.Success, strategy) =>
           updateStatus(s"Switched to ${strategy} strategy", Color.Green)
-        
+
         case EventResponse.Undo(UndoResult.Success, _) =>
           updateStatus("Undo successful", Color.Green)
-          updateGroupsList()
-          updateActiveGroupView()
-        
+          refreshCurrentPage()
+
         case EventResponse.Undo(UndoResult.EmptyStack, _) =>
           updateStatus("Nothing to undo", Color.Orange)
-        
+
         case EventResponse.Redo(RedoResult.Success, _) =>
           updateStatus("Redo successful", Color.Green)
-          updateGroupsList()
-          updateActiveGroupView()
-        
+          refreshCurrentPage()
+
         case EventResponse.Redo(RedoResult.EmptyStack, _) =>
           updateStatus("Nothing to redo", Color.Orange)
-        
+
         case EventResponse.MainMenu =>
           updateStatus("Returned to main menu", Color.Green)
-          updateActiveGroupView()
-        
+          showGroupsPage()
+
         case _ =>
     }
-  
-  private def createMainLayout(): BorderPane =
-    new BorderPane {
-      padding = Insets(10)
-      top = createMenuBar()
-      center = createCenterPane()
-      bottom = createStatusBar()
-    }
-  
-  private def createMenuBar(): MenuBar =
-    new MenuBar {
-      menus = List(
-        new Menu("File") {
-          items = List(
-            new MenuItem("Main Menu") {
-              onAction = handle { controller.gotoMainMenu }
-            },
-            new SeparatorMenuItem(),
-            new MenuItem("Exit") {
-              onAction = handle { controller.quit }
-            }
-          )
-        },
-        new Menu("Edit") {
-          items = List(
-            new MenuItem("Undo") {
-              onAction = handle { controller.undo() }
-            },
-            new MenuItem("Redo") {
-              onAction = handle { controller.redo() }
-            }
-          )
-        },
-        new Menu("Strategy") {
-          items = List(
-            new MenuItem("Normal") {
-              onAction = handle { controller.setDebtStrategy("normal") }
-            },
-            new MenuItem("Simplified") {
-              onAction = handle { controller.setDebtStrategy("simplified") }
-            }
-          )
-        }
-      )
-    }
-  
-  private def createCenterPane(): SplitPane =
-    new SplitPane {
-      items.addAll(
-        createLeftPanel(),
-        createRightPanel()
-      )
-      dividerPositions = 0.3
-    }
-  
-  private def createLeftPanel(): VBox =
-    new VBox(10) {
-      padding = Insets(10)
-      children = List(
-        new Label("Groups") {
-          font = Font.font("Arial", FontWeight.Bold, 16)
-        },
-        createGroupsView(),
-        createNewGroupSection()
-      )
-    }
-  
-  private def createGroupsView(): VBox =
-    val listView = new ListView[String] {
+
+  private def showGroupsPage(): Unit =
+    updateGroupsList()
+
+    val groupsListView = new ListView[String] {
       items = groupsList
-      prefHeight = 300
-      onMouseClicked = event => {
-        if (event.clickCount == 2 && selectionModel().selectedItem.value != null) {
-          controller.gotoGroup(selectionModel().selectedItem.value)
-        }
-      }
+      prefHeight = 400
+      onMouseClicked = event =>
+        if event.clickCount == 2 && selectionModel().selectedItem.value != null then
+          val groupName = selectionModel().selectedItem.value
+          controller.gotoGroup(groupName)
     }
-    
-    new VBox(5) {
-      children = List(
-        listView,
-        new Label("Double-click to open group") {
-          font = Font.font(10)
-          textFill = Color.Gray
-        }
-      )
-    }
-  
-  private def createNewGroupSection(): VBox =
+
     val groupNameField = new TextField {
-      promptText = "Group name"
+      promptText = "Enter group name"
+      prefWidth = 300
     }
-    
-    val addButton = new Button("Create Group") {
-      maxWidth = Double.MaxValue
-      onAction = handle {
+
+    val addButton = new Button("Add Group") {
+      onAction = _ =>
         val name = groupNameField.text.value.trim
-        if (name.nonEmpty) {
+        if name.nonEmpty then
           controller.addGroup(name)
           groupNameField.text = ""
-        }
+    }
+
+    val removeButton = new Button("Remove Group") {
+      onAction = _ =>
+        val selected = groupsListView.selectionModel().selectedItem.value
+        if selected != null then
+          // TODO: Implement remove group in controller
+          updateStatus(s"Remove functionality coming soon for: $selected", Color.Orange)
+        else
+          updateStatus("Please select a group to remove", Color.Red)
+    }
+
+    val layout = new BorderPane {
+      padding = Insets(20)
+      top = new VBox(10) {
+        alignment = Pos.Center
+        children = List(
+          new Label("Groups") {
+            font = Font.font("Arial", FontWeight.Bold, 24)
+          },
+          new Label("Double-click a group to open it") {
+            font = Font.font("Arial", 12)
+            textFill = Color.Gray
+          }
+        )
+      }
+      center = new VBox(10) {
+        padding = Insets(20, 0, 20, 0)
+        children = List(groupsListView)
+      }
+      bottom = new VBox(10) {
+        children = List(
+          new HBox(10) {
+            alignment = Pos.Center
+            children = List(
+              groupNameField,
+              addButton,
+              removeButton
+            )
+          },
+          createStatusBar()
+        )
       }
     }
-    
-    new VBox(5) {
-      children = List(
-        new Separator(),
-        groupNameField,
-        addButton
-      )
+
+    mainStage.scene = new Scene {
+      content = layout
     }
-  
-  private def createRightPanel(): VBox =
-    new VBox(10) {
+
+  private def showGroupDetailPage(group: Group): Unit =
+    updateMembersAndExpenses()
+    debtsList.clear()
+
+    val backButton = new Button("← Back to Groups") {
+      onAction = _ => controller.gotoMainMenu
+    }
+
+    val groupTitle = new Label(group.name) {
+      font = Font.font("Arial", FontWeight.Bold, 24)
+    }
+
+    val header = new HBox(20) {
       padding = Insets(10)
-      children = List(
-        createActiveGroupSection(),
-        new Separator(),
-        createMembersSection(),
-        new Separator(),
-        createExpensesSection(),
-        new Separator(),
-        createDebtsSection()
-      )
+      alignment = Pos.CenterLeft
+      children = List(backButton, groupTitle)
     }
-  
-  private def createActiveGroupSection(): VBox =
-    val activeGroupLabel = new Label {
-      text = controller.app.active_group match
-        case Some(group) => group.name
-        case None => "No group selected"
-      font = Font.font("Arial", FontWeight.Bold, 18)
-    }
-    
-    new VBox(5) {
-      children = List(
-        activeGroupLabel,
-        new Button("Calculate Debts") {
-          onAction = handle {
-            controller.calculateDebts()
-          }
-        }
-      )
-    }
-  
-  private def createMembersSection(): VBox =
+
     val memberNameField = new TextField {
       promptText = "Member name"
+      prefWidth = 200
     }
-    
+
     val addMemberButton = new Button("Add Member") {
-      onAction = handle {
+      onAction = _ =>
         val name = memberNameField.text.value.trim
-        if (name.nonEmpty) {
+        if name.nonEmpty then
           controller.addUserToGroup(name)
           memberNameField.text = ""
-        }
-      }
     }
-    
+
     val membersListView = new ListView[String] {
       items = membersList
-      prefHeight = 100
+      prefHeight = 150
     }
-    
-    new VBox(5) {
+
+    val membersSection = new VBox(10) {
       children = List(
         new Label("Members") {
-          font = Font.font("Arial", FontWeight.Bold, 14)
+          font = Font.font("Arial", FontWeight.Bold, 16)
         },
         membersListView,
-        new HBox(5) {
+        new HBox(10) {
           children = List(memberNameField, addMemberButton)
         }
       )
     }
-  
-  private def createExpensesSection(): VBox =
+
     val expenseNameField = new TextField {
       promptText = "Expense name"
     }
-    
+
     val paidByField = new TextField {
       promptText = "Paid by"
     }
-    
+
     val amountField = new TextField {
       promptText = "Amount"
+      prefWidth = 100
     }
-    
+
     val addExpenseButton = new Button("Add Expense") {
-      onAction = handle {
-        val name = expenseNameField.text.value.trim
-        val paidBy = paidByField.text.value.trim
+      onAction = _ =>
+        val name      = expenseNameField.text.value.trim
+        val paidBy    = paidByField.text.value.trim
         val amountStr = amountField.text.value.trim
-        
-        if (name.nonEmpty && paidBy.nonEmpty && amountStr.nonEmpty) {
-          try {
+
+        if name.nonEmpty && paidBy.nonEmpty && amountStr.nonEmpty then
+          try
             val amount = amountStr.toDouble
             controller.addExpenseToGroup(name, paidBy, amount, Date(1, 1, 2025))
             expenseNameField.text = ""
             paidByField.text = ""
             amountField.text = ""
-          } catch {
+          catch
             case _: NumberFormatException =>
               updateStatus("Invalid amount format!", Color.Red)
-          }
-        }
-      }
     }
-    
+
     val expensesListView = new ListView[String] {
       items = expensesList
-      prefHeight = 150
+      prefHeight = 200
     }
-    
-    new VBox(5) {
+
+    val expensesSection = new VBox(10) {
       children = List(
         new Label("Expenses") {
-          font = Font.font("Arial", FontWeight.Bold, 14)
+          font = Font.font("Arial", FontWeight.Bold, 16)
         },
         expensesListView,
         new GridPane {
@@ -354,71 +292,156 @@ class Gui(controller: Controller) extends Observer with JFXApp3:
         }
       )
     }
-  
-  private def createDebtsSection(): VBox =
+
+    val calculateDebtsButton = new Button("Calculate Debts") {
+      prefWidth = 150
+      onAction = _ => controller.calculateDebts()
+    }
+
+    val strategyToggle = new ToggleGroup()
+
+    val normalRadio = new RadioButton("Normal") {
+      toggleGroup = strategyToggle
+      selected = true
+      onAction = _ => controller.setDebtStrategy("normal")
+    }
+
+    val simplifiedRadio = new RadioButton("Simplified") {
+      toggleGroup = strategyToggle
+      onAction = _ => controller.setDebtStrategy("simplified")
+    }
+
     val debtsListView = new ListView[String] {
       items = debtsList
-      prefHeight = 100
+      prefHeight = 150
     }
-    
-    new VBox(5) {
+
+    val debtsSection = new VBox(10) {
       children = List(
         new Label("Debts") {
-          font = Font.font("Arial", FontWeight.Bold, 14)
+          font = Font.font("Arial", FontWeight.Bold, 16)
+        },
+        new HBox(10) {
+          alignment = Pos.CenterLeft
+          children = List(
+            calculateDebtsButton,
+            new Label("Strategy:"),
+            normalRadio,
+            simplifiedRadio
+          )
         },
         debtsListView
       )
     }
-  
+
+    val contentArea = new VBox(20) {
+      padding = Insets(20)
+      children = List(
+        membersSection,
+        new Separator(),
+        expensesSection,
+        new Separator(),
+        debtsSection
+      )
+    }
+
+    val scrollPane = new ScrollPane {
+      content = contentArea
+      fitToWidth = true
+    }
+
+    val layout = new BorderPane {
+      top = new VBox {
+        children = List(
+          createMenuBar(),
+          header
+        )
+      }
+      center = scrollPane
+      bottom = createStatusBar()
+    }
+
+    mainStage.scene = new Scene {
+      content = layout
+    }
+
+  private def createMenuBar(): MenuBar =
+    new MenuBar {
+      menus = List(
+        new Menu("File") {
+          items = List(
+            new MenuItem("Main Menu") {
+              onAction = _ => controller.gotoMainMenu
+            },
+            new SeparatorMenuItem(),
+            new MenuItem("Exit") {
+              onAction = _ => controller.quit
+            }
+          )
+        },
+        new Menu("Edit") {
+          items = List(
+            new MenuItem("Undo") {
+              onAction = _ => controller.undo()
+            },
+            new MenuItem("Redo") {
+              onAction = _ => controller.redo()
+            }
+          )
+        }
+      )
+    }
+
   private def createStatusBar(): HBox =
     new HBox {
       padding = Insets(5)
       style = "-fx-background-color: #f0f0f0;"
       children = List(statusMessage)
     }
-  
+
   private def updateStatus(message: String, color: Color): Unit =
     statusMessage.text = message
     statusMessage.fill = color
-  
+
   private def updateGroupsList(): Unit =
     groupsList.clear()
     controller.app.allGroups.foreach(g => groupsList += g.name)
-  
-  private def updateActiveGroupView(): Unit =
+
+  private def updateMembersAndExpenses(): Unit =
     controller.app.active_group match
       case Some(group) =>
-        // Update members
         membersList.clear()
         group.members.foreach(m => membersList += m.name)
-        
-        // Update expenses
+
         expensesList.clear()
-        group.expenses.foreach(e => 
+        group.expenses.foreach(e =>
           expensesList += s"${e.name}: ${e.amount}€ (paid by ${e.paid_by.name})"
         )
-        
-        // Clear debts when group changes
-        debtsList.clear()
-      
+
       case None =>
         membersList.clear()
         expensesList.clear()
-        debtsList.clear()
-  
+
   private def updateDebtsView(debts: List[de.htwg.swe.evenup.model.financial.debt.Debt]): Unit =
     debtsList.clear()
-    if (debts.isEmpty) {
+    if debts.isEmpty then
       debtsList += "No debts - Everyone is even!"
-    } else {
-      debts.foreach(d => 
+    else
+      debts.foreach(d =>
         debtsList += s"${d.from.name} owes ${d.amount}€ to ${d.to.name}"
       )
-    }
+
+  private def refreshCurrentPage(): Unit =
+    controller.app.active_group match
+      case Some(group) =>
+        updateMembersAndExpenses()
+        updateGroupsList()
+      case None =>
+        updateGroupsList()
 
 object GuiApp:
   def apply(controller: Controller): Gui = new Gui(controller)
-  
+
   def startGui(controller: Controller): Unit =
     val gui = new Gui(controller)
     gui.main(Array())

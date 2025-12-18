@@ -35,12 +35,13 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
       new ListView[String] {
         items = ObservableBuffer(group.members.map(_.name)*)
         prefHeight = 400
+        style = ThemeManager.listViewStyle()
       }
 
     val addMemberBtn =
       new Button {
         text = "+"
-        style = "-fx-font-size: 24px; -fx-background-color: #27ae60; -fx-text-fill: white; -fx-background-radius: 25;"
+        style = ThemeManager.addButtonStyle()
         prefWidth = 50
         prefHeight = 50
         onAction = _ => showAddMemberDialog()
@@ -53,7 +54,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
         alignment = Pos.CenterLeft
         children = Seq(
           new Label("Members") {
-            style = "-fx-font-size: 18px; -fx-font-weight: bold;"
+            style = ThemeManager.boldLabelStyle("18px")
           },
           new Region { hgrow = Priority.Always },
           addMemberBtn
@@ -62,6 +63,8 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
 
     new VBox {
       padding = Insets(10)
+      spacing = 10
+      style = s"-fx-background-color: ${ThemeManager.Colors.backgroundColor};"
       children = Seq(header, membersList)
     }
   }
@@ -85,7 +88,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
     val addBtn =
       new Button {
         text = "Add Member"
-        style = "-fx-background-color: #27ae60; -fx-text-fill: white;"
+        style = ThemeManager.addButtonStyle()
         onAction =
           _ => {
             if (!nameField.text.value.isEmpty) {
@@ -99,7 +102,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
     val cancelBtn =
       new Button {
         text = "Cancel"
-        style = "-fx-background-color: #95a5a6; -fx-text-fill: white;"
+        style = ThemeManager.cancelButtonStyle()
         onAction =
           _ => {
             loadingIndicator.visible = false
@@ -116,7 +119,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
             alignment = Pos.Center
             children = Seq(
               new Label("Enter member name:") {
-                style = "-fx-font-size: 14px;"
+                style = ThemeManager.labelStyle()
               },
               nameField,
               new HBox {
@@ -138,12 +141,13 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
       new ListView[String] {
         items = ObservableBuffer(group.expenses.map(_.toString)*)
         prefHeight = 400
+        style = ThemeManager.listViewStyle()
       }
 
     val addExpenseBtn =
       new Button {
         text = "+"
-        style = "-fx-font-size: 24px; -fx-background-color: #27ae60; -fx-text-fill: white; -fx-background-radius: 25;"
+        style = ThemeManager.addButtonStyle()
         prefWidth = 50
         prefHeight = 50
         onAction = _ => showAddExpenseDialog()
@@ -156,7 +160,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
         alignment = Pos.CenterLeft
         children = Seq(
           new Label("Expenses") {
-            style = "-fx-font-size: 18px; -fx-font-weight: bold;"
+            style = ThemeManager.boldLabelStyle("18px")
           },
           new Region { hgrow = Priority.Always },
           addExpenseBtn
@@ -187,6 +191,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
     new VBox {
       padding = Insets(10)
       spacing = 10
+      style = s"-fx-background-color: ${ThemeManager.Colors.backgroundColor};"
       children = Seq(header, expensesList, lineChart)
     }
   }
@@ -269,13 +274,14 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
           "Shares (format: Person:Amount_Person:Amount)\nExample: Alice:25.0_Bob:25.0\nLeave empty for equal split"
         prefRowCount = 4
         wrapText = true
+        style = ThemeManager.textAreaStyle()
         prefWidth = 400
       }
 
     val addBtn =
       new Button {
         text = "Add Expense"
-        style = "-fx-background-color: #27ae60; -fx-text-fill: white;"
+        style = ThemeManager.addButtonStyle()
         prefWidth = 120
         onAction =
           _ => {
@@ -311,7 +317,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
     val cancelBtn =
       new Button {
         text = "Cancel"
-        style = "-fx-background-color: #95a5a6; -fx-text-fill: white;"
+        style = ThemeManager.cancelButtonStyle()
         prefWidth = 120
         onAction =
           _ => {
@@ -328,15 +334,15 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
             spacing = 15
             alignment = Pos.TopCenter
             children = Seq(
-              new Label("Expense Name:") { style = "-fx-font-weight: bold;" },
+              new Label("Expense Name:") { style = ThemeManager.boldLabelStyle() },
               nameField,
-              new Label("Paid By:") { style = "-fx-font-weight: bold;" },
+              new Label("Paid By:") { style = ThemeManager.boldLabelStyle() },
               paidByCombo,
-              new Label("Amount:") { style = "-fx-font-weight: bold;" },
+              new Label("Amount:") { style = ThemeManager.boldLabelStyle() },
               amountField,
-              new Label("Date (DD MM YYYY):") { style = "-fx-font-weight: bold;" },
+              new Label("Date (DD MM YYYY):") { style = ThemeManager.boldLabelStyle() },
               dateBox,
-              new Label("Shares (optional):") { style = "-fx-font-weight: bold;" },
+              new Label("Shares (optional):") { style = ThemeManager.boldLabelStyle() },
               sharesArea,
               new HBox {
                 spacing = 10
@@ -382,7 +388,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
     val calculateBtn =
       new Button {
         text = "Calculate Debts"
-        style = "-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-size: 14px;"
+        style = ThemeManager.errorButtonStyle()
         prefWidth = 200
         onAction =
           _ => {
@@ -402,6 +408,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
         editable = false
         prefRowCount = 8
         wrapText = true
+        style = ThemeManager.textAreaStyle()
         text = {
           val debts = group.calculateDebt()
           if (debts.nonEmpty)
@@ -430,13 +437,14 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
 
     val header =
       new Label("Debt Calculation") {
-        style = "-fx-font-size: 18px; -fx-font-weight: bold;"
+        style = ThemeManager.boldLabelStyle("18px")
       }
 
     new VBox {
       padding = Insets(10)
       spacing = 10
       alignment = Pos.TopCenter
+      style = s"-fx-background-color: ${ThemeManager.Colors.backgroundColor};"
       children = Seq(
         header,
         new HBox {
@@ -447,7 +455,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
         },
         calculateBtn,
         new Label("Debts:") {
-          style = "-fx-font-weight: bold; -fx-font-size: 14px;"
+          style = ThemeManager.boldLabelStyle("14px")
         },
         debtsArea,
         barChart

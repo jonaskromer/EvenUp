@@ -31,28 +31,45 @@ class MainView(controller: IController) extends Observer {
 
   createLoadingIndicator()
 
+  // Initialize TabPane styling
+  tabPane.style = ThemeManager.tabPaneStyle()
+
+  ThemeManager.subscribe(() => {
+    tabPane.style = ThemeManager.tabPaneStyle()
+    // Update all tabs' style
+    tabPane.tabs.foreach { tab =>
+      tab.style = ThemeManager.tabStyle() + "; " + ThemeManager.tabTextStyle()
+    }
+  })
+
   // Top Menu Bar
   private val menuBar =
     new HBox {
       padding = Insets(10)
       spacing = 20
       alignment = Pos.CenterLeft
-      style = "-fx-background-color: #2c3e50;"
+      style = ThemeManager.menuBarStyle()
 
       children = Seq(
         createLogo(),
         createUndoButton(),
         createRedoButton(),
         new Region { hgrow = Priority.Always },
+        createThemeToggleButton(),
         loadingIndicator
       )
     }
+
+  ThemeManager.subscribe(() => {
+    menuBar.style = ThemeManager.menuBarStyle()
+  })
 
   // Home Tab (unclosable)
   private val homeTab =
     new Tab {
       text = "Home"
       closable = false
+      style = ThemeManager.tabStyle() + "; " + ThemeManager.tabTextStyle()
       content = createHomeView()
       onSelectionChanged =
         _ => {
@@ -90,7 +107,7 @@ class MainView(controller: IController) extends Observer {
   private def createUndoButton(): Button = {
     new Button {
       text = "↶ Undo"
-      style = "-fx-background-color: #34495e; -fx-text-fill: white;"
+      style = ThemeManager.buttonStyle()
       onAction =
         _ => {
           loadingIndicator.visible = true
@@ -102,12 +119,38 @@ class MainView(controller: IController) extends Observer {
   private def createRedoButton(): Button = {
     new Button {
       text = "↷ Redo"
-      style = "-fx-background-color: #34495e; -fx-text-fill: white;"
+      style = ThemeManager.buttonStyle()
       onAction =
         _ => {
           loadingIndicator.visible = true
           controller.redo()
         }
+    }
+  }
+
+  private def createThemeToggleButton(): Button = {
+    new Button {
+      text = "🌓"
+      style = ThemeManager.buttonStyle()
+      onAction =
+        _ => {
+          ThemeManager.toggleTheme()
+          updateAllViewsForThemeChange()
+        }
+    }
+  }
+
+  private def updateAllViewsForThemeChange(): Unit = {
+    // Update menu bar is handled by subscription
+    // Refresh home tab
+    if (homeTab.content != null) {
+      homeTab.content = createHomeView()
+    }
+    // Refresh all group tabs
+    groupTabs.foreach { case (groupName, _) =>
+      controller.app.getGroup(groupName).foreach { group =>
+        groupTabs(groupName).content = new GroupView(controller, group, loadingIndicator).getRoot
+      }
     }
   }
 
@@ -131,14 +174,14 @@ class MainView(controller: IController) extends Observer {
     val searchBtn =
       new Button {
         text = "Search"
-        style = "-fx-background-color: #3498db; -fx-text-fill: white;"
+        style = ThemeManager.primaryButtonStyle()
         onAction = _ => updateGroupList(searchField.text.value)
       }
 
     val addGroupBtn =
       new Button {
         text = "+"
-        style = "-fx-font-size: 24px; -fx-background-color: #27ae60; -fx-text-fill: white; -fx-background-radius: 25;"
+        style = ThemeManager.addButtonStyle()
         prefWidth = 50
         prefHeight = 50
         onAction = _ => showAddGroupDialog()
@@ -149,6 +192,7 @@ class MainView(controller: IController) extends Observer {
         padding = Insets(20)
         spacing = 10
         alignment = Pos.CenterLeft
+        style = s"-fx-background-color: ${ThemeManager.Colors.backgroundColor};"
         children = Seq(searchField, searchBtn, addGroupBtn)
       }
 
@@ -156,12 +200,13 @@ class MainView(controller: IController) extends Observer {
       new ListView[String] {
         items = ObservableBuffer[String]()
         prefHeight = 600
+        style = ThemeManager.listViewStyle()
       }
 
     val openGroupBtn =
       new Button {
         text = "Open Group"
-        style = "-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-size: 14px;"
+        style = ThemeManager.primaryButtonStyle()
         prefWidth = 150
         prefHeight = 40
         onAction =
@@ -178,6 +223,7 @@ class MainView(controller: IController) extends Observer {
       new HBox {
         padding = Insets(20)
         spacing = 10
+        style = s"-fx-background-color: ${ThemeManager.Colors.backgroundColor};"
         children = Seq(
           new VBox {
             children = Seq(groupListView)
@@ -195,6 +241,8 @@ class MainView(controller: IController) extends Observer {
     updateGroupList()
 
     new VBox {
+      spacing = 10
+      style = s"-fx-background-color: ${ThemeManager.Colors.backgroundColor};"
       children = Seq(searchBox, listContainer)
     }
   }
@@ -233,7 +281,7 @@ class MainView(controller: IController) extends Observer {
     val addBtn =
       new Button {
         text = "Add Group"
-        style = "-fx-background-color: #27ae60; -fx-text-fill: white;"
+        style = ThemeManager.plusButtonStyle()
         onAction =
           _ => {
             if (!nameField.text.value.isEmpty) {
@@ -247,7 +295,7 @@ class MainView(controller: IController) extends Observer {
     val cancelBtn =
       new Button {
         text = "Cancel"
-        style = "-fx-background-color: #95a5a6; -fx-text-fill: white;"
+        style = ThemeManager.cancelButtonStyle()
         onAction =
           _ => {
             loadingIndicator.visible = false
@@ -264,7 +312,7 @@ class MainView(controller: IController) extends Observer {
             alignment = Pos.Center
             children = Seq(
               new Label("Enter group name:") {
-                style = "-fx-font-size: 14px;"
+                style = ThemeManager.labelStyle()
               },
               nameField,
               new HBox {
@@ -288,6 +336,7 @@ class MainView(controller: IController) extends Observer {
         new Tab {
           text = groupName
           closable = true
+          style = ThemeManager.tabStyle() + "; " + ThemeManager.tabTextStyle()
           onClosed =
             _ => {
               groupTabs -= groupName

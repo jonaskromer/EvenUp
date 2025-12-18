@@ -29,9 +29,9 @@ class MainView(controller: IController) extends Observer {
 
   private val tabPane                             = new TabPane()
   private var groupTabs                           = Map[String, Tab]()
-  private var groupListView: ListView[String]     = _
-  private var searchField: TextField              = _
-  private var loadingIndicator: ProgressIndicator = _
+  private var groupListView: ListView[String]     = scala.compiletime.uninitialized
+  private var searchField: TextField              = scala.compiletime.uninitialized
+  private var loadingIndicator: ProgressIndicator = scala.compiletime.uninitialized
 
   createLoadingIndicator()
 

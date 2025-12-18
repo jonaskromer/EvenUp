@@ -5,6 +5,7 @@ import de.htwg.swe.evenup.model.financial.{Expense, Transaction}
 import de.htwg.swe.evenup.model.financial.debt.NormalDebtStrategy
 import org.scalatest.matchers.should.Matchers
 import de.htwg.swe.evenup.model.financial.Share
+import de.htwg.swe.evenup.model.DateComponent.BaseDateImpl.Date
 
 class GroupSpec extends AnyWordSpec with Matchers:
 

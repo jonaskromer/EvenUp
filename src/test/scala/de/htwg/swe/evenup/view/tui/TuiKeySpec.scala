@@ -3,7 +3,7 @@ package de.htwg.swe.evenup.view.tui
 import org.scalatest._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import de.htwg.swe.evenup.model.state.*
+import de.htwg.swe.evenup.model.StateComponent.*
 
 class TuiKeysSpec extends AnyWordSpec with Matchers:
 

@@ -4,7 +4,7 @@ import org.scalatest.*
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-import de.htwg.swe.evenup.control.Controller
+import de.htwg.swe.evenup.control.BaseControllerImpl.Controller
 import de.htwg.swe.evenup.model.{App, Group, Person}
 
 class InGroupStateSpec extends AnyWordSpec with Matchers:

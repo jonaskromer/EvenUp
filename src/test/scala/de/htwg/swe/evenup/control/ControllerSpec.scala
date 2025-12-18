@@ -8,6 +8,7 @@ import de.htwg.swe.evenup.model.financial.debt.{NormalDebtStrategy, SimplifiedDe
 import de.htwg.swe.evenup.model.financial.{Expense, Share}
 import de.htwg.swe.evenup.model.state.{InEmptyGroupState, InGroupState, MainMenuState}
 import de.htwg.swe.evenup.util.Observer
+import de.htwg.swe.evenup.control.BaseControllerImpl.Controller
 
 class ControllerSpec extends AnyWordSpec with Matchers:
 

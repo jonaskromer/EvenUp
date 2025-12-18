@@ -1,11 +1,11 @@
 package de.htwg.swe.evenup
 
-import de.htwg.swe.evenup.model.App
-import de.htwg.swe.evenup.control.Controller
+import de.htwg.swe.evenup.model.AppComponent.BaseAppImpl.App
+import de.htwg.swe.evenup.control.BaseControllerImpl.Controller
 
 import scala.io.StdIn.readLine
 import de.htwg.swe.evenup.view.tui.Tui
-import de.htwg.swe.evenup.model.state.MainMenuState
+import de.htwg.swe.evenup.model.StateComponent.BaseAppStateImpl.MainMenuState
 
 @main def main(): Unit =
 

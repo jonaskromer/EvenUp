@@ -1,17 +1,14 @@
 package de.htwg.swe.evenup.view.tui
 
 import de.htwg.swe.evenup.util.{ObservableEvent, Observer}
-import de.htwg.swe.evenup.model.Person
-import de.htwg.swe.evenup.model.Group
-import de.htwg.swe.evenup.model.financial.Share
 import de.htwg.swe.evenup.control.*
-import de.htwg.swe.evenup.model.financial.debt.NormalDebtStrategy
-import de.htwg.swe.evenup.model.state.AppState
-import de.htwg.swe.evenup.model.Date
+import de.htwg.swe.evenup.model.StateComponent.IAppState
+import de.htwg.swe.evenup.model.DateComponent.BaseDateImpl.Date
 
 import scala.util.{Failure, Success, Try}
+import de.htwg.swe.evenup.control.BaseControllerImpl.Controller
 
-class Tui(controller: Controller) extends Observer:
+class Tui(controller: IController) extends Observer:
 
   controller.add(this)
 
@@ -30,7 +27,7 @@ class Tui(controller: Controller) extends Observer:
 
   print(welcome_message + "\n>")
 
-  def printHelp(state: AppState): Unit =
+  def printHelp(state: IAppState): Unit =
     val keys              = TuiKeys.values.filter(_.allowed(state))
     val maxDescriptionLen = keys.map(_.description.length).max
     val maxKeyLen         = keys.map(_.key.length).max

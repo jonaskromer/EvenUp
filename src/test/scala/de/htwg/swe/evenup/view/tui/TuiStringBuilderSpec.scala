@@ -3,7 +3,7 @@ package de.htwg.swe.evenup.view.tui
 import org.scalatest._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import de.htwg.swe.evenup.control._
+import de.htwg.swe.evenup.control.BaseControllerImpl.*
 import de.htwg.swe.evenup.model._
 import de.htwg.swe.evenup.model.financial.{Expense, Share}
 import de.htwg.swe.evenup.model.financial.debt.{Debt, NormalDebtStrategy, SimplifiedDebtStrategy}

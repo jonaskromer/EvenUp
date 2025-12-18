@@ -2,7 +2,7 @@ package de.htwg.swe.evenup.model.financial.debt
 
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
-import de.htwg.swe.evenup.model.Person
+import de.htwg.swe.evenup.model.PersonComponent.BasePersonComponent.Person
 
 class DebtSpec extends AnyWordSpec with Matchers:
 

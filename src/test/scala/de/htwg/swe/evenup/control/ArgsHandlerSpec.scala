@@ -7,6 +7,7 @@ import de.htwg.swe.evenup.model._
 import de.htwg.swe.evenup.model.financial.debt.{NormalDebtStrategy, SimplifiedDebtStrategy}
 import de.htwg.swe.evenup.model.financial.{Expense, ExpenseBuilder, Share}
 import de.htwg.swe.evenup.model.state.{InGroupState, MainMenuState}
+import de.htwg.swe.evenup.BaseArgsHandlerImpl.ArgsHandler
 
 class ArgsHandlerSpec extends AnyWordSpec with Matchers:
 

@@ -5,7 +5,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
 import de.htwg.swe.evenup.model.Person
-import de.htwg.swe.evenup.model.Date
+import de.htwg.swe.evenup.model.DateComponent.BaseDateImpl.Date
 
 class TransactionSpec extends AnyWordSpec with Matchers:
 

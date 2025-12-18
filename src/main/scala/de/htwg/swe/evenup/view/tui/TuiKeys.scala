@@ -1,8 +1,8 @@
 package de.htwg.swe.evenup.view.tui
 
-import de.htwg.swe.evenup.model.state.AppState
+import de.htwg.swe.evenup.model.StateComponent.IAppState
 
-enum TuiKeys(val key: String, val usage: String, val description: String, val allowed: AppState => Boolean):
+enum TuiKeys(val key: String, val usage: String, val description: String, val allowed: IAppState => Boolean):
   case newGroup  extends TuiKeys(":newgroup", "<group name>", "Add a group", _.canAddGroup)
   case gotoGroup extends TuiKeys(":group", "<group name>", "Open a group", _.canGotoGroup)
 

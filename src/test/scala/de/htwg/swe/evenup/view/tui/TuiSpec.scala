@@ -5,7 +5,7 @@ import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import java.io.{ByteArrayOutputStream, PrintStream}
 
-import de.htwg.swe.evenup.control._
+import de.htwg.swe.evenup.control.BaseControllerImpl.*
 import de.htwg.swe.evenup.model._
 import de.htwg.swe.evenup.model.financial.Expense
 import de.htwg.swe.evenup.model.state.MainMenuState

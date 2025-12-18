@@ -10,10 +10,10 @@ import de.htwg.swe.evenup.control.UndoResult
 import de.htwg.swe.evenup.control.RedoResult
 import de.htwg.swe.evenup.control.CalculateDebtsResult
 import de.htwg.swe.evenup.control.SetDebtStrategyResult
-import de.htwg.swe.evenup.model.Group
-import de.htwg.swe.evenup.control.Controller
+import de.htwg.swe.evenup.model.GroupComponent.BaseGroupImpl.Group
+import de.htwg.swe.evenup.control.IController
 
-class TuiStringBuilder(controller: Controller):
+class TuiStringBuilder(controller: IController):
 
   def getActiveGroupString: String =
     controller.app.active_group match

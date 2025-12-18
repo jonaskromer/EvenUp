@@ -2,7 +2,7 @@ package de.htwg.swe.evenup.model.state
 
 import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
-import de.htwg.swe.evenup.control.Controller
+import de.htwg.swe.evenup.control.BaseControllerImpl.Controller
 import de.htwg.swe.evenup.model.{App, Group, Person}
 
 class MainMenuStateSpec extends AnyWordSpec with Matchers:

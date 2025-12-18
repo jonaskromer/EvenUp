@@ -4,10 +4,11 @@ import org.scalatest._
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 
-import de.htwg.swe.evenup.control._
+import de.htwg.swe.evenup.control.BaseControllerImpl.*
 import de.htwg.swe.evenup.model._
 import de.htwg.swe.evenup.model.financial.debt.NormalDebtStrategy
 import de.htwg.swe.evenup.model.state.MainMenuState
+import de.htwg.swe.evenup.control.BaseControllerImpl.{AddGroupCommand, AddUserToGroupCommand, GotoGroupCommand}
 
 class UndoManagerSpec extends AnyWordSpec with Matchers:
 

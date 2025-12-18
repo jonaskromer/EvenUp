@@ -9,6 +9,8 @@ import de.htwg.swe.evenup.model.financial.Expense
 import de.htwg.swe.evenup.model.financial.debt.{Debt, NormalDebtStrategy, SimplifiedDebtStrategy}
 import de.htwg.swe.evenup.model.state.{InGroupState, MainMenuState}
 import de.htwg.swe.evenup.util.ObservableEvent
+import de.htwg.swe.evenup.control.BaseControllerImpl.Controller
+import de.htwg.swe.evenup.control.BaseControllerImpl.{AddExpenseToGroupCommand, AddGroupCommand, AddUserToGroupCommand, CalculateDebtsCommand, GotoEmptyGroupCommand, GotoGroupCommand, GotoMainMenuCommand, SetDebtCalculationStrategy}
 
 class ControllerCommandsSpec extends AnyWordSpec with Matchers:
 

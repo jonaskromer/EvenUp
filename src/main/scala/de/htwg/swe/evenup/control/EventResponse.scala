@@ -1,11 +1,11 @@
 package de.htwg.swe.evenup.control
 
 import de.htwg.swe.evenup.util.ObservableEvent
-import de.htwg.swe.evenup.model.Group
-import de.htwg.swe.evenup.model.Person
-import de.htwg.swe.evenup.model.financial.Expense
-import de.htwg.swe.evenup.model.financial.debt.Debt
-import de.htwg.swe.evenup.model.financial.debt.DebtCalculationStrategy
+import de.htwg.swe.evenup.model.GroupComponent.IGroup
+import de.htwg.swe.evenup.model.PersonComponent.IPerson
+import de.htwg.swe.evenup.model.financial.DebtComponent.IDebt
+import de.htwg.swe.evenup.model.financial.ExpenseComponent.IExpense
+import de.htwg.swe.evenup.model.financial.DebtComponent.IDebtCalculationStrategy
 
 enum EventResponse extends ObservableEvent:
   case Success
@@ -13,12 +13,12 @@ enum EventResponse extends ObservableEvent:
   case Redo(result: RedoResult, stack_size: Int)
   case Quit
   case MainMenu
-  case AddGroup(result: AddGroupResult, group: Group)
-  case GotoGroup(result: GotoGroupResult, group: Group)
-  case AddUserToGroup(result: AddUserToGroupResult, user: Person, group: Group)
-  case AddExpenseToGroup(result: AddExpenseToGroupResult, expense: Expense)
-  case CalculateDebts(result: CalculateDebtsResult, debts: List[Debt])
-  case SetDebtStrategy(result: SetDebtStrategyResult, strategy: DebtCalculationStrategy)
+  case AddGroup(result: AddGroupResult, group: IGroup)
+  case GotoGroup(result: GotoGroupResult, group: IGroup)
+  case AddUserToGroup(result: AddUserToGroupResult, user: IPerson, group: IGroup)
+  case AddExpenseToGroup(result: AddExpenseToGroupResult, expense: IExpense)
+  case CalculateDebts(result: CalculateDebtsResult, debts: List[IDebt])
+  case SetDebtStrategy(result: SetDebtStrategyResult, strategy: IDebtCalculationStrategy)
   case UncoveredFailure(error_text: String)
   case NextHandler
 

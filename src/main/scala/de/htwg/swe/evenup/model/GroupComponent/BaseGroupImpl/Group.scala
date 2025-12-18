@@ -3,7 +3,6 @@ package de.htwg.swe.evenup.model.GroupComponent.BaseGroupImpl
 import de.htwg.swe.evenup.model.GroupComponent.IGroup
 import de.htwg.swe.evenup.model.PersonComponent.IPerson
 import de.htwg.swe.evenup.model.financial.DebtComponent.IDebt
-import de.htwg.swe.evenup.model.financial.ShareComponent.IShare
 import de.htwg.swe.evenup.model.financial.ExpenseComponent.IExpense
 import de.htwg.swe.evenup.model.financial.TransactionComponent.ITransaction
 import de.htwg.swe.evenup.model.financial.DebtComponent.IDebtCalculationStrategy

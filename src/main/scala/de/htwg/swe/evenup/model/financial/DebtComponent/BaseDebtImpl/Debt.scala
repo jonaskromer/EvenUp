@@ -13,5 +13,5 @@ final case class Debt(
 
   def updateFrom(from: IPerson): IDebt = copy(from = from)
 
-  def updateTo(to: IPerson): IDebt = copy(to = to)
+  def updateTo(to: IPerson): IDebt        = copy(to = to)
   def updateAmount(amount: Double): IDebt = copy(amount = amount)

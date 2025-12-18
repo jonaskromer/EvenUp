@@ -9,14 +9,14 @@ import de.htwg.swe.evenup.model.DateComponent.BaseDateImpl.Date
 import de.htwg.swe.evenup.model.PersonComponent.BasePersonImpl.Person
 
 class ExpenseBuilder extends IExpenseBuilder:
-  private var name: String        = "noexpensenameset"
-  private var amount: Double      = 0.0
+  private var name: String         = "noexpensenameset"
+  private var amount: Double       = 0.0
   private var date: IDate          = Date(1, 1, 2000)
   private var paidBy: IPerson      = Person("nopersonnameset")
   private var shares: List[IShare] = Nil
 
-  def withName(n: String): IExpenseBuilder        = { name = n; this }
-  def withAmount(a: Double): IExpenseBuilder      = { amount = a; this }
+  def withName(n: String): IExpenseBuilder         = { name = n; this }
+  def withAmount(a: Double): IExpenseBuilder       = { amount = a; this }
   def onDate(d: IDate): IExpenseBuilder            = { date = d; this }
   def paidBy(p: IPerson): IExpenseBuilder          = { paidBy = p; this }
   def withShares(s: List[IShare]): IExpenseBuilder = { shares = s; this }

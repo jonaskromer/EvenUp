@@ -11,7 +11,7 @@ final case class Expense(
   date: IDate,
   paid_by: IPerson,
   shares: List[IShare]
-) extends IExpense :
+) extends IExpense:
 
   override def toString(): String =
     val sharesString = shares
@@ -24,7 +24,7 @@ final case class Expense(
 
   def updateAmount(amount: Double): IExpense = copy(amount = amount)
 
-  def updateDate(date: IDate): IExpense = copy(date = date)
+  def updateDate(date: IDate): IExpense        = copy(date = date)
   def updatePaidBy(paid_by: IPerson): IExpense = copy(paid_by = paid_by)
 
   def updateShares(shares: List[IShare]): IExpense = copy(shares = shares)

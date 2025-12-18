@@ -1,5 +1,7 @@
 package de.htwg.swe.evenup.view.gui
 
+import scala.annotation.nowarn
+
 import scalafx.Includes._
 import scalafx.application.Platform
 import scalafx.scene.Scene
@@ -14,6 +16,8 @@ import de.htwg.swe.evenup.control.IController
 import de.htwg.swe.evenup.model.GroupComponent.IGroup
 import de.htwg.swe.evenup.model.DateComponent.BaseDateImpl.Date
 
+@nowarn("msg=Implicit parameters should be provided with a `using` clause")
+@nowarn("msg=-Wconf:msg=Implicit parameters should be provided with a `using` clause:s")
 class GroupView(controller: IController, group: IGroup, loadingIndicator: ProgressIndicator) {
 
   private val splitPane =

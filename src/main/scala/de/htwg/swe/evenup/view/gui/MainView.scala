@@ -14,39 +14,19 @@ import scalafx.animation.RotateTransition
 import scalafx.util.Duration
 import scalafx.scene.text.{Font, FontWeight, Text}
 import scalafx.scene.image.{Image, ImageView}
+import scala.compiletime.uninitialized
 
 import de.htwg.swe.evenup.control.IController
 import de.htwg.swe.evenup.control.EventResponse
 import de.htwg.swe.evenup.model.GroupComponent.IGroup
-import de.htwg.swe.evenup.util.Observer
 import de.htwg.swe.evenup.util.ObservableEvent
 
-class MainView(controller: IController) extends Observer {
+class MainView(controller: IController, loadingIndicator: ProgressIndicator) {
 
   private val tabPane                             = new TabPane()
   private var groupTabs                           = Map[String, Tab]()
-  private var groupListView: ListView[String]     = _
-  private var searchField: TextField              = _
-  private var loadingIndicator: ProgressIndicator = _
-
-  createLoadingIndicator()
-
-  // Top Menu Bar
-  private val menuBar =
-    new HBox {
-      padding = Insets(10)
-      spacing = 20
-      alignment = Pos.CenterLeft
-      style = "-fx-background-color: #2c3e50;"
-
-      children = Seq(
-        createLogo(),
-        createUndoButton(),
-        createRedoButton(),
-        new Region { hgrow = Priority.Always },
-        loadingIndicator
-      )
-    }
+  private var groupListView: ListView[String]     = uninitialized
+  private var searchField: TextField              = uninitialized
 
   // Home Tab (unclosable)
   private val homeTab =
@@ -64,62 +44,7 @@ class MainView(controller: IController) extends Observer {
 
   tabPane.tabs = Seq(homeTab)
 
-  private val root =
-    new BorderPane {
-      top = menuBar
-      center = tabPane
-    }
-
-  def getRoot: BorderPane = root
-
-  private def createLogo(): HBox = {
-    new HBox {
-      spacing = 10
-      alignment = Pos.CenterLeft
-      children = Seq(
-        new ImageView {
-          image = new Image(getClass.getResource("/images/title_image.png").toString)
-          fitWidth = 100
-          fitHeight = 40
-          preserveRatio = true
-        }
-      )
-    }
-  }
-
-  private def createUndoButton(): Button = {
-    new Button {
-      text = "↶ Undo"
-      style = "-fx-background-color: #34495e; -fx-text-fill: white;"
-      onAction =
-        _ => {
-          loadingIndicator.visible = true
-          controller.undo()
-        }
-    }
-  }
-
-  private def createRedoButton(): Button = {
-    new Button {
-      text = "↷ Redo"
-      style = "-fx-background-color: #34495e; -fx-text-fill: white;"
-      onAction =
-        _ => {
-          loadingIndicator.visible = true
-          controller.redo()
-        }
-    }
-  }
-
-  private def createLoadingIndicator(): Unit = {
-    loadingIndicator =
-      new ProgressIndicator {
-        style = "-fx-accent: white;"
-        prefWidth = 25
-        prefHeight = 25
-        visible = false
-      }
-  }
+  def getRoot: TabPane = tabPane
 
   private def createHomeView(): VBox = {
     searchField =
@@ -131,14 +56,14 @@ class MainView(controller: IController) extends Observer {
     val searchBtn =
       new Button {
         text = "Search"
-        style = "-fx-background-color: #3498db; -fx-text-fill: white;"
+        style = "-fx-background-color: #fc5f50; -fx-text-fill: white;"
         onAction = _ => updateGroupList(searchField.text.value)
       }
 
     val addGroupBtn =
       new Button {
         text = "+"
-        style = "-fx-font-size: 24px; -fx-background-color: #27ae60; -fx-text-fill: white; -fx-background-radius: 25;"
+        style = "-fx-font-size: 24px; -fx-background-color: #ffb700; -fx-text-fill: white; -fx-background-radius: 25;"
         prefWidth = 50
         prefHeight = 50
         onAction = _ => showAddGroupDialog()
@@ -149,7 +74,12 @@ class MainView(controller: IController) extends Observer {
         padding = Insets(20)
         spacing = 10
         alignment = Pos.CenterLeft
-        children = Seq(searchField, searchBtn, addGroupBtn)
+        children = Seq(
+          searchField, 
+          searchBtn, 
+          new Region { hgrow = Priority.Always }, 
+          addGroupBtn
+        )
       }
 
     groupListView =
@@ -161,7 +91,7 @@ class MainView(controller: IController) extends Observer {
     val openGroupBtn =
       new Button {
         text = "Open Group"
-        style = "-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-size: 14px;"
+        style = "-fx-background-color: #fc5f50; -fx-text-fill: white; -fx-font-size: 14px;"
         prefWidth = 150
         prefHeight = 40
         onAction =
@@ -185,7 +115,7 @@ class MainView(controller: IController) extends Observer {
           },
           new VBox {
             spacing = 10
-            alignment = Pos.TopCenter
+            alignment = Pos.Center
             children = Seq(openGroupBtn)
           }
         )
@@ -233,7 +163,7 @@ class MainView(controller: IController) extends Observer {
     val addBtn =
       new Button {
         text = "Add Group"
-        style = "-fx-background-color: #27ae60; -fx-text-fill: white;"
+        style = "-fx-background-color: #ffb700; -fx-text-fill: white;"
         onAction =
           _ => {
             if (!nameField.text.value.isEmpty) {
@@ -315,7 +245,7 @@ class MainView(controller: IController) extends Observer {
     }
   }
 
-  override def update(event: ObservableEvent): Unit = {
+  def update(event: ObservableEvent): Unit = {
     Platform.runLater {
       event match {
         case EventResponse.AddGroup(result, group) =>

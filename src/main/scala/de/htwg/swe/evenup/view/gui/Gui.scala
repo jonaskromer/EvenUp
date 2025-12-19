@@ -3,11 +3,29 @@ package de.htwg.swe.evenup.view.gui
 import scalafx.application.JFXApp3
 import scalafx.scene.Scene
 import scalafx.Includes.eventClosureWrapperWithZeroParam
-import de.htwg.swe.evenup.control.IController
+import scalafx.scene.layout.{BorderPane, HBox, Priority, Region}
+import scalafx.scene.control.{Button, ProgressIndicator}
+import scalafx.geometry.{Insets, Pos}
+import scalafx.scene.image.{Image, ImageView}
+import scalafx.scene.paint.Color
+import scala.compiletime.uninitialized
 
-class Gui(controller: IController) extends JFXApp3 {
+import de.htwg.swe.evenup.control.IController
+import de.htwg.swe.evenup.util.Observer
+import de.htwg.swe.evenup.util.ObservableEvent
+
+class Gui(controller: IController) extends JFXApp3 with Observer {
+
+  private var mainView: MainView = uninitialized
+  private var loadingIndicator: ProgressIndicator = uninitialized
+  private var menuBar: HBox = uninitialized
 
   override def start(): Unit = {
+    controller.add(this)
+    createLoadingIndicator()
+    mainView = new MainView(controller, loadingIndicator)
+    createMenuBar()
+
     stage =
       new JFXApp3.PrimaryStage {
         title = "EvenUp - Expense Tracker"
@@ -16,13 +34,86 @@ class Gui(controller: IController) extends JFXApp3 {
 
         scene =
           new Scene {
-            val mainView = new MainView(controller)
-            controller.add(mainView)
-            root = mainView.getRoot
+            root = new BorderPane {
+              top = menuBar
+              center = mainView.getRoot
+            }
 
             onCloseRequest = () => controller.quit
           }
       }
+  }
+
+  private def createLogo(): HBox = {
+    new HBox {
+      spacing = 10
+      alignment = Pos.CenterLeft
+      children = Seq(
+        new ImageView {
+          image = new Image(getClass.getResource("/images/title_image.png").toString)
+          fitWidth = 150
+          fitHeight = 60
+          preserveRatio = true
+        }
+      )
+    }
+  }
+
+  private def createUndoButton(): Button = {
+    new Button {
+      text = "↶ Undo"
+      style = "-fx-background-color: #301c55; -fx-text-fill: white;"
+      onAction =
+        _ => {
+          loadingIndicator.visible = true
+          controller.undo()
+        }
+    }
+  }
+
+  private def createRedoButton(): Button = {
+    new Button {
+      text = "↷ Redo"
+      style = "-fx-background-color: #301c55; -fx-text-fill: white;"
+      onAction =
+        _ => {
+          loadingIndicator.visible = true
+          controller.redo()
+        }
+    }
+  }
+
+  private def createLoadingIndicator(): Unit = {
+    loadingIndicator =
+      new ProgressIndicator {
+        style = "-fx-accent: white;"
+        prefWidth = 25
+        prefHeight = 25
+        visible = false
+      }
+  }
+
+  private def createMenuBar(): Unit = {
+    menuBar =
+      new HBox {
+        padding = Insets(10)
+        spacing = 20
+        alignment = Pos.CenterLeft
+        style = "-fx-background-color: #270f55;"
+
+        children = Seq(
+          createLogo(),
+          createUndoButton(),
+          createRedoButton(),
+          new Region { hgrow = Priority.Always },
+          loadingIndicator
+        )
+      }
+  }
+
+  override def update(event: ObservableEvent): Unit = {
+    mainView.update(event)
+    loadingIndicator.visible = false
   }
 
 }

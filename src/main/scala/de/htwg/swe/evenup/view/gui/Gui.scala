@@ -16,9 +16,9 @@ import de.htwg.swe.evenup.util.ObservableEvent
 
 class Gui(controller: IController) extends JFXApp3 with Observer {
 
-  private var mainView: MainView = uninitialized
+  private var mainView: MainView                  = uninitialized
   private var loadingIndicator: ProgressIndicator = uninitialized
-  private var menuBar: HBox = uninitialized
+  private var menuBar: HBox                       = uninitialized
 
   override def start(): Unit = {
     controller.add(this)
@@ -34,10 +34,11 @@ class Gui(controller: IController) extends JFXApp3 with Observer {
 
         scene =
           new Scene {
-            root = new BorderPane {
-              top = menuBar
-              center = mainView.getRoot
-            }
+            root =
+              new BorderPane {
+                top = menuBar
+                center = mainView.getRoot
+              }
 
             onCloseRequest = () => controller.quit
           }

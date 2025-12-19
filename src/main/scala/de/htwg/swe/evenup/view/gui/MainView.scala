@@ -23,10 +23,10 @@ import de.htwg.swe.evenup.util.ObservableEvent
 
 class MainView(controller: IController, loadingIndicator: ProgressIndicator) {
 
-  private val tabPane                             = new TabPane()
-  private var groupTabs                           = Map[String, Tab]()
-  private var groupListView: ListView[String]     = uninitialized
-  private var searchField: TextField              = uninitialized
+  private val tabPane                         = new TabPane()
+  private var groupTabs                       = Map[String, Tab]()
+  private var groupListView: ListView[String] = uninitialized
+  private var searchField: TextField          = uninitialized
 
   // Home Tab (unclosable)
   private val homeTab =
@@ -75,9 +75,9 @@ class MainView(controller: IController, loadingIndicator: ProgressIndicator) {
         spacing = 10
         alignment = Pos.CenterLeft
         children = Seq(
-          searchField, 
-          searchBtn, 
-          new Region { hgrow = Priority.Always }, 
+          searchField,
+          searchBtn,
+          new Region { hgrow = Priority.Always },
           addGroupBtn
         )
       }

@@ -176,10 +176,12 @@ case class AddExpenseToGroupHandler(next: Option[HandlerTemplate]) extends Handl
                             .build()
                         )
                       case Left(error) =>
-                        val result = error match
-                          case ShareParser.ParseError.ShareSumMismatch(_, _) => AddExpenseToGroupResult.SharesSumWrong
-                          case ShareParser.ParseError.PersonNotInGroup(_) => AddExpenseToGroupResult.SharesPersonNotFound
-                          case _ => AddExpenseToGroupResult.InvalidShares
+                        val result =
+                          error match
+                            case ShareParser.ParseError.ShareSumMismatch(_, _) => AddExpenseToGroupResult.SharesSumWrong
+                            case ShareParser.ParseError.PersonNotInGroup(_)    =>
+                              AddExpenseToGroupResult.SharesPersonNotFound
+                            case _ => AddExpenseToGroupResult.InvalidShares
                         EventResponse.AddExpenseToGroup(result, failed_expense.build())
 
                   case None =>

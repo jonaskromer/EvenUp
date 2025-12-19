@@ -28,7 +28,7 @@ class MainView(controller: IController, loadingIndicator: ProgressIndicator) {
   private var groupListView: ListView[String] = uninitialized
   private var searchField: TextField          = uninitialized
 
-  // Home Tab (unclosable)
+  // HOME
   private val homeTab =
     new Tab {
       text = "Home"
@@ -57,14 +57,14 @@ class MainView(controller: IController, loadingIndicator: ProgressIndicator) {
     val searchBtn =
       new Button {
         text = "Search"
-        style = "-fx-background-color: #fc5f50; -fx-text-fill: white;"
+        styleClass += "secondary-button"
         onAction = _ => updateGroupList(searchField.text.value)
       }
 
     val addGroupBtn =
       new Button {
         text = "+"
-        style = "-fx-font-size: 24px; -fx-background-color: #ffb700; -fx-text-fill: white; -fx-background-radius: 25;"
+        styleClass += "add-button"
         prefWidth = 50
         prefHeight = 50
         onAction = _ => showAddGroupDialog()
@@ -102,7 +102,7 @@ class MainView(controller: IController, loadingIndicator: ProgressIndicator) {
     val openGroupBtn =
       new Button {
         text = "Open Group"
-        style = "-fx-background-color: #fc5f50; -fx-text-fill: white; -fx-font-size: 14px;"
+        styleClass += "secondary-button"
         prefWidth = 150
         prefHeight = 40
         onAction =
@@ -132,7 +132,6 @@ class MainView(controller: IController, loadingIndicator: ProgressIndicator) {
         )
       }
 
-    // Update list when groups change
     updateGroupList()
 
     new VBox {
@@ -182,7 +181,7 @@ class MainView(controller: IController, loadingIndicator: ProgressIndicator) {
     val addBtn =
       new Button {
         text = "Add Group"
-        style = "-fx-background-color: #ffb700; -fx-text-fill: white;"
+        styleClass += "primary-button"
         onAction =
           _ => {
             if (!nameField.text.value.isEmpty) {
@@ -196,7 +195,7 @@ class MainView(controller: IController, loadingIndicator: ProgressIndicator) {
     val cancelBtn =
       new Button {
         text = "Cancel"
-        style = "-fx-background-color: #95a5a6; -fx-text-fill: white;"
+        styleClass += "cancel-button"
         onAction =
           _ => {
             loadingIndicator.visible = false
@@ -206,6 +205,7 @@ class MainView(controller: IController, loadingIndicator: ProgressIndicator) {
 
     dialog.scene =
       new Scene {
+        stylesheets.add(getClass.getResource("/styles.css").toExternalForm)
         content =
           new VBox {
             padding = Insets(20)
@@ -213,7 +213,7 @@ class MainView(controller: IController, loadingIndicator: ProgressIndicator) {
             alignment = Pos.Center
             children = Seq(
               new Label("Enter group name:") {
-                style = "-fx-font-size: 14px;"
+                styleClass += "dialog-label"
               },
               nameField,
               new HBox {
@@ -258,7 +258,6 @@ class MainView(controller: IController, loadingIndicator: ProgressIndicator) {
       tabPane.tabs.add(groupTab)
     }
 
-    // Select the tab
     groupTabs.get(groupName).foreach { tab =>
       tabPane.selectionModel().select(tab)
     }
@@ -268,25 +267,21 @@ class MainView(controller: IController, loadingIndicator: ProgressIndicator) {
     Platform.runLater {
       event match {
         case EventResponse.AddGroup(result, group) =>
-          // Refresh home view
           homeTab.content = createHomeView()
           loadingIndicator.visible = false
 
         case EventResponse.GotoGroup(result, group) =>
-          // Update active group tab if exists
           groupTabs.get(group.name).foreach { tab =>
             tab.content = new GroupView(controller, group, loadingIndicator).getRoot
           }
 
         case EventResponse.AddUserToGroup(result, user, updatedGroup) =>
-          // Refresh the group tab
           groupTabs.get(updatedGroup.name).foreach { tab =>
             tab.content = new GroupView(controller, updatedGroup, loadingIndicator).getRoot
           }
           loadingIndicator.visible = false
 
         case EventResponse.AddExpenseToGroup(result, expense) =>
-          // Refresh the active group tab
           controller.app.active_group.foreach { group =>
             groupTabs.get(group.name).foreach { tab =>
               tab.content = new GroupView(controller, group, loadingIndicator).getRoot
@@ -310,7 +305,6 @@ class MainView(controller: IController, loadingIndicator: ProgressIndicator) {
           }
 
         case EventResponse.Undo(result, stackSize) =>
-          // Refresh all views
           homeTab.content = createHomeView()
           controller.app.active_group.foreach { group =>
             groupTabs.get(group.name).foreach { tab =>
@@ -320,7 +314,6 @@ class MainView(controller: IController, loadingIndicator: ProgressIndicator) {
           loadingIndicator.visible = false
 
         case EventResponse.Redo(result, stackSize) =>
-          // Refresh all views
           homeTab.content = createHomeView()
           controller.app.active_group.foreach { group =>
             groupTabs.get(group.name).foreach { tab =>
@@ -330,7 +323,6 @@ class MainView(controller: IController, loadingIndicator: ProgressIndicator) {
           loadingIndicator.visible = false
 
         case EventResponse.MainMenu =>
-          // Close all group tabs
           tabPane.tabs.clear()
           tabPane.tabs.add(homeTab)
           groupTabs = Map.empty

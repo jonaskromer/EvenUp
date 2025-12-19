@@ -40,7 +40,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
     val addMemberBtn =
       new Button {
         text = "+"
-        style = "-fx-font-size: 24px; -fx-background-color: #ffb700; -fx-text-fill: white; -fx-background-radius: 25;"
+        styleClass += "add-button"
         prefWidth = 50
         prefHeight = 50
         onAction = _ => showAddMemberDialog()
@@ -53,7 +53,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
         alignment = Pos.CenterLeft
         children = Seq(
           new Label("Members") {
-            style = "-fx-font-size: 18px; -fx-font-weight: bold;"
+            styleClass += "section-header"
           },
           new Region { hgrow = Priority.Always },
           addMemberBtn
@@ -93,7 +93,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
     val addBtn =
       new Button {
         text = "Add Member"
-        style = "-fx-background-color: #ffb700; -fx-text-fill: white;"
+        styleClass += "primary-button"
         onAction =
           _ => {
             if (!nameField.text.value.isEmpty) {
@@ -107,7 +107,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
     val cancelBtn =
       new Button {
         text = "Cancel"
-        style = "-fx-background-color: #95a5a6; -fx-text-fill: white;"
+        styleClass += "cancel-button"
         onAction =
           _ => {
             loadingIndicator.visible = false
@@ -117,6 +117,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
 
     dialog.scene =
       new Scene {
+        stylesheets.add(getClass.getResource("/styles.css").toExternalForm)
         content =
           new VBox {
             padding = Insets(20)
@@ -124,7 +125,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
             alignment = Pos.Center
             children = Seq(
               new Label("Enter member name:") {
-                style = "-fx-font-size: 14px;"
+                styleClass += "dialog-label"
               },
               nameField,
               new HBox {
@@ -151,7 +152,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
     val addExpenseBtn =
       new Button {
         text = "+"
-        style = "-fx-font-size: 24px; -fx-background-color: #ffb700; -fx-text-fill: white; -fx-background-radius: 25;"
+        styleClass += "add-button"
         prefWidth = 50
         prefHeight = 50
         onAction = _ => showAddExpenseDialog()
@@ -164,7 +165,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
         alignment = Pos.CenterLeft
         children = Seq(
           new Label("Expenses") {
-            style = "-fx-font-size: 18px; -fx-font-weight: bold;"
+            styleClass += "section-header"
           },
           new Region { hgrow = Priority.Always },
           addExpenseBtn
@@ -203,17 +204,11 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
     val series = new javafx.scene.chart.XYChart.Series[Number, Number]()
     series.setName("Total Expenses")
 
-    if (group.expenses.nonEmpty) {
-      // Grouped Expenses by Month
-      val expensesByMonth = group.expenses.groupBy(_.date.month).toSeq.sortBy(_._1)
+    val expensesByMonth = group.expenses.groupBy(_.date.month).toSeq.sortBy(_._1)
 
-      expensesByMonth.foreach { case (month, expenses) =>
-        val total = expenses.map(_.amount).sum
-        series.getData.add(new javafx.scene.chart.XYChart.Data[Number, Number](month, total))
-      }
-    } else {
-      // Dummy Data if no Expense
-      series.getData.add(new javafx.scene.chart.XYChart.Data[Number, Number](1, 0))
+    expensesByMonth.foreach { case (month, expenses) =>
+      val total = expenses.map(_.amount).sum
+      series.getData.add(new javafx.scene.chart.XYChart.Data[Number, Number](month, total))
     }
 
     ObservableBuffer(series)
@@ -284,7 +279,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
     val addBtn =
       new Button {
         text = "Add Expense"
-        style = "-fx-background-color: #ffb700; -fx-text-fill: white;"
+        styleClass += "primary-button"
         prefWidth = 120
         onAction =
           _ => {
@@ -320,7 +315,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
     val cancelBtn =
       new Button {
         text = "Cancel"
-        style = "-fx-background-color: #95a5a6; -fx-text-fill: white;"
+        styleClass += "cancel-button"
         prefWidth = 120
         onAction =
           _ => {
@@ -331,21 +326,22 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
 
     dialog.scene =
       new Scene {
+        stylesheets.add(getClass.getResource("/styles.css").toExternalForm)
         content =
           new VBox {
             padding = Insets(20)
             spacing = 15
             alignment = Pos.TopCenter
             children = Seq(
-              new Label("Expense Name:") { style = "-fx-font-weight: bold;" },
+              new Label("Expense Name:") { styleClass += "form-label" },
               nameField,
-              new Label("Paid By:") { style = "-fx-font-weight: bold;" },
+              new Label("Paid By:") { styleClass += "form-label" },
               paidByCombo,
-              new Label("Amount:") { style = "-fx-font-weight: bold;" },
+              new Label("Amount:") { styleClass += "form-label" },
               amountField,
-              new Label("Date (DD MM YYYY):") { style = "-fx-font-weight: bold;" },
+              new Label("Date (DD MM YYYY):") { styleClass += "form-label" },
               dateBox,
-              new Label("Shares (optional):") { style = "-fx-font-weight: bold;" },
+              new Label("Shares (optional):") { styleClass += "form-label" },
               sharesArea,
               new HBox {
                 spacing = 10
@@ -370,7 +366,6 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
     alert.show()
   }
 
-  // ===== DEBTS PANE =====
   private def createDebtsPane(): VBox = {
     val tGroup = new ToggleGroup()
 
@@ -391,7 +386,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
     val calculateBtn =
       new Button {
         text = "Calculate Debts"
-        style = "-fx-background-color: #fc5f50; -fx-text-fill: white; -fx-font-size: 14px;"
+        styleClass += "secondary-button"
         prefWidth = 200
         onAction =
           _ => {
@@ -420,7 +415,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
         }
       }
 
-    // Horizontal bar chart for debts per person
+// Bar chrat
     val xAxis =
       new NumberAxis {
         label = "Amount (€)"
@@ -439,7 +434,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
 
     val header =
       new Label("Debt Calculation") {
-        style = "-fx-font-size: 18px; -fx-font-weight: bold;"
+        styleClass += "section-header"
       }
 
     new VBox {
@@ -456,7 +451,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
         },
         calculateBtn,
         new Label("Debts:") {
-          style = "-fx-font-weight: bold; -fx-font-size: 14px;"
+          styleClass += "form-label"
         },
         debtsArea,
         barChart
@@ -471,7 +466,6 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
       val series = new javafx.scene.chart.XYChart.Series[String, Number]()
       series.setName("Debts")
 
-      // Aggregate debts per person
       val debtMap = scala.collection.mutable.Map[String, Double]()
 
       debts.foreach { debt =>

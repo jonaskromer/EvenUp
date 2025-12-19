@@ -34,6 +34,8 @@ class Gui(controller: IController) extends JFXApp3 with Observer {
 
         scene =
           new Scene {
+            stylesheets.add(getClass.getResource("/styles.css").toExternalForm)
+            
             root =
               new BorderPane {
                 top = menuBar
@@ -63,7 +65,7 @@ class Gui(controller: IController) extends JFXApp3 with Observer {
   private def createUndoButton(): Button = {
     new Button {
       text = "⟲ Undo"
-      style = "-fx-background-color: #301c55; -fx-text-fill: white;"
+      styleClass += "undo-button"
       onAction =
         _ => {
           loadingIndicator.visible = true
@@ -75,7 +77,7 @@ class Gui(controller: IController) extends JFXApp3 with Observer {
   private def createRedoButton(): Button = {
     new Button {
       text = "⟳ Redo"
-      style = "-fx-background-color: #301c55; -fx-text-fill: white;"
+      styleClass += "redo-button"
       onAction =
         _ => {
           loadingIndicator.visible = true
@@ -87,7 +89,7 @@ class Gui(controller: IController) extends JFXApp3 with Observer {
   private def createLoadingIndicator(): Unit = {
     loadingIndicator =
       new ProgressIndicator {
-        style = "-fx-accent: white;"
+        styleClass += "loading-indicator"
         prefWidth = 25
         prefHeight = 25
         visible = false
@@ -100,7 +102,7 @@ class Gui(controller: IController) extends JFXApp3 with Observer {
         padding = Insets(10)
         spacing = 20
         alignment = Pos.CenterLeft
-        style = "-fx-background-color: #270f55;"
+        styleClass += "menu-bar"
 
         children = Seq(
           createLogo(),

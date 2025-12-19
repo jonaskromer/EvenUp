@@ -1,0 +1,64 @@
+/* EvenUp Application Styles */
+
+/* ===== Color Palette ===== */
+:root {
+    -fx-primary-purple: #270f55;
+    -fx-secondary-purple: #301c55;
+    -fx-accent-orange: #ffb700;
+    -fx-accent-red: #fc5f50;
+    -fx-neutral-gray: #95a5a6;
+}
+
+/* ===== Menu Bar ===== */
+.menu-bar {
+    -fx-background-color: #270f55;
+}
+
+/* ===== Buttons ===== */
+.undo-button,
+.redo-button {
+    -fx-background-color: #301c55;
+    -fx-text-fill: white;
+}
+
+.add-button {
+    -fx-font-size: 24px;
+    -fx-background-color: #ffb700;
+    -fx-text-fill: white;
+    -fx-background-radius: 25;
+}
+
+.primary-button {
+    -fx-background-color: #ffb700;
+    -fx-text-fill: white;
+}
+
+.secondary-button {
+    -fx-background-color: #fc5f50;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+}
+
+.cancel-button {
+    -fx-background-color: #95a5a6;
+    -fx-text-fill: white;
+}
+
+/* ===== Labels ===== */
+.section-header {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+.form-label {
+    -fx-font-weight: bold;
+}
+
+.dialog-label {
+    -fx-font-size: 14px;
+}
+
+/* ===== Loading Indicator ===== */
+.loading-indicator {
+    -fx-accent: white;
+}

@@ -3,29 +3,19 @@ package de.htwg.swe.evenup.view.gui
 import scala.compiletime.uninitialized
 
 case class Theme(
-    // Background colors
     primaryBg: String,
     secondaryBg: String,
     surfaceBg: String,
-    // Text colors
     textPrimary: String,
     textSecondary: String,
-    // Button colors
     buttonPrimary: String,
-    buttonPrimaryHover: String,
     buttonSecondary: String,
-    buttonSecondaryHover: String,
     buttonAccent: String,
-    buttonAccentHover: String,
     buttonNeutral: String,
-    buttonNeutralHover: String,
-    // UI elements
     menuBarBg: String,
     menuBarText: String,
     accentColor: String,
-    // Border and separators
     borderColor: String,
-    // Charts and data visualization
     chartAxisColor: String,
     chartGridColor: String
 )
@@ -38,13 +28,9 @@ object Theme {
     textPrimary = "#000000",
     textSecondary = "#666666",
     buttonPrimary = "#fc5f50",
-    buttonPrimaryHover = "#e34434",
     buttonSecondary = "#ffb700",
-    buttonSecondaryHover = "#e59e00",
     buttonAccent = "#301c55",
-    buttonAccentHover = "#1a0f31",
     buttonNeutral = "#95a5a6",
-    buttonNeutralHover = "#7f8c8d",
     menuBarBg = "#270f55",
     menuBarText = "#ffffff",
     accentColor = "#fc5f50",
@@ -60,13 +46,9 @@ object Theme {
     textPrimary = "#e0e0e0",
     textSecondary = "#a0a0a0",
     buttonPrimary = "#ff7a6a",
-    buttonPrimaryHover = "#ff9680",
     buttonSecondary = "#ffb700",
-    buttonSecondaryHover = "#ffc733",
     buttonAccent = "#9d4ecc",
-    buttonAccentHover = "#b575e0",
     buttonNeutral = "#5a7a7a",
-    buttonNeutralHover = "#6b9999",
     menuBarBg = "#1a0d2e",
     menuBarText = "#e0e0e0",
     accentColor = "#ff7a6a",
@@ -109,7 +91,6 @@ object ThemeManager {
     observers.foreach(_())
   }
 
-  // Helper methods for styling
   def getButtonStyle(buttonType: String = "primary"): String = {
     val theme = getCurrentTheme
     buttonType match {

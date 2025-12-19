@@ -87,15 +87,16 @@ class MainView(controller: IController, loadingIndicator: ProgressIndicator) {
       new ListView[String] {
         items = ObservableBuffer[String]()
         prefHeight = 600
-        onKeyPressed = keyEvent => {
-          if (keyEvent.code == scalafx.scene.input.KeyCode.Enter) {
-            val selected = selectionModel().selectedItem.value
-            if (selected != null && !selected.isEmpty) {
-              val groupName = selected.split(" - ")(0)
-              openGroupTab(groupName)
+        onKeyPressed =
+          keyEvent => {
+            if (keyEvent.code == scalafx.scene.input.KeyCode.Enter) {
+              val selected = selectionModel().selectedItem.value
+              if (selected != null && !selected.isEmpty) {
+                val groupName = selected.split(" - ")(0)
+                openGroupTab(groupName)
+              }
             }
           }
-        }
       }
 
     val openGroupBtn =

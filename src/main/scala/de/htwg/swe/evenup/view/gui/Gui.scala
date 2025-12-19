@@ -35,7 +35,7 @@ class Gui(controller: IController) extends JFXApp3 with Observer {
         scene =
           new Scene {
             stylesheets.add(getClass.getResource("/styles.css").toExternalForm)
-            
+
             root =
               new BorderPane {
                 top = menuBar

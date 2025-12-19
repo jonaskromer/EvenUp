@@ -195,6 +195,19 @@ class TuiStringBuilderSpec extends AnyWordSpec with Matchers:
         val result = builder.handle(event)
         result should include("first add Charlie")
       }
+
+      "invalid shares" in {
+        val app        = App(Nil, None, None, MainMenuState())
+        val controller = new Controller(app)
+        val builder    = new TuiStringBuilder(controller)
+        val expense    = Expense("Dinner", 100.0, Date(1, 1, 2000), Person("Alice"), Nil)
+
+        val event = EventResponse.AddExpenseToGroup(AddExpenseToGroupResult.InvalidShares, expense)
+
+        builder.isDefined(event) shouldBe true
+        val result = builder.handle(event)
+        result should include("Invalid shares format")
+      }
     }
 
     "handle CalculateDebts events" when {

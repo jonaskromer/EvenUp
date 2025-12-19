@@ -51,6 +51,7 @@ enum AddExpenseToGroupResult:
   case SharesPersonNotFound
   case PaidByNotFound
   case InvalidAmount
+  case InvalidShares
 
 enum SetDebtStrategyResult:
   case Success

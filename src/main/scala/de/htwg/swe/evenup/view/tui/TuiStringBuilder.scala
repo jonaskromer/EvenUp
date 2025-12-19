@@ -72,6 +72,8 @@ class TuiStringBuilder(controller: IController):
       s"Wrong user in shares."
     case EventResponse.AddExpenseToGroup(AddExpenseToGroupResult.PaidByNotFound, expense) =>
       s"Please first add ${expense.paid_by} to the group before using in expense."
+    case EventResponse.AddExpenseToGroup(AddExpenseToGroupResult.InvalidShares, expense) =>
+      "Invalid shares format or values."
 
   val debtHandler: PartialFunction[EventResponse, String] =
     case EventResponse.CalculateDebts(CalculateDebtsResult.Success, debts) =>

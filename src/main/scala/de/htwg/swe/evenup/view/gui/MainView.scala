@@ -27,7 +27,7 @@ import de.htwg.swe.evenup.util.ObservableEvent
 @nowarn("msg=-Wconf:msg=Implicit parameters should be provided with a `using` clause:s")
 class MainView(controller: IController) extends Observer {
 
-  private val tabPane                             = new TabPane()
+  private val tabPane                             = new TabPane {}
   private var groupTabs                           = Map[String, Tab]()
   private var groupListView: ListView[String]     = scala.compiletime.uninitialized
   private var searchField: TextField              = scala.compiletime.uninitialized
@@ -35,15 +35,12 @@ class MainView(controller: IController) extends Observer {
 
   createLoadingIndicator()
 
-  // Initialize TabPane styling
-  tabPane.style = ThemeManager.tabPaneStyle()
-
   ThemeManager.subscribe(() => {
-    tabPane.style = ThemeManager.tabPaneStyle()
-    // Update all tabs' style
     tabPane.tabs.foreach { tab =>
-      tab.style = ThemeManager.tabStyle() + "; " + ThemeManager.tabTextStyle()
+      tab.style = ThemeManager.tabStyle()
     }
+    val headerBackground = tabPane.lookup(".tab-header-background")
+    headerBackground.setStyle(s"-fx-background-color: ${ThemeManager.Colors.backgroundColor};")
   })
 
   // Top Menu Bar
@@ -73,7 +70,7 @@ class MainView(controller: IController) extends Observer {
     new Tab {
       text = "Home"
       closable = false
-      style = ThemeManager.tabStyle() + "; " + ThemeManager.tabTextStyle()
+      style = ThemeManager.tabStyle()
       content = createHomeView()
       onSelectionChanged =
         _ => {
@@ -84,6 +81,12 @@ class MainView(controller: IController) extends Observer {
     }
 
   tabPane.tabs = Seq(homeTab)
+
+  // Set initial tab header background
+  val headerBackground = tabPane.lookup(".tab-header-background")
+  if (headerBackground != null) {
+    headerBackground.setStyle(s"-fx-background-color: ${ThemeManager.Colors.backgroundColor};")
+  }
 
   private val root =
     new BorderPane {
@@ -100,8 +103,8 @@ class MainView(controller: IController) extends Observer {
       children = Seq(
         new ImageView {
           image = new Image(getClass.getResource("/images/title_image.png").toString)
-          fitWidth = 100
-          fitHeight = 40
+          fitWidth = 200
+          fitHeight = 80
           preserveRatio = true
         }
       )
@@ -145,12 +148,9 @@ class MainView(controller: IController) extends Observer {
   }
 
   private def updateAllViewsForThemeChange(): Unit = {
-    // Update menu bar is handled by subscription
-    // Refresh home tab
     if (homeTab.content != null) {
       homeTab.content = createHomeView()
     }
-    // Refresh all group tabs
     groupTabs.foreach { case (groupName, _) =>
       controller.app.getGroup(groupName).foreach { group =>
         groupTabs(groupName).content = new GroupView(controller, group, loadingIndicator).getRoot
@@ -197,7 +197,7 @@ class MainView(controller: IController) extends Observer {
         spacing = 10
         alignment = Pos.CenterLeft
         style = s"-fx-background-color: ${ThemeManager.Colors.backgroundColor};"
-        children = Seq(searchField, searchBtn, addGroupBtn)
+        children = Seq(searchField, searchBtn, new Region { hgrow = Priority.Always }, addGroupBtn)
       }
 
     groupListView =
@@ -235,13 +235,12 @@ class MainView(controller: IController) extends Observer {
           },
           new VBox {
             spacing = 10
-            alignment = Pos.TopCenter
+            alignment = Pos.Center
             children = Seq(openGroupBtn)
           }
         )
       }
 
-    // Update list when groups change
     updateGroupList()
 
     new VBox {
@@ -314,6 +313,7 @@ class MainView(controller: IController) extends Observer {
             padding = Insets(20)
             spacing = 20
             alignment = Pos.Center
+            style = s"-fx-background-color: ${ThemeManager.Colors.backgroundColor};"
             children = Seq(
               new Label("Enter group name:") {
                 style = ThemeManager.labelStyle()
@@ -340,7 +340,7 @@ class MainView(controller: IController) extends Observer {
         new Tab {
           text = groupName
           closable = true
-          style = ThemeManager.tabStyle() + "; " + ThemeManager.tabTextStyle()
+          style = ThemeManager.tabStyle()
           onClosed =
             _ => {
               groupTabs -= groupName
@@ -362,7 +362,6 @@ class MainView(controller: IController) extends Observer {
       tabPane.tabs.add(groupTab)
     }
 
-    // Select the tab
     groupTabs.get(groupName).foreach { tab =>
       tabPane.selectionModel().select(tab)
     }
@@ -372,25 +371,21 @@ class MainView(controller: IController) extends Observer {
     Platform.runLater {
       event match {
         case EventResponse.AddGroup(result, group) =>
-          // Refresh home view
           homeTab.content = createHomeView()
           loadingIndicator.visible = false
 
         case EventResponse.GotoGroup(result, group) =>
-          // Update active group tab if exists
           groupTabs.get(group.name).foreach { tab =>
             tab.content = new GroupView(controller, group, loadingIndicator).getRoot
           }
 
         case EventResponse.AddUserToGroup(result, user, updatedGroup) =>
-          // Refresh the group tab
           groupTabs.get(updatedGroup.name).foreach { tab =>
             tab.content = new GroupView(controller, updatedGroup, loadingIndicator).getRoot
           }
           loadingIndicator.visible = false
 
         case EventResponse.AddExpenseToGroup(result, expense) =>
-          // Refresh the active group tab
           controller.app.active_group.foreach { group =>
             groupTabs.get(group.name).foreach { tab =>
               tab.content = new GroupView(controller, group, loadingIndicator).getRoot
@@ -414,7 +409,6 @@ class MainView(controller: IController) extends Observer {
           }
 
         case EventResponse.Undo(result, stackSize) =>
-          // Refresh all views
           homeTab.content = createHomeView()
           controller.app.active_group.foreach { group =>
             groupTabs.get(group.name).foreach { tab =>
@@ -424,7 +418,6 @@ class MainView(controller: IController) extends Observer {
           loadingIndicator.visible = false
 
         case EventResponse.Redo(result, stackSize) =>
-          // Refresh all views
           homeTab.content = createHomeView()
           controller.app.active_group.foreach { group =>
             groupTabs.get(group.name).foreach { tab =>
@@ -434,7 +427,6 @@ class MainView(controller: IController) extends Observer {
           loadingIndicator.visible = false
 
         case EventResponse.MainMenu =>
-          // Close all group tabs
           tabPane.tabs.clear()
           tabPane.tabs.add(homeTab)
           groupTabs = Map.empty

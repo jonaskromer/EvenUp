@@ -7,7 +7,7 @@ object ThemeManager {
   case object LightTheme extends Theme
   case object DarkTheme extends Theme
 
-  private var currentTheme: Theme = DarkTheme
+  private var currentTheme: Theme = LightTheme
   private val themeObservers = mutable.ListBuffer[() => Unit]()
 
   def setTheme(theme: Theme): Unit = {
@@ -37,16 +37,16 @@ object ThemeManager {
   // Color definitions for different themes
   object Colors {
     def menuBarBackground: String = currentTheme match {
-      case DarkTheme  => "#2c3e50"
-      case LightTheme => "#ecf0f1"
+      case DarkTheme  => "#270f55"
+      case LightTheme => "#270f55"
     }
 
     def buttonBackground: String = currentTheme match {
-      case DarkTheme  => "#34495e"
+      case DarkTheme  => "#301c55"
       case LightTheme => "#bdc3c7"
     }
 
-    def addButtonBackground: String = "#27ae60"
+    def addButtonBackground: String = "#ffb700"
 
     def textColor: String = currentTheme match {
       case DarkTheme  => "#ffffff"
@@ -54,17 +54,17 @@ object ThemeManager {
     }
 
     def backgroundColor: String = currentTheme match {
-      case DarkTheme  => "#34495e"
+      case DarkTheme  => "#270f55"
       case LightTheme => "#ffffff"
     }
 
     def alternateBackground: String = currentTheme match {
-      case DarkTheme  => "#2c3e50"
+      case DarkTheme  => "#301c55"
       case LightTheme => "#ecf0f1"
     }
 
     def inputBackground: String = currentTheme match {
-      case DarkTheme  => "#34495e"
+      case DarkTheme  => "#301c55"
       case LightTheme => "#ffffff"
     }
 
@@ -80,9 +80,7 @@ object ThemeManager {
 
     def cancelButtonBackground: String = "#95a5a6"
 
-    def errorButtonBackground: String = "#e74c3c"
-
-    def primaryButtonBackground: String = "#3498db"
+    def primaryButtonBackground: String = "#fc5f50"
   }
 
   // Helper method to generate styled text for buttons
@@ -96,13 +94,10 @@ object ThemeManager {
     s"-fx-font-size: 24px; -fx-background-color: ${Colors.addButtonBackground}; -fx-text-fill: white; -fx-background-radius: 25;"
 
   def primaryButtonStyle(): String =
-    s"-fx-background-color: ${Colors.primaryButtonBackground}; -fx-text-fill: whitse;"
+    s"-fx-background-color: ${Colors.primaryButtonBackground}; -fx-text-fill: white;"
 
   def cancelButtonStyle(): String =
     s"-fx-background-color: ${Colors.cancelButtonBackground}; -fx-text-fill: white;"
-
-  def errorButtonStyle(): String =
-    s"-fx-background-color: ${Colors.errorButtonBackground}; -fx-text-fill: white;"
 
   def menuBarStyle(): String =
     s"-fx-background-color: ${Colors.menuBarBackground};"
@@ -120,14 +115,8 @@ object ThemeManager {
     s"-fx-control-inner-background: ${Colors.inputBackground}; -fx-text-fill: ${Colors.inputTextColor};"
 
   def tabPaneStyle(): String =
-    s"-fx-background-color: ${Colors.backgroundColor}; -fx-padding: 0;"
-
-  def tabHeaderStyle(): String =
-    s"-fx-background-color: ${Colors.alternateBackground};"
+    s"-fx-background-color: ${Colors.backgroundColor}; -fx-padding: 0; -fx-tab-header-area-background: ${Colors.alternateBackground};"
 
   def tabStyle(): String =
-    s"-fx-background-color: ${Colors.alternateBackground};"
-
-  def tabTextStyle(): String =
-    s"-fx-text-fill: ${Colors.textColor};"
+    s"-fx-background-color: ${Colors.alternateBackground}; -fx-text-base-color: ${Colors.textColor};"
 }

@@ -121,6 +121,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
             padding = Insets(20)
             spacing = 20
             alignment = Pos.Center
+            style = s"-fx-background-color: ${ThemeManager.Colors.backgroundColor};"
             children = Seq(
               new Label("Enter member name:") {
                 style = ThemeManager.labelStyle()
@@ -337,6 +338,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
             padding = Insets(20)
             spacing = 15
             alignment = Pos.TopCenter
+            style = s"-fx-background-color: ${ThemeManager.Colors.backgroundColor};"
             children = Seq(
               new Label("Expense Name:") { style = ThemeManager.boldLabelStyle() },
               nameField,
@@ -392,7 +394,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
     val calculateBtn =
       new Button {
         text = "Calculate Debts"
-        style = ThemeManager.errorButtonStyle()
+        style = ThemeManager.primaryButtonStyle()
         prefWidth = 200
         onAction =
           _ => {

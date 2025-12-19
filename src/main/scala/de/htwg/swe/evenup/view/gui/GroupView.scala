@@ -40,7 +40,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
     val addMemberBtn =
       new Button {
         text = "+"
-        style = "-fx-font-size: 24px; -fx-background-color: #27ae60; -fx-text-fill: white; -fx-background-radius: 25;"
+        style = "-fx-font-size: 24px; -fx-background-color: #ffb700; -fx-text-fill: white; -fx-background-radius: 25;"
         prefWidth = 50
         prefHeight = 50
         onAction = _ => showAddMemberDialog()
@@ -85,7 +85,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
     val addBtn =
       new Button {
         text = "Add Member"
-        style = "-fx-background-color: #27ae60; -fx-text-fill: white;"
+        style = "-fx-background-color: #ffb700; -fx-text-fill: white;"
         onAction =
           _ => {
             if (!nameField.text.value.isEmpty) {
@@ -143,7 +143,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
     val addExpenseBtn =
       new Button {
         text = "+"
-        style = "-fx-font-size: 24px; -fx-background-color: #27ae60; -fx-text-fill: white; -fx-background-radius: 25;"
+        style = "-fx-font-size: 24px; -fx-background-color: #ffb700; -fx-text-fill: white; -fx-background-radius: 25;"
         prefWidth = 50
         prefHeight = 50
         onAction = _ => showAddExpenseDialog()
@@ -275,7 +275,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
     val addBtn =
       new Button {
         text = "Add Expense"
-        style = "-fx-background-color: #27ae60; -fx-text-fill: white;"
+        style = "-fx-background-color: #ffb700; -fx-text-fill: white;"
         prefWidth = 120
         onAction =
           _ => {
@@ -382,7 +382,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
     val calculateBtn =
       new Button {
         text = "Calculate Debts"
-        style = "-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-size: 14px;"
+        style = "-fx-background-color: #fc5f50; -fx-text-fill: white; -fx-font-size: 14px;"
         prefWidth = 200
         onAction =
           _ => {

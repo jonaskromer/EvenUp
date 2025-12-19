@@ -51,6 +51,7 @@ class MainView(controller: IController, loadingIndicator: ProgressIndicator) {
       new TextField {
         promptText = "Search groups..."
         prefWidth = 400
+        onAction = _ => updateGroupList(text.value)
       }
 
     val searchBtn =
@@ -86,6 +87,15 @@ class MainView(controller: IController, loadingIndicator: ProgressIndicator) {
       new ListView[String] {
         items = ObservableBuffer[String]()
         prefHeight = 600
+        onKeyPressed = keyEvent => {
+          if (keyEvent.code == scalafx.scene.input.KeyCode.Enter) {
+            val selected = selectionModel().selectedItem.value
+            if (selected != null && !selected.isEmpty) {
+              val groupName = selected.split(" - ")(0)
+              openGroupTab(groupName)
+            }
+          }
+        }
       }
 
     val openGroupBtn =
@@ -158,6 +168,14 @@ class MainView(controller: IController, loadingIndicator: ProgressIndicator) {
       new TextField {
         promptText = "Group name"
         prefWidth = 300
+        onAction =
+          _ => {
+            if (!text.value.isEmpty) {
+              loadingIndicator.visible = true
+              controller.addGroup(text.value)
+              dialog.close()
+            }
+          }
       }
 
     val addBtn =

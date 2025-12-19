@@ -62,7 +62,7 @@ class Gui(controller: IController) extends JFXApp3 with Observer {
 
   private def createUndoButton(): Button = {
     new Button {
-      text = "↶ Undo"
+      text = "⟲ Undo"
       style = "-fx-background-color: #301c55; -fx-text-fill: white;"
       onAction =
         _ => {
@@ -74,7 +74,7 @@ class Gui(controller: IController) extends JFXApp3 with Observer {
 
   private def createRedoButton(): Button = {
     new Button {
-      text = "↷ Redo"
+      text = "⟳ Redo"
       style = "-fx-background-color: #301c55; -fx-text-fill: white;"
       onAction =
         _ => {

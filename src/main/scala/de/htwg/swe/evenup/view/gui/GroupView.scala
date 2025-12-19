@@ -80,6 +80,14 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
       new TextField {
         promptText = "Member name"
         prefWidth = 300
+        onAction =
+          _ => {
+            if (!text.value.isEmpty) {
+              loadingIndicator.visible = true
+              controller.addUserToGroup(text.value)
+              dialog.close()
+            }
+          }
       }
 
     val addBtn =
@@ -225,6 +233,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
       new TextField {
         promptText = "Expense name"
         prefWidth = 400
+
       }
 
     val paidByCombo =

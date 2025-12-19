@@ -35,12 +35,13 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
       new ListView[String] {
         items = ObservableBuffer(group.members.map(_.name)*)
         prefHeight = 400
+        style = ThemeManager.getSurfaceStyle
       }
 
     val addMemberBtn =
       new Button {
         text = "+"
-        style = "-fx-font-size: 24px; -fx-background-color: #ffb700; -fx-text-fill: white; -fx-background-radius: 25;"
+        style = ThemeManager.getRoundButtonStyle("secondary")
         prefWidth = 50
         prefHeight = 50
         onAction = _ => showAddMemberDialog()
@@ -51,9 +52,10 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
         padding = Insets(10)
         spacing = 10
         alignment = Pos.CenterLeft
+        style = ThemeManager.getBackgroundStyle
         children = Seq(
           new Label("Members") {
-            style = "-fx-font-size: 18px; -fx-font-weight: bold;"
+            style = ThemeManager.getLargeBoldLabelStyle
           },
           new Region { hgrow = Priority.Always },
           addMemberBtn
@@ -62,6 +64,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
 
     new VBox {
       padding = Insets(10)
+      style = ThemeManager.getBackgroundStyle
       children = Seq(header, membersList)
     }
   }
@@ -80,6 +83,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
       new TextField {
         promptText = "Member name"
         prefWidth = 300
+        style = ThemeManager.getSurfaceStyle
         onAction =
           _ => {
             if (!text.value.isEmpty) {
@@ -93,7 +97,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
     val addBtn =
       new Button {
         text = "Add Member"
-        style = "-fx-background-color: #ffb700; -fx-text-fill: white;"
+        style = ThemeManager.getButtonStyle("secondary")
         onAction =
           _ => {
             if (!nameField.text.value.isEmpty) {
@@ -107,7 +111,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
     val cancelBtn =
       new Button {
         text = "Cancel"
-        style = "-fx-background-color: #95a5a6; -fx-text-fill: white;"
+        style = ThemeManager.getButtonStyle("neutral")
         onAction =
           _ => {
             loadingIndicator.visible = false
@@ -117,14 +121,15 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
 
     dialog.scene =
       new Scene {
-        content =
+        root =
           new VBox {
             padding = Insets(20)
             spacing = 20
             alignment = Pos.Center
+            style = ThemeManager.getBackgroundStyle
             children = Seq(
               new Label("Enter member name:") {
-                style = "-fx-font-size: 14px;"
+                style = ThemeManager.getLabelStyle + " -fx-font-size: 14px;"
               },
               nameField,
               new HBox {
@@ -146,12 +151,13 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
       new ListView[String] {
         items = ObservableBuffer(group.expenses.map(_.toString)*)
         prefHeight = 400
+        style = ThemeManager.getSurfaceStyle
       }
 
     val addExpenseBtn =
       new Button {
         text = "+"
-        style = "-fx-font-size: 24px; -fx-background-color: #ffb700; -fx-text-fill: white; -fx-background-radius: 25;"
+        style = ThemeManager.getRoundButtonStyle("secondary")
         prefWidth = 50
         prefHeight = 50
         onAction = _ => showAddExpenseDialog()
@@ -162,9 +168,10 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
         padding = Insets(10)
         spacing = 10
         alignment = Pos.CenterLeft
+        style = ThemeManager.getBackgroundStyle
         children = Seq(
           new Label("Expenses") {
-            style = "-fx-font-size: 18px; -fx-font-weight: bold;"
+            style = ThemeManager.getLargeBoldLabelStyle
           },
           new Region { hgrow = Priority.Always },
           addExpenseBtn
@@ -188,6 +195,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
         title = "Expenses Over Time"
         prefHeight = 250
         legendVisible = true
+        style = ThemeManager.getSurfaceStyle
       }
 
     lineChart.data = createExpenseChartData()
@@ -195,6 +203,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
     new VBox {
       padding = Insets(10)
       spacing = 10
+      style = ThemeManager.getBackgroundStyle
       children = Seq(header, expensesList, lineChart)
     }
   }
@@ -233,7 +242,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
       new TextField {
         promptText = "Expense name"
         prefWidth = 400
-
+        style = ThemeManager.getSurfaceStyle
       }
 
     val paidByCombo =
@@ -241,28 +250,33 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
         items = ObservableBuffer(group.members.map(_.name)*)
         promptText = "Select payer"
         prefWidth = 400
+        style = ThemeManager.getSurfaceStyle
       }
 
     val amountField =
       new TextField {
         promptText = "Amount (e.g., 50.00)"
         prefWidth = 400
+        style = ThemeManager.getSurfaceStyle
       }
 
     val dayField =
       new TextField {
         promptText = "DD"
         prefWidth = 125
+        style = ThemeManager.getSurfaceStyle
       }
     val monthField =
       new TextField {
         promptText = "MM"
         prefWidth = 125
+        style = ThemeManager.getSurfaceStyle
       }
     val yearField =
       new TextField {
         promptText = "YYYY"
         prefWidth = 125
+        style = ThemeManager.getSurfaceStyle
       }
 
     val dateBox =
@@ -279,12 +293,13 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
         prefRowCount = 4
         wrapText = true
         prefWidth = 400
+        style = ThemeManager.getSurfaceStyle
       }
 
     val addBtn =
       new Button {
         text = "Add Expense"
-        style = "-fx-background-color: #ffb700; -fx-text-fill: white;"
+        style = ThemeManager.getButtonStyle("secondary")
         prefWidth = 120
         onAction =
           _ => {
@@ -320,7 +335,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
     val cancelBtn =
       new Button {
         text = "Cancel"
-        style = "-fx-background-color: #95a5a6; -fx-text-fill: white;"
+        style = ThemeManager.getButtonStyle("neutral")
         prefWidth = 120
         onAction =
           _ => {
@@ -331,21 +346,22 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
 
     dialog.scene =
       new Scene {
-        content =
+        root =
           new VBox {
             padding = Insets(20)
             spacing = 15
             alignment = Pos.TopCenter
+            style = ThemeManager.getBackgroundStyle
             children = Seq(
-              new Label("Expense Name:") { style = "-fx-font-weight: bold;" },
+              new Label("Expense Name:") { style = ThemeManager.getBoldLabelStyle },
               nameField,
-              new Label("Paid By:") { style = "-fx-font-weight: bold;" },
+              new Label("Paid By:") { style = ThemeManager.getBoldLabelStyle },
               paidByCombo,
-              new Label("Amount:") { style = "-fx-font-weight: bold;" },
+              new Label("Amount:") { style = ThemeManager.getBoldLabelStyle },
               amountField,
-              new Label("Date (DD MM YYYY):") { style = "-fx-font-weight: bold;" },
+              new Label("Date (DD MM YYYY):") { style = ThemeManager.getBoldLabelStyle },
               dateBox,
-              new Label("Shares (optional):") { style = "-fx-font-weight: bold;" },
+              new Label("Shares (optional):") { style = ThemeManager.getBoldLabelStyle },
               sharesArea,
               new HBox {
                 spacing = 10
@@ -378,6 +394,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
       new RadioButton {
         text = "Normal"
         selected = group.debt_strategy.toString == "normal"
+        style = ThemeManager.getLabelStyle
       }
     normalRadio.toggleGroup = tGroup
 
@@ -385,13 +402,14 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
       new RadioButton {
         text = "Simplified"
         selected = group.debt_strategy.toString == "simplified"
+        style = ThemeManager.getLabelStyle
       }
     simplifiedRadio.toggleGroup = tGroup
 
     val calculateBtn =
       new Button {
         text = "Calculate Debts"
-        style = "-fx-background-color: #fc5f50; -fx-text-fill: white; -fx-font-size: 14px;"
+        style = ThemeManager.getButtonStyle("primary") + " -fx-font-size: 14px;"
         prefWidth = 200
         onAction =
           _ => {
@@ -411,6 +429,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
         editable = false
         prefRowCount = 8
         wrapText = true
+        style = ThemeManager.getSurfaceStyle
         text = {
           val debts = group.calculateDebt()
           if (debts.nonEmpty)
@@ -433,30 +452,33 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
         title = "Debts per Person"
         prefHeight = 250
         legendVisible = false
+        style = ThemeManager.getSurfaceStyle
       }
 
     updateDebtsChart(barChart)
 
     val header =
       new Label("Debt Calculation") {
-        style = "-fx-font-size: 18px; -fx-font-weight: bold;"
+        style = ThemeManager.getLargeBoldLabelStyle
       }
 
     new VBox {
       padding = Insets(10)
       spacing = 10
       alignment = Pos.TopCenter
+      style = ThemeManager.getBackgroundStyle
       children = Seq(
         header,
         new HBox {
           spacing = 15
           alignment = Pos.Center
           padding = Insets(10)
+          style = ThemeManager.getBackgroundStyle
           children = Seq(normalRadio, simplifiedRadio)
         },
         calculateBtn,
         new Label("Debts:") {
-          style = "-fx-font-weight: bold; -fx-font-size: 14px;"
+          style = ThemeManager.getBoldLabelStyle + " -fx-font-size: 14px;"
         },
         debtsArea,
         barChart

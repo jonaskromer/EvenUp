@@ -51,20 +51,21 @@ class MainView(controller: IController, loadingIndicator: ProgressIndicator) {
       new TextField {
         promptText = "Search groups..."
         prefWidth = 400
+        style = ThemeManager.getSurfaceStyle
         onAction = _ => updateGroupList(text.value)
       }
 
     val searchBtn =
       new Button {
         text = "Search"
-        style = "-fx-background-color: #fc5f50; -fx-text-fill: white;"
+        style = ThemeManager.getButtonStyle("primary")
         onAction = _ => updateGroupList(searchField.text.value)
       }
 
     val addGroupBtn =
       new Button {
         text = "+"
-        style = "-fx-font-size: 24px; -fx-background-color: #ffb700; -fx-text-fill: white; -fx-background-radius: 25;"
+        style = ThemeManager.getRoundButtonStyle("secondary")
         prefWidth = 50
         prefHeight = 50
         onAction = _ => showAddGroupDialog()
@@ -75,6 +76,7 @@ class MainView(controller: IController, loadingIndicator: ProgressIndicator) {
         padding = Insets(20)
         spacing = 10
         alignment = Pos.CenterLeft
+        style = ThemeManager.getBackgroundStyle
         children = Seq(
           searchField,
           searchBtn,
@@ -87,6 +89,7 @@ class MainView(controller: IController, loadingIndicator: ProgressIndicator) {
       new ListView[String] {
         items = ObservableBuffer[String]()
         prefHeight = 600
+        style = ThemeManager.getSurfaceStyle
         onKeyPressed =
           keyEvent => {
             if (keyEvent.code == scalafx.scene.input.KeyCode.Enter) {
@@ -102,7 +105,7 @@ class MainView(controller: IController, loadingIndicator: ProgressIndicator) {
     val openGroupBtn =
       new Button {
         text = "Open Group"
-        style = "-fx-background-color: #fc5f50; -fx-text-fill: white; -fx-font-size: 14px;"
+        style = ThemeManager.getButtonStyle("primary") + " -fx-font-size: 14px;"
         prefWidth = 150
         prefHeight = 40
         onAction =
@@ -119,6 +122,7 @@ class MainView(controller: IController, loadingIndicator: ProgressIndicator) {
       new HBox {
         padding = Insets(20)
         spacing = 10
+        style = ThemeManager.getBackgroundStyle
         children = Seq(
           new VBox {
             children = Seq(groupListView)
@@ -136,6 +140,7 @@ class MainView(controller: IController, loadingIndicator: ProgressIndicator) {
     updateGroupList()
 
     new VBox {
+      style = ThemeManager.getBackgroundStyle
       children = Seq(searchBox, listContainer)
     }
   }
@@ -169,6 +174,7 @@ class MainView(controller: IController, loadingIndicator: ProgressIndicator) {
       new TextField {
         promptText = "Group name"
         prefWidth = 300
+        style = ThemeManager.getSurfaceStyle
         onAction =
           _ => {
             if (!text.value.isEmpty) {
@@ -182,7 +188,7 @@ class MainView(controller: IController, loadingIndicator: ProgressIndicator) {
     val addBtn =
       new Button {
         text = "Add Group"
-        style = "-fx-background-color: #ffb700; -fx-text-fill: white;"
+        style = ThemeManager.getButtonStyle("secondary")
         onAction =
           _ => {
             if (!nameField.text.value.isEmpty) {
@@ -196,7 +202,7 @@ class MainView(controller: IController, loadingIndicator: ProgressIndicator) {
     val cancelBtn =
       new Button {
         text = "Cancel"
-        style = "-fx-background-color: #95a5a6; -fx-text-fill: white;"
+        style = ThemeManager.getButtonStyle("neutral")
         onAction =
           _ => {
             loadingIndicator.visible = false
@@ -206,14 +212,15 @@ class MainView(controller: IController, loadingIndicator: ProgressIndicator) {
 
     dialog.scene =
       new Scene {
-        content =
+        root =
           new VBox {
             padding = Insets(20)
             spacing = 20
             alignment = Pos.Center
+            style = ThemeManager.getBackgroundStyle
             children = Seq(
               new Label("Enter group name:") {
-                style = "-fx-font-size: 14px;"
+                style = ThemeManager.getLabelStyle + " -fx-font-size: 14px;"
               },
               nameField,
               new HBox {
@@ -339,6 +346,18 @@ class MainView(controller: IController, loadingIndicator: ProgressIndicator) {
 
         case _ => println(s"Unhandled event: $event")
       }
+    }
+  }
+
+  def refreshTheme(): Unit = {
+    Platform.runLater {
+      homeTab.content = createHomeView()
+      groupTabs.values.foreach { tab =>
+        controller.app.getGroup(tab.text.value).foreach { group =>
+          tab.content = new GroupView(controller, group, loadingIndicator).getRoot
+        }
+      }
+      tabPane.style = ThemeManager.getBackgroundStyle
     }
   }
 

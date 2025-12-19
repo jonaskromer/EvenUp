@@ -1,6 +1,7 @@
 package de.htwg.swe.evenup.view.gui
 
 import scalafx.application.JFXApp3
+import scalafx.application.Platform
 import scalafx.scene.Scene
 import scalafx.Includes.eventClosureWrapperWithZeroParam
 import scalafx.scene.layout.{BorderPane, HBox, Priority, Region}
@@ -19,12 +20,20 @@ class Gui(controller: IController) extends JFXApp3 with Observer {
   private var mainView: MainView                  = uninitialized
   private var loadingIndicator: ProgressIndicator = uninitialized
   private var menuBar: HBox                       = uninitialized
+  private var borderPane: BorderPane              = uninitialized
 
   override def start(): Unit = {
     controller.add(this)
     createLoadingIndicator()
     mainView = new MainView(controller, loadingIndicator)
     createMenuBar()
+
+    // Register theme change listener to refresh UI
+    ThemeManager.addThemeObserver(() => {
+      Platform.runLater {
+        refreshTheme()
+      }
+    })
 
     stage =
       new JFXApp3.PrimaryStage {
@@ -34,15 +43,22 @@ class Gui(controller: IController) extends JFXApp3 with Observer {
 
         scene =
           new Scene {
-            root =
+            borderPane =
               new BorderPane {
                 top = menuBar
                 center = mainView.getRoot
+                style = ThemeManager.getBackgroundStyle
               }
+            root = borderPane
 
             onCloseRequest = () => controller.quit
           }
       }
+  }
+
+  private def refreshTheme(): Unit = {
+    updateMenuBar()
+    mainView.refreshTheme()
   }
 
   private def createLogo(): HBox = {
@@ -63,7 +79,7 @@ class Gui(controller: IController) extends JFXApp3 with Observer {
   private def createUndoButton(): Button = {
     new Button {
       text = "⟲ Undo"
-      style = "-fx-background-color: #301c55; -fx-text-fill: white;"
+      style = ThemeManager.getButtonStyle("accent")
       onAction =
         _ => {
           loadingIndicator.visible = true
@@ -75,7 +91,7 @@ class Gui(controller: IController) extends JFXApp3 with Observer {
   private def createRedoButton(): Button = {
     new Button {
       text = "⟳ Redo"
-      style = "-fx-background-color: #301c55; -fx-text-fill: white;"
+      style = ThemeManager.getButtonStyle("accent")
       onAction =
         _ => {
           loadingIndicator.visible = true
@@ -84,14 +100,38 @@ class Gui(controller: IController) extends JFXApp3 with Observer {
     }
   }
 
+  private def createThemeToggleButton(): Button = {
+    new Button {
+      text = if (ThemeManager.isDark) "☀️ Light" else "🌙 Dark"
+      style = ThemeManager.getButtonStyle("secondary")
+      onAction =
+        _ => {
+          ThemeManager.toggleTheme()
+          text = if (ThemeManager.isDark) "☀️ Light" else "🌙 Dark"
+        }
+    }
+  }
+
   private def createLoadingIndicator(): Unit = {
     loadingIndicator =
       new ProgressIndicator {
-        style = "-fx-accent: white;"
+        style = ThemeManager.getProgressIndicatorStyle
         prefWidth = 25
         prefHeight = 25
         visible = false
       }
+  }
+
+  private def updateMenuBar(): Unit = {
+    menuBar.children = Seq(
+      createLogo(),
+      createUndoButton(),
+      createRedoButton(),
+      new Region { hgrow = Priority.Always },
+      createThemeToggleButton(),
+      loadingIndicator
+    )
+    menuBar.style = ThemeManager.getMenuBarStyle
   }
 
   private def createMenuBar(): Unit = {
@@ -100,13 +140,14 @@ class Gui(controller: IController) extends JFXApp3 with Observer {
         padding = Insets(10)
         spacing = 20
         alignment = Pos.CenterLeft
-        style = "-fx-background-color: #270f55;"
+        style = ThemeManager.getMenuBarStyle
 
         children = Seq(
           createLogo(),
           createUndoButton(),
           createRedoButton(),
           new Region { hgrow = Priority.Always },
+          createThemeToggleButton(),
           loadingIndicator
         )
       }

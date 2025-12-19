@@ -31,6 +31,8 @@ lazy val root = project
 
     scalaVersion := scala3Version,
 
+    scalacOptions += "-Wconf:msg=Implicit parameters should be provided with a `using` clause:s",
+
     libraryDependencies ++= (Seq(
       "org.scalameta" %% "munit" % "1.0.0" % Test,
       "org.scalactic" %% "scalactic" % "3.2.19", 

@@ -16,7 +16,7 @@ final case class App(
 
   def allUsers: List[IPerson] = groups.flatMap(_.members).distinct
 
-  def addGroup(group: IGroup): IApp = copy(groups = groups :+ group)
+  def addGroup(group: IGroup): IApp           = copy(groups = groups :+ group)
 
   def updateGroup(updatedGroup: IGroup): IApp = copy(groups =
     groups.map(g => if g.name == updatedGroup.name then updatedGroup else g)

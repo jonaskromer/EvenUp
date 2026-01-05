@@ -9,12 +9,13 @@ import scalafx.geometry.{Insets, Pos}
 import scalafx.scene.image.{Image, ImageView}
 import scalafx.scene.paint.Color
 import scala.compiletime.uninitialized
+import com.google.inject.Inject
 
 import de.htwg.swe.evenup.control.IController
 import de.htwg.swe.evenup.util.Observer
 import de.htwg.swe.evenup.util.ObservableEvent
 
-class Gui(controller: IController) extends JFXApp3 with Observer {
+class Gui @Inject() (controller: IController) extends JFXApp3 with Observer {
 
   private var mainView: MainView                  = uninitialized
   private var loadingIndicator: ProgressIndicator = uninitialized

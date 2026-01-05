@@ -4,11 +4,12 @@ import de.htwg.swe.evenup.util.{ObservableEvent, Observer}
 import de.htwg.swe.evenup.control.*
 import de.htwg.swe.evenup.model.StateComponent.IAppState
 import de.htwg.swe.evenup.model.DateComponent.BaseDateImpl.Date
-
-import scala.util.{Failure, Success, Try}
 import de.htwg.swe.evenup.control.BaseControllerImpl.Controller
 
-class Tui(controller: IController) extends Observer:
+import scala.util.{Failure, Success, Try}
+import com.google.inject.Inject
+
+class Tui @Inject() (controller: IController) extends Observer:
 
   controller.add(this)
 

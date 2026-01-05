@@ -6,7 +6,9 @@ import de.htwg.swe.evenup.control.*
 import de.htwg.swe.evenup.model.AppComponent.IApp
 import de.htwg.swe.evenup.model.DateComponent.IDate
 
-class Controller(var app: IApp) extends IController:
+import com.google.inject.Inject
+
+class Controller @Inject() (var app: IApp) extends IController:
 
   val undoManager = new UndoManager
   val argsHandler = new ArgsHandler

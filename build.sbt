@@ -41,5 +41,7 @@ lazy val root = project
         ExclusionRule(organization = "org.openjfx")
       ),
       "org.scala-lang.modules" %% "scala-xml" % "2.3.0",
+      "com.google.inject" % "guice" % "7.0.0",
+      "net.codingwell" %% "scala-guice" % "7.0.0"
     )++ setJavaFXVersion.value)
   )

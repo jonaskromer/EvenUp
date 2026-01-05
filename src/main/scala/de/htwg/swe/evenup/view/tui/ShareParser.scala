@@ -76,7 +76,7 @@ object ShareParser:
       validSum     <- validateShareSum(shares, totalAmount)
       validPersons <- validatePersonsInGroup(validSum, groupMembers)
     yield validPersons
-  
+
   enum ParseError:
     case InvalidFormat(input: String)
     case InvalidAmount(input: String, reason: String)
@@ -85,14 +85,15 @@ object ShareParser:
     case ShareSumMismatch(shareSum: Double, totalAmount: Double)
     case PersonNotInGroup(persons: List[String])
 
-    def toMessage: String = this match
-      case ParseError.InvalidFormat(inp)                      => s"Invalid format: $inp"
-      case ParseError.InvalidAmount(inp, reason)              => s"Invalid amount in '$inp': $reason"
-      case ParseError.EmptyPersonName(inp)                    => s"Empty person name in: $inp"
-      case ParseError.NegativeAmount(person, amount)          => s"Negative amount for $person: $amount"
-      case ParseError.ShareSumMismatch(shareSum, totalAmount) =>
-        f"Share sum ($shareSum%.2f€) does not match total amount ($totalAmount%.2f€)"
-      case ParseError.PersonNotInGroup(persons)               => s"Following persons not in group: ${persons.mkString(", ")}" 
+    def toMessage: String =
+      this match
+        case ParseError.InvalidFormat(inp)                      => s"Invalid format: $inp"
+        case ParseError.InvalidAmount(inp, reason)              => s"Invalid amount in '$inp': $reason"
+        case ParseError.EmptyPersonName(inp)                    => s"Empty person name in: $inp"
+        case ParseError.NegativeAmount(person, amount)          => s"Negative amount for $person: $amount"
+        case ParseError.ShareSumMismatch(shareSum, totalAmount) =>
+          f"Share sum ($shareSum%.2f€) does not match total amount ($totalAmount%.2f€)"
+        case ParseError.PersonNotInGroup(persons) => s"Following persons not in group: ${persons.mkString(", ")}"
 
   def validSharePatternEither(input: String): Either[String, String] =
     val pattern = """^([A-Za-z]+:\d+(\.\d+)?)(_[A-Za-z]+:\d+(\.\d+)?)*$""".r

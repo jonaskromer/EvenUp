@@ -2,7 +2,9 @@ package de.htwg.swe.evenup.model.PersonComponent.BasePersonImpl
 
 import de.htwg.swe.evenup.model.PersonComponent.IPerson
 
-final case class Person(
+import com.google.inject.Inject
+
+final case class Person @Inject() (
   name: String
 ) extends IPerson: // future: mail, friendlist, login, picture
 

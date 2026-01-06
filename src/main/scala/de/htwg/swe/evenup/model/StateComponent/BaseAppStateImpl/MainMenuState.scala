@@ -3,7 +3,9 @@ package de.htwg.swe.evenup.model.StateComponent.BaseAppStateImpl
 import de.htwg.swe.evenup.control.IController
 import de.htwg.swe.evenup.model.StateComponent.IAppState
 
-class MainMenuState extends IAppState:
+import com.google.inject.Inject
+
+class MainMenuState @Inject() extends IAppState:
   override def execute(controller: IController): Unit = {}
 
   override def canAddGroup: Boolean    = true

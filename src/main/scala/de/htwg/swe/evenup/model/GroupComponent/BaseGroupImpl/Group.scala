@@ -7,7 +7,9 @@ import de.htwg.swe.evenup.model.financial.ExpenseComponent.IExpense
 import de.htwg.swe.evenup.model.financial.TransactionComponent.ITransaction
 import de.htwg.swe.evenup.model.financial.DebtComponent.IDebtCalculationStrategy
 
-final case class Group(
+import com.google.inject.Inject
+
+final case class Group @Inject() (
   name: String,
   members: List[IPerson],
   expenses: List[IExpense],

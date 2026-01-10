@@ -30,6 +30,7 @@ class Parser:
       case TuiKeys.redo.key           => Success(tokens)
       case TuiKeys.MainMenu.key       => Success(tokens)
       case TuiKeys.calculateDebts.key => Success(tokens)
+      case TuiKeys.load.key           => Success(tokens)
       case TuiKeys.newGroup.key       =>
         if tokens.length != 2 then Failure(new Exception(decorateErrorMessage(TuiKeys.newGroup)))
         else Success(tokens)

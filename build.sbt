@@ -41,5 +41,6 @@ lazy val root = project
         ExclusionRule(organization = "org.openjfx")
       ),
       "org.scala-lang.modules" %% "scala-xml" % "2.3.0",
+      "org.playframework" %% "play-json" % "3.1.0-M9"
     )++ setJavaFXVersion.value)
   )

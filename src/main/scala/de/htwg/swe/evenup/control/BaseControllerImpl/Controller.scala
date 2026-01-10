@@ -5,8 +5,9 @@ import de.htwg.swe.evenup.util.{Observable, ObservableEvent, UndoManager}
 import de.htwg.swe.evenup.control.*
 import de.htwg.swe.evenup.model.AppComponent.IApp
 import de.htwg.swe.evenup.model.DateComponent.IDate
+import de.htwg.swe.evenup.modules.Default.given
 
-class Controller(var app: IApp) extends IController:
+class Controller(using var app: IApp) extends IController:
 
   val undoManager = new UndoManager
   val argsHandler = new ArgsHandler

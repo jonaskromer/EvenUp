@@ -33,3 +33,5 @@ metals.sbt
 /.worksheet/
 
 .scala-build/
+
+/META-INF/

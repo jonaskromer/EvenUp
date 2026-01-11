@@ -32,7 +32,6 @@ lazy val root = project
     scalaVersion := scala3Version,
 
     scalacOptions += "-Wconf:msg=Implicit parameters should be provided with a `using` clause:s",
-
     coverageExcludedPackages := "de\\.htwg\\.swe\\.evenup\\.EvenUp",
     coverageExcludedPackages := "de\\.htwg\\.swe\\.evenup\\.view\\.gui\\..*",
 

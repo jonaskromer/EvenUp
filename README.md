@@ -44,6 +44,18 @@ To install and run EvenUp:
    sbt run
    ```
 
+
+4. On MacOS install X-Server
+   1. brew install --cask xquartz
+   2. open -a XQuartz
+      1. Allow connections from network clients
+   3. xhost + 127.0.0.1
+   4. 
+5. docker run -it evenup-evenup
+6. docker compose up
+7. docker attach evenup-evenup-1
+
+
 Ensure you have Java (JDK 17 or higher) and sbt installed on your system.
 
 ---

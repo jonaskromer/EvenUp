@@ -5,9 +5,7 @@ import de.htwg.swe.evenup.model.PersonComponent.IPerson
 import de.htwg.swe.evenup.model.financial.ExpenseComponent.IExpense
 import de.htwg.swe.evenup.model.financial.ShareComponent.IShare
 
-import com.google.inject.Inject
-
-final case class Expense @Inject() (
+final case class Expense(
   name: String,
   amount: Double,
   date: IDate,

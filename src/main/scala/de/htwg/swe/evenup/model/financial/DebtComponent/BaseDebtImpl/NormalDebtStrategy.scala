@@ -4,9 +4,7 @@ import de.htwg.swe.evenup.model.GroupComponent.IGroup
 import de.htwg.swe.evenup.model.PersonComponent.IPerson
 import de.htwg.swe.evenup.model.financial.DebtComponent.IDebt
 
-import com.google.inject.Inject
-
-class NormalDebtStrategy @Inject() extends DebtCalculationStrategy:
+class NormalDebtStrategy extends DebtCalculationStrategy:
 
   override def toString(): String = "normal"
 

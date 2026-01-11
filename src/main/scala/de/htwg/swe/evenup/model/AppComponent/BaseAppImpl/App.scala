@@ -5,9 +5,7 @@ import de.htwg.swe.evenup.model.StateComponent.IAppState
 import de.htwg.swe.evenup.model.GroupComponent.IGroup
 import de.htwg.swe.evenup.model.PersonComponent.IPerson
 
-import com.google.inject.Inject
-
-final case class App @Inject() (
+final case class App(
   groups: List[IGroup],
   active_user: Option[IPerson],
   active_group: Option[IGroup],

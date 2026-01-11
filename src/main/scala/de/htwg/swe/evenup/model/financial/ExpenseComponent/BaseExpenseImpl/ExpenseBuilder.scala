@@ -8,9 +8,7 @@ import de.htwg.swe.evenup.model.financial.ShareComponent.IShare
 import de.htwg.swe.evenup.model.DateComponent.BaseDateImpl.Date
 import de.htwg.swe.evenup.model.PersonComponent.BasePersonImpl.Person
 
-import com.google.inject.Inject
-
-class ExpenseBuilder @Inject() extends IExpenseBuilder:
+class ExpenseBuilder extends IExpenseBuilder:
   private var name: String         = "noexpensenameset"
   private var amount: Double       = 0.0
   private var date: IDate          = Date(1, 1, 2000)

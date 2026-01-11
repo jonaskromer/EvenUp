@@ -2,7 +2,7 @@ package de.htwg.swe.evenup
 
 import de.htwg.swe.evenup.view.tui.Tui
 import de.htwg.swe.evenup.view.gui.Gui
-import de.htwg.swe.evenup.module.DefaultModule
+import de.htwg.swe.evenup.module.EvenUpModule
 
 import scala.io.StdIn.readLine
 import com.google.inject.Guice
@@ -10,7 +10,7 @@ import de.htwg.swe.evenup.control.IController
 
 @main def main(): Unit =
 
-  val injector = Guice.createInjector(new DefaultModule)
+  val injector = Guice.createInjector(new EvenUpModule)
 
   val controller = injector.getInstance(classOf[IController])
   val tui        = injector.getInstance(classOf[Tui])

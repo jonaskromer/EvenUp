@@ -3,9 +3,7 @@ package de.htwg.swe.evenup.model.StateComponent.BaseAppStateImpl
 import de.htwg.swe.evenup.control.IController
 import de.htwg.swe.evenup.model.StateComponent.IAppState
 
-import com.google.inject.Inject
-
-class InEmptyGroupState @Inject() extends IAppState:
+class InEmptyGroupState extends IAppState:
   override def execute(controller: IController): Unit = {}
 
   override def canAddGroup: Boolean    = false

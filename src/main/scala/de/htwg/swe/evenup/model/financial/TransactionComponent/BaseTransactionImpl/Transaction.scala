@@ -4,9 +4,7 @@ import de.htwg.swe.evenup.model.PersonComponent.IPerson
 import de.htwg.swe.evenup.model.DateComponent.IDate
 import de.htwg.swe.evenup.model.financial.TransactionComponent.ITransaction
 
-import com.google.inject.Inject
-
-final case class Transaction @Inject() (
+final case class Transaction(
   from: IPerson,
   to: IPerson,
   amount: Double,

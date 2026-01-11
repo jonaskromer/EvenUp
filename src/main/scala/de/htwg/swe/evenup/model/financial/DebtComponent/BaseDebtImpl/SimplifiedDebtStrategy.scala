@@ -4,9 +4,7 @@ import de.htwg.swe.evenup.model.GroupComponent.IGroup
 import de.htwg.swe.evenup.model.PersonComponent.IPerson
 import de.htwg.swe.evenup.model.financial.DebtComponent.IDebt
 
-import com.google.inject.Inject
-
-class SimplifiedDebtStrategy @Inject() extends DebtCalculationStrategy:
+class SimplifiedDebtStrategy extends DebtCalculationStrategy:
   /*
   Example:
     - Alice owes Bob 10€

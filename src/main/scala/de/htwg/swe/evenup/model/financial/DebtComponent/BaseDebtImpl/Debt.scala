@@ -3,9 +3,7 @@ package de.htwg.swe.evenup.model.financial.DebtComponent.BaseDebtImpl
 import de.htwg.swe.evenup.model.PersonComponent.IPerson
 import de.htwg.swe.evenup.model.financial.DebtComponent.IDebt
 
-import com.google.inject.Inject
-
-final case class Debt @Inject() (
+final case class Debt(
   from: IPerson,
   to: IPerson,
   amount: Double

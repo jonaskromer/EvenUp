@@ -27,7 +27,7 @@ import de.htwg.swe.evenup.control.BaseControllerImpl.Controller
 import de.htwg.swe.evenup.view.tui.Tui
 import de.htwg.swe.evenup.view.gui.Gui
 
-class DefaultModule extends AbstractModule with ScalaModule {
+class EvenUpModule extends AbstractModule with ScalaModule {
 
   override def configure(): Unit = 
     bind[IApp].toInstance(
@@ -35,33 +35,16 @@ class DefaultModule extends AbstractModule with ScalaModule {
     )
     
     bind[IController].to[Controller]
-
-    bind[IApp].to[App]
-
-    bind[IDate].to[Date]
-
-    bind[IDebt].to[Debt]
-
-    bind[IDebtCalculationStrategy].annotatedWith(Names.named("NormalDebtStrategy")).to[NormalDebtStrategy]
-    bind[IDebtCalculationStrategy].annotatedWith(Names.named("SimplifiedDebtStrategy")).to[SimplifiedDebtStrategy]
-
-    bind[IExpense].to[Expense]
-
-    bind[IExpenseBuilder].to[ExpenseBuilder]
-
-    bind[IShare].to[Share]
-
-    bind[ITransaction].to[Transaction]
-
-    bind[IGroup].to[Group]
-
-    bind[IPerson].to[Person]
-
+    
+    bind[Tui].asEagerSingleton()
+    bind[Gui].asEagerSingleton()
+    
     bind[IAppState].annotatedWith(Names.named("MainMenuState")).to[MainMenuState]
     bind[IAppState].annotatedWith(Names.named("InGroupState")).to[InGroupState]
     bind[IAppState].annotatedWith(Names.named("InEmptyGroupState")).to[InEmptyGroupState]
     
-    // Erstellt jeweils ein Singleton von Gui und Tui sobald der Guic Injector startet
-    bind[Tui].asEagerSingleton()
-    bind[Gui].asEagerSingleton()
+    bind[IDebtCalculationStrategy].annotatedWith(Names.named("normal")).to[NormalDebtStrategy]
+    bind[IDebtCalculationStrategy].annotatedWith(Names.named("simplified")).to[SimplifiedDebtStrategy]
+    
+    bind[IExpenseBuilder].to[ExpenseBuilder]
 }

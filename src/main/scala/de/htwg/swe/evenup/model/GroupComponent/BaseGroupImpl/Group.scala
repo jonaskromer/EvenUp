@@ -6,6 +6,7 @@ import de.htwg.swe.evenup.model.financial.DebtComponent.IDebt
 import de.htwg.swe.evenup.model.financial.ExpenseComponent.IExpense
 import de.htwg.swe.evenup.model.financial.TransactionComponent.ITransaction
 import de.htwg.swe.evenup.model.financial.DebtComponent.IDebtCalculationStrategy
+import de.htwg.swe.evenup.model.GroupComponent.IGroupFactory
 
 final case class Group(
   name: String,
@@ -56,3 +57,13 @@ final case class Group(
   def calculateDebt(): List[IDebt] = debt_strategy.calculateDebts(this)
 
   def containsUser(user_name: String): Boolean = members.exists(_.name == user_name)
+
+object GroupFactory extends IGroupFactory:
+  override def apply(
+      name: String,
+      members: List[IPerson],
+      expenses: List[IExpense],
+      transactions: List[ITransaction],
+      debt_strategy: IDebtCalculationStrategy
+  ): IGroup =
+    Group(name, members, expenses, transactions, debt_strategy)

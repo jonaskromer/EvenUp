@@ -4,6 +4,7 @@ import de.htwg.swe.evenup.model.DateComponent.IDate
 import de.htwg.swe.evenup.model.PersonComponent.IPerson
 import de.htwg.swe.evenup.model.financial.ExpenseComponent.IExpense
 import de.htwg.swe.evenup.model.financial.ShareComponent.IShare
+import de.htwg.swe.evenup.model.financial.ExpenseComponent.IExpenseFactory
 
 final case class Expense(
   name: String,
@@ -28,3 +29,12 @@ final case class Expense(
   def updatePaidBy(paid_by: IPerson): IExpense = copy(paid_by = paid_by)
 
   def updateShares(shares: List[IShare]): IExpense = copy(shares = shares)
+
+object ExpenseFactory extends IExpenseFactory:
+  def apply(
+    name: String,
+    amount: Double,
+    date: IDate,
+    paid_by: IPerson,
+    shares: List[IShare]
+  ): IExpense = Expense(name, amount, date, paid_by, shares)

@@ -32,6 +32,8 @@ lazy val root = project
     scalaVersion := scala3Version,
 
     scalacOptions += "-Wconf:msg=Implicit parameters should be provided with a `using` clause:s",
+    coverageExcludedPackages := "de\\.htwg\\.swe\\.evenup\\.EvenUp",
+    coverageExcludedPackages := "de\\.htwg\\.swe\\.evenup\\.view\\.gui\\..*",
 
     libraryDependencies ++= (Seq(
       "org.scalameta" %% "munit" % "1.0.0" % Test,
@@ -41,5 +43,12 @@ lazy val root = project
         ExclusionRule(organization = "org.openjfx")
       ),
       "org.scala-lang.modules" %% "scala-xml" % "2.3.0",
-    )++ setJavaFXVersion.value)
+      "org.playframework" %% "play-json" % "3.1.0-M9"
+    )++ setJavaFXVersion.value),
+    assembly / assemblyJarName := "EvenUp.jar",
+    assembly / mainClass := Some("de.htwg.swe.evenup.EvenUp"),
+    assembly / assemblyMergeStrategy := {
+      case PathList("META-INF", _*) => MergeStrategy.discard
+      case _                        => MergeStrategy.first
+    }
   )

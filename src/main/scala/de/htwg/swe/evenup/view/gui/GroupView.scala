@@ -74,15 +74,13 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
       new Stage {
         initModality(Modality.ApplicationModal)
         title = "Add Member"
-        width = 400
-        height = 200
+        resizable = true
         onCloseRequest = _ => loadingIndicator.visible = false
       }
 
     val nameField =
       new TextField {
         promptText = "Member name"
-        prefWidth = 300
         onAction =
           _ => {
             if (!text.value.isEmpty) {
@@ -126,6 +124,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
             padding = Insets(20)
             spacing = 20
             alignment = Pos.Center
+            vgrow = Priority.Always
             children = Seq(
               new Label("Enter member name:") {
                 styleClass += "dialog-label"
@@ -222,33 +221,32 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
       new Stage {
         initModality(Modality.ApplicationModal)
         title = "Add Expense"
-        width = 550
-        height = 700
+        resizable = true
         onCloseRequest = _ => loadingIndicator.visible = false
       }
 
     val nameField =
       new TextField {
         promptText = "Expense name"
-        prefWidth = 450
+        hgrow = Priority.Always
       }
 
     val paidByCombo =
       new ComboBox[String] {
         items = ObservableBuffer(group.members.map(_.name)*)
         promptText = "Select payer"
-        prefWidth = 450
+        hgrow = Priority.Always
       }
 
     val amountField =
       new TextField {
         promptText = "Amount (e.g., 50.00)"
-        prefWidth = 450
+        hgrow = Priority.Always
       }
 
     val datePicker =
       new DatePicker {
-        prefWidth = 450
+        hgrow = Priority.Always
         val germanFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
         converter =
           new StringConverter[LocalDate] {
@@ -274,7 +272,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
     val shareRowsContainer =
       new VBox {
         spacing = 8
-        prefWidth = 450
+        hgrow = Priority.Always
       }
 
     def getAvailableMembers(excludeNames: Set[String] = Set.empty): ObservableBuffer[String] = {
@@ -331,7 +329,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
       val rowBox =
         new HBox {
           spacing = 8
-          alignment = Pos.CenterLeft
+          alignment = Pos.Center
         }
 
       val removeBtn =
@@ -378,9 +376,16 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
         spacing = 10
         alignment = Pos.Center
         children = Seq(
-          new Label("Shares (optional):") { styleClass += "form-label" },
+          new Label("Shares (optional):") { 
+            styleClass += "form-label"
+            alignment = Pos.Center
+          },
           shareRowsContainer,
-          addShareRowBtn
+          new HBox {
+            spacing = 10
+            alignment = Pos.Center
+            children = Seq(addShareRowBtn)
+          }
         )
       }
 
@@ -388,7 +393,8 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
       new Label {
         styleClass += "error-label"
         visible = false
-        prefWidth = 450
+        wrapText = true
+        hgrow = Priority.Always
       }
 
     val addBtn =
@@ -475,19 +481,33 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
 
     val scrollPane =
       new ScrollPane {
+        fitToWidth = true
         content =
           new VBox {
             padding = Insets(20)
             spacing = 15
-            alignment = Pos.TopCenter
+            alignment = Pos.Center
+            prefWidth = 400
             children = Seq(
-              new Label("Expense Name:") { styleClass += "form-label" },
+              new Label("Expense Name:") { 
+                styleClass += "form-label"
+                alignment = Pos.Center
+              },
               nameField,
-              new Label("Paid By:") { styleClass += "form-label" },
+              new Label("Paid By:") { 
+                styleClass += "form-label"
+                alignment = Pos.Center
+              },
               paidByCombo,
-              new Label("Amount:") { styleClass += "form-label" },
+              new Label("Amount:") { 
+                styleClass += "form-label"
+                alignment = Pos.Center
+              },
               amountField,
-              new Label("Date:") { styleClass += "form-label" },
+              new Label("Date:") { 
+                styleClass += "form-label"
+                alignment = Pos.Center
+              },
               datePicker,
               sharesSection,
               errorLabel,

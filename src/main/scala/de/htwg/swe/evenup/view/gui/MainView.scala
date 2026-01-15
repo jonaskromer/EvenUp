@@ -159,15 +159,13 @@ class MainView(controller: IController, loadingIndicator: ProgressIndicator) {
       new Stage {
         initModality(Modality.ApplicationModal)
         title = "Add New Group"
-        width = 400
-        height = 200
+        resizable = true
         onCloseRequest = _ => loadingIndicator.visible = false
       }
 
     val nameField =
       new TextField {
         promptText = "Group name"
-        prefWidth = 300
         onAction =
           _ => {
             if (!text.value.isEmpty) {
@@ -211,6 +209,7 @@ class MainView(controller: IController, loadingIndicator: ProgressIndicator) {
             padding = Insets(20)
             spacing = 20
             alignment = Pos.Center
+            vgrow = Priority.Always
             children = Seq(
               new Label("Enter group name:") {
                 styleClass += "dialog-label"

@@ -238,21 +238,21 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
 
     val datePicker =
       new DatePicker {
-        val germanFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
+        val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
         converter =
           new StringConverter[LocalDate] {
             override def toString(date: LocalDate): String = {
               if (date == null)
                 ""
               else
-                germanFormatter.format(date)
+                formatter.format(date)
             }
             override def fromString(string: String): LocalDate = {
               if (string == null || string.isEmpty)
                 null
               else
                 try {
-                  LocalDate.parse(string, germanFormatter)
+                  LocalDate.parse(string, formatter)
                 } catch {
                   case _: Exception => null
                 }
@@ -371,7 +371,6 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
             spacing = 10
             alignment = Pos.Center
             children = Seq(addShareRowBtn)
-            hgrow = Priority.Always
           }
         )
       }
@@ -467,14 +466,12 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
 
     val scrollPane =
       new ScrollPane {
-        fitToHeight = false
-        fitToWidth = true
         content =
           new VBox {
             padding = Insets(20)
-            fitToHeight = false
-            fitToWidth = true
             spacing = 15
+            prefWidth = 400
+            prefHeight = 600
             alignment = Pos.TopCenter
             children = Seq(
               new Label("Expense Name:") { 
@@ -510,7 +507,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
 
 
     dialog.scene =
-      new Scene(500, 700) {
+      new Scene() {
         stylesheets.add(getClass.getResource("/styles.css").toExternalForm)
         content = scrollPane
       }

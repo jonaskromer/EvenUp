@@ -5,8 +5,10 @@ import de.htwg.swe.evenup.util.{Observable, ObservableEvent, UndoManager}
 import de.htwg.swe.evenup.control.*
 import de.htwg.swe.evenup.model.AppComponent.IApp
 import de.htwg.swe.evenup.model.DateComponent.IDate
+import de.htwg.swe.evenup.modules.Default.given
+import de.htwg.swe.evenup.model.FileIOComponent.IFileIO
 
-class Controller(var app: IApp) extends IController:
+class Controller(using var app: IApp) extends IController:
 
   val undoManager = new UndoManager
   val argsHandler = new ArgsHandler
@@ -37,6 +39,8 @@ class Controller(var app: IApp) extends IController:
 
   def quit: Unit =
     // TODO: save state
+    val fileio = summon[IFileIO]
+    fileio.save(app)
     notifyObservers(EventResponse.Quit)
     System.exit(0)
 
@@ -122,6 +126,11 @@ class Controller(var app: IApp) extends IController:
       case EventResponse.CalculateDebts(CalculateDebtsResult.NoActiveGroup, debts) =>
         notifyObservers(EventResponse.CalculateDebts(CalculateDebtsResult.NoActiveGroup, debts))
       case _ => EventResponse.UncoveredFailure("calculateDebts")
+
+  def load(): Unit =
+    val fileio = summon[IFileIO]
+    app = fileio.load()
+    notifyObservers(EventResponse.MainMenu)
 
   /*
   def newTransaction(

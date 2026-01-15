@@ -75,6 +75,7 @@ class Tui(controller: IController) extends Observer:
     parser.parseInput(input) match
       case Success(tokens) =>
         tokens.head match
+          case TuiKeys.load.key           => controller.load()
           case TuiKeys.help.key           => printHelp(controller.app.state)
           case TuiKeys.MainMenu.key       => controller.gotoMainMenu
           case TuiKeys.calculateDebts.key => controller.calculateDebts()

@@ -12,6 +12,7 @@ trait IController extends Observable {
   def undo(): Unit
   def redo(): Unit
   def quit: Unit
+  def load(): Unit
 
   def gotoMainMenu: Unit
   def gotoGroup(group_name: String): Unit

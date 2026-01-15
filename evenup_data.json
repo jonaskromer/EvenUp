@@ -1,0 +1,76 @@
+{
+  "groups" : [ {
+    "name" : "Hunde",
+    "members" : [ {
+      "name" : "Lennert"
+    }, {
+      "name" : "Breiner"
+    } ],
+    "expenses" : [ {
+      "name" : "Huuuhn",
+      "amount" : 38,
+      "date" : {
+        "day" : 1,
+        "month" : 10,
+        "year" : 1010
+      },
+      "paidBy" : {
+        "name" : "Lennert"
+      },
+      "shares" : [ {
+        "person" : {
+          "name" : "Lennert"
+        },
+        "amount" : 19
+      }, {
+        "person" : {
+          "name" : "Breiner"
+        },
+        "amount" : 19
+      } ]
+    } ],
+    "transactions" : [ ],
+    "debtCalculationStrategy" : {
+      "type" : "NormalDebtStrategy"
+    }
+  } ],
+  "activeUser" : { },
+  "activeGroup" : {
+    "name" : "Hunde",
+    "members" : [ {
+      "name" : "Lennert"
+    }, {
+      "name" : "Breiner"
+    } ],
+    "expenses" : [ {
+      "name" : "Huuuhn",
+      "amount" : 38,
+      "date" : {
+        "day" : 1,
+        "month" : 10,
+        "year" : 1010
+      },
+      "paidBy" : {
+        "name" : "Lennert"
+      },
+      "shares" : [ {
+        "person" : {
+          "name" : "Lennert"
+        },
+        "amount" : 19
+      }, {
+        "person" : {
+          "name" : "Breiner"
+        },
+        "amount" : 19
+      } ]
+    } ],
+    "transactions" : [ ],
+    "debtCalculationStrategy" : {
+      "type" : "NormalDebtStrategy"
+    }
+  },
+  "state" : {
+    "state" : "InGroupState"
+  }
+}

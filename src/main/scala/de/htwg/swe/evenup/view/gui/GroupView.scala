@@ -467,9 +467,13 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
 
     val scrollPane =
       new ScrollPane {
+        fitToHeight = false
+        fitToWidth = true
         content =
           new VBox {
             padding = Insets(20)
+            fitToHeight = false
+            fitToWidth = true
             spacing = 15
             alignment = Pos.TopCenter
             children = Seq(
@@ -506,7 +510,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
 
 
     dialog.scene =
-      new Scene {
+      new Scene(500, 700) {
         stylesheets.add(getClass.getResource("/styles.css").toExternalForm)
         content = scrollPane
       }

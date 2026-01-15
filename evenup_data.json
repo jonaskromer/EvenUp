@@ -2,7 +2,13 @@
   "groups" : [ {
     "name" : "test",
     "members" : [ {
-      "name" : "test"
+      "name" : "a"
+    }, {
+      "name" : "b"
+    }, {
+      "name" : "c"
+    }, {
+      "name" : "d"
     } ],
     "expenses" : [ ],
     "transactions" : [ ],
@@ -14,7 +20,13 @@
   "activeGroup" : {
     "name" : "test",
     "members" : [ {
-      "name" : "test"
+      "name" : "a"
+    }, {
+      "name" : "b"
+    }, {
+      "name" : "c"
+    }, {
+      "name" : "d"
     } ],
     "expenses" : [ ],
     "transactions" : [ ],

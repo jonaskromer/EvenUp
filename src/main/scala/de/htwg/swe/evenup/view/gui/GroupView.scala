@@ -44,8 +44,6 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
       new Button {
         text = "+"
         styleClass += "add-button"
-        prefWidth = 50
-        prefHeight = 50
         onAction = _ => showAddMemberDialog()
       }
 
@@ -155,8 +153,6 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
       new Button {
         text = "+"
         styleClass += "add-button"
-        prefWidth = 50
-        prefHeight = 50
         onAction = _ => showAddExpenseDialog()
       }
 
@@ -221,32 +217,27 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
       new Stage {
         initModality(Modality.ApplicationModal)
         title = "Add Expense"
-        resizable = true
         onCloseRequest = _ => loadingIndicator.visible = false
       }
 
     val nameField =
       new TextField {
         promptText = "Expense name"
-        hgrow = Priority.Always
       }
 
     val paidByCombo =
       new ComboBox[String] {
         items = ObservableBuffer(group.members.map(_.name)*)
         promptText = "Select payer"
-        hgrow = Priority.Always
       }
 
     val amountField =
       new TextField {
         promptText = "Amount (e.g., 50.00)"
-        hgrow = Priority.Always
       }
 
     val datePicker =
       new DatePicker {
-        hgrow = Priority.Always
         val germanFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
         converter =
           new StringConverter[LocalDate] {
@@ -272,7 +263,6 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
     val shareRowsContainer =
       new VBox {
         spacing = 8
-        hgrow = Priority.Always
       }
 
     def getAvailableMembers(excludeNames: Set[String] = Set.empty): ObservableBuffer[String] = {
@@ -356,8 +346,6 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
       new Button {
         text = "+"
         styleClass += "add-button"
-        prefWidth = 50
-        prefHeight = 50
         onAction =
           _ => {
             if (shareRows.size < group.members.size) {
@@ -383,6 +371,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
             spacing = 10
             alignment = Pos.Center
             children = Seq(addShareRowBtn)
+            hgrow = Priority.Always
           }
         )
       }
@@ -392,7 +381,6 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
         styleClass += "error-label"
         visible = false
         wrapText = true
-        hgrow = Priority.Always
       }
 
     val addBtn =
@@ -479,13 +467,11 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
 
     val scrollPane =
       new ScrollPane {
-        fitToWidth = true
         content =
           new VBox {
             padding = Insets(20)
             spacing = 15
-            prefWidth = 300
-            alignment = Pos.Center
+            alignment = Pos.TopCenter
             children = Seq(
               new Label("Expense Name:") { 
                 styleClass += "form-label"
@@ -516,8 +502,8 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
               }
             )
           }
-        fitToWidth = true
       }
+
 
     dialog.scene =
       new Scene {

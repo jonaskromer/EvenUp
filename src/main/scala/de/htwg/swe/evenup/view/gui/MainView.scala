@@ -65,8 +65,6 @@ class MainView(controller: IController, loadingIndicator: ProgressIndicator) {
       new Button {
         text = "+"
         styleClass += "add-button"
-        prefWidth = 50
-        prefHeight = 50
         onAction = _ => showAddGroupDialog()
       }
 

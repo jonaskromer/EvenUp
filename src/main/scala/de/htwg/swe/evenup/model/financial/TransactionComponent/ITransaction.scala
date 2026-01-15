@@ -29,29 +29,29 @@ trait ITransaction extends Serializable:
       <Date>{date.toXml}</Date>
     </Transaction>
 
-  override def toJson: JsObject =
-    Json.obj(
-      "from" -> from.toJson,
-      "to" -> to.toJson,
-      "amount" -> amount,
-      "date" -> date.toJson
-    )
+  override def toJson: JsObject = Json.obj(
+    "from"   -> from.toJson,
+    "to"     -> to.toJson,
+    "amount" -> amount,
+    "date"   -> date.toJson
+  )
 
 object TransactionDeserializer extends Deserializer[ITransaction]:
   val factory: ITransactionFactory = summon[ITransactionFactory]
-  
+
   def fromXml(xml: Elem): ITransaction =
-    val from = de.htwg.swe.evenup.model.PersonComponent.PersonDeserializer.fromXml((xml \ "From").head.asInstanceOf[Elem])
+    val from = de.htwg.swe.evenup.model.PersonComponent.PersonDeserializer
+      .fromXml((xml \ "From").head.asInstanceOf[Elem])
     val to = de.htwg.swe.evenup.model.PersonComponent.PersonDeserializer.fromXml((xml \ "To").head.asInstanceOf[Elem])
     val amount = (xml \ "Amount").text.toDouble
-    val date = de.htwg.swe.evenup.model.DateComponent.DateDeserializer.fromXml((xml \ "Date").head.asInstanceOf[Elem])
+    val date   = de.htwg.swe.evenup.model.DateComponent.DateDeserializer.fromXml((xml \ "Date").head.asInstanceOf[Elem])
     factory(from, to, amount, date)
 
   def fromJson(json: JsObject): ITransaction =
-    val from = de.htwg.swe.evenup.model.PersonComponent.PersonDeserializer.fromJson((json \ "from").as[JsObject])
-    val to = de.htwg.swe.evenup.model.PersonComponent.PersonDeserializer.fromJson((json \ "to").as[JsObject])
+    val from   = de.htwg.swe.evenup.model.PersonComponent.PersonDeserializer.fromJson((json \ "from").as[JsObject])
+    val to     = de.htwg.swe.evenup.model.PersonComponent.PersonDeserializer.fromJson((json \ "to").as[JsObject])
     val amount = (json \ "amount").as[Double]
-    val date = de.htwg.swe.evenup.model.DateComponent.DateDeserializer.fromJson((json \ "date").as[JsObject])
+    val date   = de.htwg.swe.evenup.model.DateComponent.DateDeserializer.fromJson((json \ "date").as[JsObject])
     factory(from, to, amount, date)
 
 trait ITransactionFactory:

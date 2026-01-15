@@ -39,7 +39,7 @@ enum TuiKeys(val key: String, val usage: String, val description: String, val al
   case setStrategy
       extends TuiKeys(":strategy", "<simplified|normal>", "Set debt calculation strategy", _.canSetStrategy)
 
-  case load           extends TuiKeys(":load", "", "Load application state from file", _ => true)
+  case load extends TuiKeys(":load", "", "Load application state from file", _ => true)
 
   case help           extends TuiKeys(":h", "", "Help", _.canShowHelp)
   case quit           extends TuiKeys(":q", "", "Quit", _.canQuit)

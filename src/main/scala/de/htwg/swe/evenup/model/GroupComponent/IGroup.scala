@@ -44,15 +44,13 @@ trait IGroup extends Serializable:
       </DebtCalculationStrategy>
     </Group>
 
-  override def toJson: JsObject =
-    Json.obj(
-      "name" -> name,
-      "members" -> members.map(_.toJson),
-      "expenses" -> expenses.map(_.toJson),
-      "transactions" -> transactions.map(_.toJson),
-      "debtCalculationStrategy" -> debt_strategy.toJson
-    )
-
+  override def toJson: JsObject = Json.obj(
+    "name"                    -> name,
+    "members"                 -> members.map(_.toJson),
+    "expenses"                -> expenses.map(_.toJson),
+    "transactions"            -> transactions.map(_.toJson),
+    "debtCalculationStrategy" -> debt_strategy.toJson
+  )
 
   def addMember(person: IPerson): IGroup
   def removeMember(person: IPerson): IGroup
@@ -72,40 +70,51 @@ trait IGroup extends Serializable:
   def containsUser(user_name: String): Boolean
 
 object GroupDeserializer extends Deserializer[IGroup]:
-  val factory: IGroupFactory = summon[IGroupFactory]
+  val factory: IGroupFactory              = summon[IGroupFactory]
+
   override def fromXml(xml: Elem): IGroup = {
-    val name = (xml \ "Name").text
-    val members = (xml \ "Members" \ "Person").map(node => PersonDeserializer.fromXml(node.asInstanceOf[Elem])).toList
-    val expenses = (xml \ "Expenses" \ "Expense").map(node => ExpenseDeserializer.fromXml(node.asInstanceOf[Elem])).toList
-    val transactions = (xml \ "Transactions" \ "Transaction").map(node => TransactionDeserializer.fromXml(node.asInstanceOf[Elem])).toList
+    val name     = (xml \ "Name").text
+    val members  = (xml \ "Members" \ "Person").map(node => PersonDeserializer.fromXml(node.asInstanceOf[Elem])).toList
+    val expenses =
+      (xml \ "Expenses" \ "Expense").map(node => ExpenseDeserializer.fromXml(node.asInstanceOf[Elem])).toList
+    val transactions =
+      (xml \ "Transactions" \ "Transaction")
+        .map(node => TransactionDeserializer.fromXml(node.asInstanceOf[Elem]))
+        .toList
     val debtStrategyElem = (xml \ "DebtCalculationStrategy").headOption.map(_.asInstanceOf[Elem]).getOrElse(xml)
-    val debtStrategyText = (debtStrategyElem \ "DebtCalculationStrategy" \ "Type").headOption.map(_.text).orElse((debtStrategyElem \ "Type").headOption.map(_.text)).getOrElse("NormalDebtStrategy")
-    val debtStrategy = debtStrategyText match {
-      case "NormalDebtStrategy" => NormalDebtStrategy()
-      case "SimplifiedDebtStrategy" => SimplifiedDebtStrategy()
-      case _ => NormalDebtStrategy()
-    }
+    val debtStrategyText = (debtStrategyElem \ "DebtCalculationStrategy" \ "Type").headOption
+      .map(_.text)
+      .orElse((debtStrategyElem \ "Type").headOption.map(_.text))
+      .getOrElse("NormalDebtStrategy")
+    val debtStrategy =
+      debtStrategyText match {
+        case "NormalDebtStrategy"     => NormalDebtStrategy()
+        case "SimplifiedDebtStrategy" => SimplifiedDebtStrategy()
+        case _                        => NormalDebtStrategy()
+      }
     factory(name, members, expenses, transactions, debtStrategy)
   }
 
   override def fromJson(json: JsObject): IGroup = {
-    val name = (json \ "name").as[String]
-    val members = (json \ "members").as[List[JsObject]].map(obj => PersonDeserializer.fromJson(obj))
-    val expenses = (json \ "expenses").as[List[JsObject]].map(obj => ExpenseDeserializer.fromJson(obj))
-    val transactions = (json \ "transactions").as[List[JsObject]].map(obj => TransactionDeserializer.fromJson(obj))
+    val name             = (json \ "name").as[String]
+    val members          = (json \ "members").as[List[JsObject]].map(obj => PersonDeserializer.fromJson(obj))
+    val expenses         = (json \ "expenses").as[List[JsObject]].map(obj => ExpenseDeserializer.fromJson(obj))
+    val transactions     = (json \ "transactions").as[List[JsObject]].map(obj => TransactionDeserializer.fromJson(obj))
     val debtStrategyType = ((json \ "debtCalculationStrategy") \ "type").as[String]
-    val debtStrategy = debtStrategyType match {
-      case "NormalDebtStrategy" => NormalDebtStrategy()
-      case "SimplifiedDebtStrategy" => SimplifiedDebtStrategy()
-    }
+    val debtStrategy     =
+      debtStrategyType match {
+        case "NormalDebtStrategy"     => NormalDebtStrategy()
+        case "SimplifiedDebtStrategy" => SimplifiedDebtStrategy()
+      }
     factory(name, members, expenses, transactions, debtStrategy)
   }
 
 trait IGroupFactory:
+
   def apply(
-      name: String,
-      members: List[IPerson],
-      expenses: List[IExpense],
-      transactions: List[ITransaction],
-      debt_strategy: IDebtCalculationStrategy
+    name: String,
+    members: List[IPerson],
+    expenses: List[IExpense],
+    transactions: List[ITransaction],
+    debt_strategy: IDebtCalculationStrategy
   ): IGroup

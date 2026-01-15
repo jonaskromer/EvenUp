@@ -24,18 +24,17 @@ import de.htwg.swe.evenup.model.FileIOComponent.IFileIO
 //import de.htwg.swe.evenup.model.FileIOComponent.FileIOXmlImpl.FileIO
 import de.htwg.swe.evenup.model.FileIOComponent.FileIOJsonIpml.FileIO
 
-
 object Default:
-  given IAppState = MainMenuState()
-  given IApp = App(Nil, None, None, summon[IAppState])
+  given IAppState   = MainMenuState()
+  given IApp        = App(Nil, None, None, summon[IAppState])
   given IController = Controller(using summon[IApp])
 
-  given IDateFactory = DateFactory
-  given IGroupFactory = GroupFactory
-  given IPersonFactory = PersonFactory
-  given IAppStateFactory = AppStateFactory
-  given IExpenseFactory = ExpenseFactory
-  given IShareFactory = ShareFactory
+  given IDateFactory        = DateFactory
+  given IGroupFactory       = GroupFactory
+  given IPersonFactory      = PersonFactory
+  given IAppStateFactory    = AppStateFactory
+  given IExpenseFactory     = ExpenseFactory
+  given IShareFactory       = ShareFactory
   given ITransactionFactory = TransactionFactory
 
   given IFileIO = FileIO()

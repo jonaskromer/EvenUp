@@ -3,7 +3,6 @@ package de.htwg.swe.evenup.model.PersonComponent.BasePersonImpl
 import de.htwg.swe.evenup.model.PersonComponent.IPerson
 import de.htwg.swe.evenup.model.PersonComponent.IPersonFactory
 
-
 final case class Person(
   name: String
 ) extends IPerson: // future: mail, friendlist, login, picture

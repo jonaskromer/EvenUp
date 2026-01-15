@@ -46,16 +46,16 @@ trait IAppState extends Serializable:
       <State>{this.getClass.getSimpleName}</State>
     </AppState>
 
-  override def toJson: JsObject =
-    Json.obj(
-      "state" -> this.getClass.getSimpleName,
-    )
+  override def toJson: JsObject = Json.obj(
+    "state" -> this.getClass.getSimpleName
+  )
 
 object AppStateDeserializer extends Deserializer[IAppState]:
   val factory: IAppStateFactory = summon[IAppStateFactory]
 
   override def fromXml(xml: Elem): IAppState =
-    val appStateElem = if xml.label == "AppState" then xml else (xml \ "AppState").headOption.map(_.asInstanceOf[Elem]).getOrElse(xml)
+    val appStateElem =
+      if xml.label == "AppState" then xml else (xml \ "AppState").headOption.map(_.asInstanceOf[Elem]).getOrElse(xml)
     val name = (appStateElem \ "State").text
     factory(name)
 

@@ -18,7 +18,6 @@ trait IDebtCalculationStrategy extends Serializable:
       <Type>{this.getClass.getSimpleName}</Type>
     </DebtCalculationStrategy>
 
-  override def toJson: JsObject =
-    Json.obj(
-      "type" -> this.getClass.getSimpleName
-    )
+  override def toJson: JsObject = Json.obj(
+    "type" -> this.getClass.getSimpleName
+  )

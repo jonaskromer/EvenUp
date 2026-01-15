@@ -59,11 +59,11 @@ final case class Group(
   def containsUser(user_name: String): Boolean = members.exists(_.name == user_name)
 
 object GroupFactory extends IGroupFactory:
+
   override def apply(
-      name: String,
-      members: List[IPerson],
-      expenses: List[IExpense],
-      transactions: List[ITransaction],
-      debt_strategy: IDebtCalculationStrategy
-  ): IGroup =
-    Group(name, members, expenses, transactions, debt_strategy)
+    name: String,
+    members: List[IPerson],
+    expenses: List[IExpense],
+    transactions: List[ITransaction],
+    debt_strategy: IDebtCalculationStrategy
+  ): IGroup = Group(name, members, expenses, transactions, debt_strategy)

@@ -39,32 +39,31 @@ trait IExpense extends Serializable:
       </Shares>
     </Expense>
 
-  override def toJson: JsObject =
-    Json.obj(
-      "name" -> name,
-      "amount" -> amount,
-      "date" -> date.toJson,
-      "paidBy" -> paid_by.toJson,
-      "shares" -> shares.map(_.toJson)
-    )
+  override def toJson: JsObject = Json.obj(
+    "name"   -> name,
+    "amount" -> amount,
+    "date"   -> date.toJson,
+    "paidBy" -> paid_by.toJson,
+    "shares" -> shares.map(_.toJson)
+  )
 
 object ExpenseDeserializer extends Deserializer[IExpense]:
   val factory: IExpenseFactory = summon[IExpenseFactory]
-  
+
   def fromXml(xml: Elem): IExpense =
-    val name = (xml \ "Name").text
-    val amount = (xml \ "Amount").text.toDouble
-    val date = DateDeserializer.fromXml((xml \ "Date").head.asInstanceOf[Elem])
+    val name    = (xml \ "Name").text
+    val amount  = (xml \ "Amount").text.toDouble
+    val date    = DateDeserializer.fromXml((xml \ "Date").head.asInstanceOf[Elem])
     val paid_by = PersonDeserializer.fromXml((xml \ "PaidBy").head.asInstanceOf[Elem])
-    val shares = (xml \ "Shares" \ "Share").map(node => ShareDeserializer.fromXml(node.asInstanceOf[Elem])).toList
+    val shares  = (xml \ "Shares" \ "Share").map(node => ShareDeserializer.fromXml(node.asInstanceOf[Elem])).toList
     factory(name, amount, date, paid_by, shares)
 
   def fromJson(json: JsObject): IExpense =
-    val name = (json \ "name").as[String]
-    val amount = (json \ "amount").as[Double]
-    val date = DateDeserializer.fromJson((json \ "date").as[JsObject])
+    val name    = (json \ "name").as[String]
+    val amount  = (json \ "amount").as[Double]
+    val date    = DateDeserializer.fromJson((json \ "date").as[JsObject])
     val paid_by = PersonDeserializer.fromJson((json \ "paidBy").as[JsObject])
-    val shares = (json \ "shares").as[List[JsObject]].map(obj => ShareDeserializer.fromJson(obj))
+    val shares  = (json \ "shares").as[List[JsObject]].map(obj => ShareDeserializer.fromJson(obj))
     factory(name, amount, date, paid_by, shares)
 
 trait IExpenseFactory:

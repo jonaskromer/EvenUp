@@ -7,15 +7,13 @@ import de.htwg.swe.evenup.modules.Default.given
 
 import scala.io.StdIn.readLine
 
-
 object EvenUp:
   val controller: IController = summon[IController]
-  val tui        = new Tui(controller)
-  val gui        = new Gui(controller)
+  val tui                     = new Tui(controller)
+  val gui                     = new Gui(controller)
 
   def main(args: Array[String]): Unit =
-    new Thread(() => 
-      gui.main(Array.empty)).start()
+    new Thread(() => gui.main(Array.empty)).start()
 
     var input: String = ""
 

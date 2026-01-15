@@ -20,18 +20,19 @@ trait IShare extends Serializable:
       <Amount>{amount}</Amount>
     </Share>
 
-  override def toJson: JsObject =
-    Json.obj(
-      "person" -> person.toJson,
-      "amount" -> amount
-    )
+  override def toJson: JsObject = Json.obj(
+    "person" -> person.toJson,
+    "amount" -> amount
+  )
 
 object ShareDeserializer extends Deserializer[IShare]:
-  val factory: IShareFactory = summon[IShareFactory]
+  val factory: IShareFactory     = summon[IShareFactory]
+
   def fromXml(xml: Elem): IShare =
     val person = PersonDeserializer.fromXml((xml \ "Person").head.asInstanceOf[Elem])
     val amount = (xml \ "Amount").text.toDouble
     factory(person, amount)
+
   def fromJson(json: JsObject): IShare =
     val person = PersonDeserializer.fromJson((json \ "person").as[JsObject])
     val amount = (json \ "amount").as[Double]

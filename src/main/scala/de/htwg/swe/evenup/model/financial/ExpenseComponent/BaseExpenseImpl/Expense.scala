@@ -31,6 +31,7 @@ final case class Expense(
   def updateShares(shares: List[IShare]): IExpense = copy(shares = shares)
 
 object ExpenseFactory extends IExpenseFactory:
+
   def apply(
     name: String,
     amount: Double,

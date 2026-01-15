@@ -23,5 +23,4 @@ final case class Transaction(
   def updateDate(date: IDate): ITransaction = copy(date = date)
 
 object TransactionFactory extends ITransactionFactory:
-  def apply(from: IPerson, to: IPerson, amount: Double, date: IDate): ITransaction =
-    Transaction(from, to, amount, date)
+  def apply(from: IPerson, to: IPerson, amount: Double, date: IDate): ITransaction = Transaction(from, to, amount, date)

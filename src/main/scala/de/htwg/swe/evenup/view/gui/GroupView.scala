@@ -209,7 +209,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
     val expensesByYearMonth = group.expenses.groupBy(e => (e.date.year, e.date.month)).toSeq.sortBy(_._1)
 
     expensesByYearMonth.foreach { case ((year, month), expenses) =>
-      val total = expenses.map(_.amount).sum
+      val total     = expenses.map(_.amount).sum
       val dateLabel = f"${month}%02d.${year}"
       series.getData.add(new javafx.scene.chart.XYChart.Data[String, Number](dateLabel, total))
     }
@@ -250,44 +250,52 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
       new DatePicker {
         prefWidth = 450
         val germanFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy")
-        converter = new StringConverter[LocalDate] {
-          override def toString(date: LocalDate): String = {
-            if (date == null) "" else germanFormatter.format(date)
-          }
-          override def fromString(string: String): LocalDate = {
-            if (string == null || string.isEmpty) null
-            else try {
-              LocalDate.parse(string, germanFormatter)
-            } catch {
-              case _: Exception => null
+        converter =
+          new StringConverter[LocalDate] {
+            override def toString(date: LocalDate): String = {
+              if (date == null)
+                ""
+              else
+                germanFormatter.format(date)
+            }
+            override def fromString(string: String): LocalDate = {
+              if (string == null || string.isEmpty)
+                null
+              else
+                try {
+                  LocalDate.parse(string, germanFormatter)
+                } catch {
+                  case _: Exception => null
+                }
             }
           }
-        }
       }
 
-    val shareRowsContainer = new VBox {
-      spacing = 8
-      prefWidth = 450
-    }
+    val shareRowsContainer =
+      new VBox {
+        spacing = 8
+        prefWidth = 450
+      }
 
     def getAvailableMembers(excludeNames: Set[String] = Set.empty): ObservableBuffer[String] = {
       ObservableBuffer(group.members.map(_.name).filterNot(excludeNames.contains)*)
     }
 
     val shareRows = scala.collection.mutable.ListBuffer[(ComboBox[String], TextField, HBox)]()
-    
+
     var isUpdating = false
 
     def updateAvailableMembers(): Unit = {
-      if (isUpdating) return
+      if (isUpdating)
+        return
       isUpdating = true
-      
+
       try {
         val selectedNames = shareRows.map(_._1.value.value).filter(_ != null).toSet
         shareRows.foreach { case (combo, _, _) =>
           val currentValue = combo.value.value
-          val newItems = getAvailableMembers(selectedNames - currentValue)
-          
+          val newItems     = getAvailableMembers(selectedNames - currentValue)
+
           if (combo.items.value.toSet != newItems.toSet) {
             combo.items = newItems
             if (currentValue != null && newItems.contains(currentValue)) {
@@ -301,40 +309,46 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
     }
 
     def createShareRow(): HBox = {
-      val personCombo = new ComboBox[String] {
-        items = getAvailableMembers()
-        promptText = "Select person"
-        prefWidth = 250
-        onAction = _ => {
-          if (!isUpdating) {
-            updateAvailableMembers()
-          }
+      val personCombo =
+        new ComboBox[String] {
+          items = getAvailableMembers()
+          promptText = "Select person"
+          prefWidth = 250
+          onAction =
+            _ => {
+              if (!isUpdating) {
+                updateAvailableMembers()
+              }
+            }
         }
-      }
 
-      val amountTextField = new TextField {
-        promptText = "Amount"
-        prefWidth = 120
-      }
-
-      val rowBox = new HBox {
-        spacing = 8
-        alignment = Pos.CenterLeft
-      }
-
-      val removeBtn = new Button {
-        text = "−"
-        styleClass += "cancel-button"
-        prefWidth = 40
-        prefHeight = 30
-        onAction = _ => {
-          shareRows.find(_._3.equals(rowBox)).foreach { row =>
-            shareRows -= row
-            shareRowsContainer.children.remove(rowBox)
-            updateAvailableMembers()
-          }
+      val amountTextField =
+        new TextField {
+          promptText = "Amount"
+          prefWidth = 120
         }
-      }
+
+      val rowBox =
+        new HBox {
+          spacing = 8
+          alignment = Pos.CenterLeft
+        }
+
+      val removeBtn =
+        new Button {
+          text = "−"
+          styleClass += "cancel-button"
+          prefWidth = 40
+          prefHeight = 30
+          onAction =
+            _ => {
+              shareRows.find(_._3.equals(rowBox)).foreach { row =>
+                shareRows -= row
+                shareRowsContainer.children.remove(rowBox)
+                updateAvailableMembers()
+              }
+            }
+        }
 
       rowBox.children = Seq(personCombo, amountTextField, removeBtn)
 
@@ -342,37 +356,40 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
       rowBox
     }
 
-    val addShareRowBtn = new Button {
-      text = "+"
-      styleClass += "add-button"
-      prefWidth = 50
-      prefHeight = 40
-      onAction = _ => {
-        if (shareRows.size < group.members.size) {
-          shareRowsContainer.children.add(createShareRow())
-          updateAvailableMembers()
-        } else {
-          showErrorAlert("All members already have shares assigned.")
-        }
+    val addShareRowBtn =
+      new Button {
+        text = "+"
+        styleClass += "add-button"
+        prefWidth = 50
+        prefHeight = 40
+        onAction =
+          _ => {
+            if (shareRows.size < group.members.size) {
+              shareRowsContainer.children.add(createShareRow())
+              updateAvailableMembers()
+            } else {
+              showErrorAlert("All members already have shares assigned.")
+            }
+          }
       }
-    }
 
+    val sharesSection =
+      new VBox {
+        spacing = 10
+        alignment = Pos.Center
+        children = Seq(
+          new Label("Shares (optional):") { styleClass += "form-label" },
+          shareRowsContainer,
+          addShareRowBtn
+        )
+      }
 
-    val sharesSection = new VBox {
-      spacing = 10
-      alignment = Pos.Center
-      children = Seq(
-        new Label("Shares (optional):") { styleClass += "form-label" },
-        shareRowsContainer,
-        addShareRowBtn
-      )
-    }
-
-    val errorLabel = new Label {
-      styleClass += "error-label"
-      visible = false
-      prefWidth = 450
-    }
+    val errorLabel =
+      new Label {
+        styleClass += "error-label"
+        visible = false
+        prefWidth = 450
+      }
 
     val addBtn =
       new Button {
@@ -383,13 +400,13 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
           _ => {
             try {
               errorLabel.visible = false
-              val name   = nameField.text.value
-              val paidBy = paidByCombo.value.value
-              val amount = amountField.text.value.toDouble
+              val name         = nameField.text.value
+              val paidBy       = paidByCombo.value.value
+              val amount       = amountField.text.value.toDouble
               val selectedDate = datePicker.value.value
-              val date   = Date(selectedDate.getDayOfMonth, selectedDate.getMonthValue, selectedDate.getYear)
+              val date         = Date(selectedDate.getDayOfMonth, selectedDate.getMonthValue, selectedDate.getYear)
 
-              val shares: Option[String] = 
+              val shares: Option[String] =
                 if (shareRows.isEmpty) {
                   None
                 } else {
@@ -397,12 +414,13 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
                     .filter { case (combo, textField, _) =>
                       combo.value.value != null && !textField.text.value.trim.isEmpty
                     }
-                    .map { case (combo, textField, _) =>
-                      s"${combo.value.value}:${textField.text.value}"
-                    }
+                    .map { case (combo, textField, _) => s"${combo.value.value}:${textField.text.value}" }
                     .mkString("_")
-                  
-                  if (sharesString.isEmpty) None else Some(sharesString)
+
+                  if (sharesString.isEmpty)
+                    None
+                  else
+                    Some(sharesString)
                 }
 
               if (name.isEmpty || paidBy == null || amount <= 0) {
@@ -411,22 +429,21 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
               } else {
                 var isValid = true
                 if (shares.isDefined) {
-                  val shareSum = shareRows
-                    .filter { case (combo, textField, _) =>
-                      combo.value.value != null && !textField.text.value.trim.isEmpty
-                    }
-                    .map { case (_, textField, _) =>
-                      textField.text.value.toDouble
-                    }
-                    .sum
-                  
+                  val shareSum =
+                    shareRows
+                      .filter { case (combo, textField, _) =>
+                        combo.value.value != null && !textField.text.value.trim.isEmpty
+                      }
+                      .map { case (_, textField, _) => textField.text.value.toDouble }
+                      .sum
+
                   if (Math.abs(shareSum - amount) > 0.01) {
                     errorLabel.text = f"Share sum ($shareSum%.2f€) does not match total amount ($amount%.2f€)"
                     errorLabel.visible = true
                     isValid = false
                   }
                 }
-                
+
                 if (isValid) {
                   loadingIndicator.visible = true
                   controller.addExpenseToGroup(name, paidBy, amount, date, shares)
@@ -437,7 +454,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
               case e: NumberFormatException =>
                 errorLabel.text = "Invalid number format. Please check amount and date values."
                 errorLabel.visible = true
-              case e: Exception => 
+              case e: Exception =>
                 errorLabel.text = s"Error: ${e.getMessage}"
                 errorLabel.visible = true
             }
@@ -456,31 +473,33 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
           }
       }
 
-    val scrollPane = new ScrollPane {
-      content = new VBox {
-        padding = Insets(20)
-        spacing = 15
-        alignment = Pos.TopCenter
-        children = Seq(
-          new Label("Expense Name:") { styleClass += "form-label" },
-          nameField,
-          new Label("Paid By:") { styleClass += "form-label" },
-          paidByCombo,
-          new Label("Amount:") { styleClass += "form-label" },
-          amountField,
-          new Label("Date:") { styleClass += "form-label" },
-          datePicker,
-          sharesSection,
-          errorLabel,
-          new HBox {
-            spacing = 10
-            alignment = Pos.Center
-            children = Seq(addBtn, cancelBtn)
+    val scrollPane =
+      new ScrollPane {
+        content =
+          new VBox {
+            padding = Insets(20)
+            spacing = 15
+            alignment = Pos.TopCenter
+            children = Seq(
+              new Label("Expense Name:") { styleClass += "form-label" },
+              nameField,
+              new Label("Paid By:") { styleClass += "form-label" },
+              paidByCombo,
+              new Label("Amount:") { styleClass += "form-label" },
+              amountField,
+              new Label("Date:") { styleClass += "form-label" },
+              datePicker,
+              sharesSection,
+              errorLabel,
+              new HBox {
+                spacing = 10
+                alignment = Pos.Center
+                children = Seq(addBtn, cancelBtn)
+              }
+            )
           }
-        )
+        fitToWidth = true
       }
-      fitToWidth = true
-    }
 
     dialog.scene =
       new Scene {

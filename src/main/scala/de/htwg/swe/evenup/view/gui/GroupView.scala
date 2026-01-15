@@ -311,7 +311,6 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
         new ComboBox[String] {
           items = getAvailableMembers()
           promptText = "Select person"
-          prefWidth = 250
           onAction =
             _ => {
               if (!isUpdating) {
@@ -323,7 +322,6 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
       val amountTextField =
         new TextField {
           promptText = "Amount"
-          prefWidth = 120
         }
 
       val rowBox =
@@ -359,7 +357,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
         text = "+"
         styleClass += "add-button"
         prefWidth = 50
-        prefHeight = 40
+        prefHeight = 50
         onAction =
           _ => {
             if (shareRows.size < group.members.size) {
@@ -486,8 +484,8 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
           new VBox {
             padding = Insets(20)
             spacing = 15
+            prefWidth = 300
             alignment = Pos.Center
-            prefWidth = 400
             children = Seq(
               new Label("Expense Name:") { 
                 styleClass += "form-label"

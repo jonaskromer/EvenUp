@@ -17,8 +17,6 @@ object EvenUp:
 
     var input: String = ""
 
-    tui.processInput(":load")
-
     while (input != "exit")
       input = readLine()
       tui.processInput(input)

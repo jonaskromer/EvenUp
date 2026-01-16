@@ -7,7 +7,7 @@ import de.htwg.swe.evenup.model.AppComponent.AppDeserializer
 class FileIO extends IFileIO:
 
   override def load(): IApp =
-    val file = scala.xml.XML.loadFile("evenup_data.xml")
+    val file = scala.xml.XML.loadFile("data/evenup_data.xml")
     if file == null then
       println("File not found")
       return null
@@ -16,4 +16,4 @@ class FileIO extends IFileIO:
 
   override def save(app: IApp): Unit =
     val xmlData = app.toXml
-    scala.xml.XML.save("evenup_data.xml", xmlData)
+    scala.xml.XML.save("data/evenup_data.xml", xmlData)

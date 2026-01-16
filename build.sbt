@@ -32,8 +32,7 @@ lazy val root = project
     scalaVersion := scala3Version,
 
     scalacOptions += "-Wconf:msg=Implicit parameters should be provided with a `using` clause:s",
-    coverageExcludedPackages := "de\\.htwg\\.swe\\.evenup\\.EvenUp",
-    coverageExcludedPackages := "de\\.htwg\\.swe\\.evenup\\.view\\.gui\\..*",
+    coverageExcludedPackages := "de\\.htwg\\.swe\\.evenup\\.EvenUp.*;de\\.htwg\\.swe\\.evenup\\.view\\.gui\\..*;de\\.htwg\\.swe\\.evenup\\.view\\.tui\\.Tui.*",
 
     libraryDependencies ++= (Seq(
       "org.scalameta" %% "munit" % "1.0.0" % Test,

@@ -54,6 +54,11 @@
     -fx-font-weight: bold;
 }
 
+.error-label {
+    -fx-text-fill: #fc5f50;
+    -fx-wrap-text: true;
+}
+
 .dialog-label {
     -fx-font-size: 14px;
 }

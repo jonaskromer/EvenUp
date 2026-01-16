@@ -1,6 +1,7 @@
 package de.htwg.swe.evenup.model.PersonComponent.BasePersonImpl
 
 import de.htwg.swe.evenup.model.PersonComponent.IPerson
+import de.htwg.swe.evenup.model.PersonComponent.IPersonFactory
 
 final case class Person(
   name: String
@@ -16,3 +17,6 @@ final case class Person(
   override def hashCode(): Int = name.hashCode
 
   def updateName(name: String): IPerson = copy(name = name)
+
+object PersonFactory extends IPersonFactory:
+  def apply(name: String): IPerson = Person(name)

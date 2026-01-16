@@ -3,6 +3,7 @@ package de.htwg.swe.evenup.model.financial.TransactionComponent.BaseTransactionI
 import de.htwg.swe.evenup.model.PersonComponent.IPerson
 import de.htwg.swe.evenup.model.DateComponent.IDate
 import de.htwg.swe.evenup.model.financial.TransactionComponent.ITransaction
+import de.htwg.swe.evenup.model.financial.TransactionComponent.ITransactionFactory
 
 final case class Transaction(
   from: IPerson,
@@ -20,3 +21,6 @@ final case class Transaction(
   def updateAmount(amount: Double): ITransaction = copy(amount = amount)
 
   def updateDate(date: IDate): ITransaction = copy(date = date)
+
+object TransactionFactory extends ITransactionFactory:
+  def apply(from: IPerson, to: IPerson, amount: Double, date: IDate): ITransaction = Transaction(from, to, amount, date)

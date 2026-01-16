@@ -16,19 +16,19 @@ class SerializableSpec extends AnyWordSpec with Matchers:
     def toXml: Elem = <Test><Value>{testValue}</Value></Test>
 
   class TestDeserializer extends Deserializer[String]:
-    def fromXml(xml: Elem): String = (xml \ "Value").text
+    def fromXml(xml: Elem): String                          = (xml \ "Value").text
     def fromJson(json: play.api.libs.json.JsObject): String = (json \ "value").as[String]
 
   "Serializable" should {
 
     "define toJson method" in:
       val serializable = new TestSerializable
-      val json = serializable.toJson
+      val json         = serializable.toJson
       (json \ "value").as[String] shouldBe "test"
 
     "define toXml method" in:
       val serializable = new TestSerializable
-      val xml = serializable.toXml
+      val xml          = serializable.toXml
       xml.label shouldBe "Test"
       (xml \ "Value").text shouldBe "test"
   }
@@ -37,11 +37,11 @@ class SerializableSpec extends AnyWordSpec with Matchers:
 
     "define fromXml method" in:
       val deserializer = new TestDeserializer
-      val xml = <Test><Value>hello</Value></Test>
+      val xml          = <Test><Value>hello</Value></Test>
       deserializer.fromXml(xml) shouldBe "hello"
 
     "define fromJson method" in:
       val deserializer = new TestDeserializer
-      val json = Json.obj("value" -> "world")
+      val json         = Json.obj("value" -> "world")
       deserializer.fromJson(json) shouldBe "world"
   }

@@ -16,23 +16,32 @@ import de.htwg.swe.evenup.model.DateComponent.IDate
 class CommandSpec extends AnyWordSpec with Matchers:
 
   class TestController extends IController:
-    var app: IApp = App(Nil, None, None, MainMenuState())
+    var app: IApp   = App(Nil, None, None, MainMenuState())
     val argsHandler = new ArgsHandler
 
-    def undo(): Unit = ()
-    def redo(): Unit = ()
-    def quit: Unit = ()
-    def load(): Unit = ()
-    def gotoMainMenu: Unit = ()
-    def gotoGroup(group_name: String): Unit = ()
-    def addGroup(group_name: String): Unit = ()
+    def undo(): Unit                            = ()
+    def redo(): Unit                            = ()
+    def quit: Unit                              = ()
+    def load(): Unit                            = ()
+    def gotoMainMenu: Unit                      = ()
+    def gotoGroup(group_name: String): Unit     = ()
+    def addGroup(group_name: String): Unit      = ()
     def addUserToGroup(user_name: String): Unit = ()
-    def addExpenseToGroup(expense_name: String, paid_by: String, amount: Double, date: IDate, shares: Option[String]): Unit = ()
+
+    def addExpenseToGroup(
+      expense_name: String,
+      paid_by: String,
+      amount: Double,
+      date: IDate,
+      shares: Option[String]
+    ): Unit = ()
+
     def setDebtStrategy(strategy: String): Unit = ()
-    def calculateDebts(): Unit = ()
+    def calculateDebts(): Unit                  = ()
 
   class TestCommand(controller: IController) extends Command(controller):
     var doStepCalled = false
+
     def doStep: Unit =
       doStepCalled = true
       val group = Group("NewGroup", Nil, Nil, Nil, NormalDebtStrategy())
@@ -42,8 +51,8 @@ class CommandSpec extends AnyWordSpec with Matchers:
 
     "store memento on creation" in:
       val controller = new TestController
-      val alice = Person("Alice")
-      val group = Group("Original", List(alice), Nil, Nil, NormalDebtStrategy())
+      val alice      = Person("Alice")
+      val group      = Group("Original", List(alice), Nil, Nil, NormalDebtStrategy())
       controller.app = controller.app.addGroup(group)
 
       val command = new TestCommand(controller)
@@ -51,7 +60,7 @@ class CommandSpec extends AnyWordSpec with Matchers:
       command.memento.app.allGroups.head.name shouldBe "Original"
 
     "restore app state on undoStep" in:
-      val controller = new TestController
+      val controller  = new TestController
       val originalApp = controller.app
 
       val command = new TestCommand(controller)

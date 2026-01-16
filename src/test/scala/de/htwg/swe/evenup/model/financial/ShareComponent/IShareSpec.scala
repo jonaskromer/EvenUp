@@ -29,7 +29,8 @@ class IShareSpec extends AnyWordSpec with Matchers:
   "ShareDeserializer" should {
 
     "deserialize from XML correctly" in:
-      val xml = <Share>
+      val xml =
+        <Share>
         <Person><Person><Name>Bob</Name></Person></Person>
         <Amount>30.0</Amount>
       </Share>

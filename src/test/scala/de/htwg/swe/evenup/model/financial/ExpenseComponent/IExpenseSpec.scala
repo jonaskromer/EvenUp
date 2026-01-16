@@ -36,7 +36,8 @@ class IExpenseSpec extends AnyWordSpec with Matchers:
   "ExpenseDeserializer" should {
 
     "deserialize from XML correctly" in:
-      val xml = <Expense>
+      val xml =
+        <Expense>
         <Name>Lunch</Name>
         <Amount>20.0</Amount>
         <Date><Date><Day>10</Day><Month>5</Month><Year>2025</Year></Date></Date>
@@ -71,16 +72,16 @@ class IExpenseSpec extends AnyWordSpec with Matchers:
       expense.shares.head.person.name shouldBe "Frank"
 
     "roundtrip XML serialization correctly" in:
-      val original     = Expense("Groceries", 50.0, Date(20, 8, 2025), Person("Grace"), List(Share(Person("Henry"), 25.0)))
-      val xml          = original.toXml
+      val original = Expense("Groceries", 50.0, Date(20, 8, 2025), Person("Grace"), List(Share(Person("Henry"), 25.0)))
+      val xml      = original.toXml
       val deserialized = ExpenseDeserializer.fromXml(xml)
       deserialized.name shouldBe original.name
       deserialized.amount shouldBe original.amount
       deserialized.paid_by.name shouldBe original.paid_by.name
 
     "roundtrip JSON serialization correctly" in:
-      val original     = Expense("Tickets", 100.0, Date(15, 12, 2024), Person("Ivan"), List(Share(Person("Julia"), 50.0)))
-      val json         = original.toJson
+      val original = Expense("Tickets", 100.0, Date(15, 12, 2024), Person("Ivan"), List(Share(Person("Julia"), 50.0)))
+      val json     = original.toJson
       val deserialized = ExpenseDeserializer.fromJson(json)
       deserialized.name shouldBe original.name
       deserialized.amount shouldBe original.amount

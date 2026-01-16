@@ -41,9 +41,9 @@ class IGroupSpec extends AnyWordSpec with Matchers:
       (xml \ "Expenses" \ "Expense" \ "Name").text shouldBe "Dinner"
 
     "serialize expenses to JSON" in:
-      val expense = Expense("Lunch", 20.0, date, alice, List(Share(bob, 10.0)))
-      val group   = Group("Trip", List(alice, bob), List(expense), Nil, strategy)
-      val json    = group.toJson
+      val expense  = Expense("Lunch", 20.0, date, alice, List(Share(bob, 10.0)))
+      val group    = Group("Trip", List(alice, bob), List(expense), Nil, strategy)
+      val json     = group.toJson
       val expenses = (json \ "expenses").as[Seq[play.api.libs.json.JsObject]]
       expenses.length shouldBe 1
       (expenses.head \ "name").as[String] shouldBe "Lunch"
@@ -55,9 +55,9 @@ class IGroupSpec extends AnyWordSpec with Matchers:
       (xml \ "Transactions" \ "Transaction" \ "Amount").text shouldBe "50.0"
 
     "serialize transactions to JSON" in:
-      val transaction = Transaction(alice, bob, 75.0, date)
-      val group       = Group("Trip", List(alice, bob), Nil, List(transaction), strategy)
-      val json        = group.toJson
+      val transaction  = Transaction(alice, bob, 75.0, date)
+      val group        = Group("Trip", List(alice, bob), Nil, List(transaction), strategy)
+      val json         = group.toJson
       val transactions = (json \ "transactions").as[Seq[play.api.libs.json.JsObject]]
       transactions.length shouldBe 1
       (transactions.head \ "amount").as[Double] shouldBe 75.0
@@ -77,10 +77,10 @@ class IGroupSpec extends AnyWordSpec with Matchers:
 
     "deserialize from JSON correctly" in:
       val json = Json.obj(
-        "name"    -> "Party",
-        "members" -> Json.arr(Json.obj("name" -> "Charlie")),
-        "expenses" -> Json.arr(),
-        "transactions" -> Json.arr(),
+        "name"                    -> "Party",
+        "members"                 -> Json.arr(Json.obj("name" -> "Charlie")),
+        "expenses"                -> Json.arr(),
+        "transactions"            -> Json.arr(),
         "debtCalculationStrategy" -> Json.obj("type" -> "NormalDebtStrategy")
       )
       val group = GroupDeserializer.fromJson(json)
@@ -88,9 +88,9 @@ class IGroupSpec extends AnyWordSpec with Matchers:
       group.members.head.name shouldBe "Charlie"
 
     "roundtrip JSON serialization correctly" in:
-      val expense  = Expense("Coffee", 10.0, date, alice, List(Share(bob, 5.0)))
-      val original = Group("Friends", List(alice, bob), List(expense), Nil, strategy)
-      val json     = original.toJson
+      val expense      = Expense("Coffee", 10.0, date, alice, List(Share(bob, 5.0)))
+      val original     = Group("Friends", List(alice, bob), List(expense), Nil, strategy)
+      val json         = original.toJson
       val deserialized = GroupDeserializer.fromJson(json)
       deserialized.name shouldBe original.name
       deserialized.members.length shouldBe original.members.length

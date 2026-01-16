@@ -29,7 +29,7 @@ class FileIOJsonSpec extends AnyWordSpec with Matchers:
 
     "save creates a JSON file" in:
       val testPath = "data/test_save_json.json"
-      val file = new File(testPath)
+      val file     = new File(testPath)
       if file.exists() then file.delete()
 
       val alice    = Person("Alice")

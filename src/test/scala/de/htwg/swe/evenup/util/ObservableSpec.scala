@@ -14,9 +14,10 @@ class ObservableSpec extends AnyWordSpec with Matchers:
 
     "add a subscriber" in:
       val observable = new Observable
-      val observer = new Observer:
-        var updated = false
-        def update(e: ObservableEvent): Unit = updated = true
+      val observer   =
+        new Observer:
+          var updated                          = false
+          def update(e: ObservableEvent): Unit = updated = true
 
       observable.add(observer)
       observable.subscribers should contain(observer)
@@ -24,10 +25,12 @@ class ObservableSpec extends AnyWordSpec with Matchers:
 
     "add multiple subscribers" in:
       val observable = new Observable
-      val observer1 = new Observer:
-        def update(e: ObservableEvent): Unit = ()
-      val observer2 = new Observer:
-        def update(e: ObservableEvent): Unit = ()
+      val observer1  =
+        new Observer:
+          def update(e: ObservableEvent): Unit = ()
+      val observer2 =
+        new Observer:
+          def update(e: ObservableEvent): Unit = ()
 
       observable.add(observer1)
       observable.add(observer2)
@@ -35,8 +38,9 @@ class ObservableSpec extends AnyWordSpec with Matchers:
 
     "remove a subscriber" in:
       val observable = new Observable
-      val observer = new Observer:
-        def update(e: ObservableEvent): Unit = ()
+      val observer   =
+        new Observer:
+          def update(e: ObservableEvent): Unit = ()
 
       observable.add(observer)
       observable.subscribers.length shouldBe 1
@@ -45,11 +49,13 @@ class ObservableSpec extends AnyWordSpec with Matchers:
 
     "notify all subscribers" in:
       val observable = new Observable
-      var count = 0
-      val observer1 = new Observer:
-        def update(e: ObservableEvent): Unit = count += 1
-      val observer2 = new Observer:
-        def update(e: ObservableEvent): Unit = count += 1
+      var count      = 0
+      val observer1  =
+        new Observer:
+          def update(e: ObservableEvent): Unit = count += 1
+      val observer2 =
+        new Observer:
+          def update(e: ObservableEvent): Unit = count += 1
 
       observable.add(observer1)
       observable.add(observer2)
@@ -57,11 +63,12 @@ class ObservableSpec extends AnyWordSpec with Matchers:
       count shouldBe 2
 
     "notify subscribers with event" in:
-      val observable = new Observable
+      val observable                             = new Observable
       var receivedEvent: Option[ObservableEvent] = None
-      val event = new ObservableEvent
-      val observer = new Observer:
-        def update(e: ObservableEvent): Unit = receivedEvent = Some(e)
+      val event                                  = new ObservableEvent
+      val observer                               =
+        new Observer:
+          def update(e: ObservableEvent): Unit = receivedEvent = Some(e)
 
       observable.add(observer)
       observable.notifyObservers(event)
@@ -69,8 +76,9 @@ class ObservableSpec extends AnyWordSpec with Matchers:
 
     "not fail when removing non-existent subscriber" in:
       val observable = new Observable
-      val observer = new Observer:
-        def update(e: ObservableEvent): Unit = ()
+      val observer   =
+        new Observer:
+          def update(e: ObservableEvent): Unit = ()
 
       observable.remove(observer)
       observable.subscribers shouldBe empty
@@ -79,9 +87,10 @@ class ObservableSpec extends AnyWordSpec with Matchers:
   "Observer" should {
 
     "be a trait with update method" in:
-      val observer = new Observer:
-        var lastEvent: Option[ObservableEvent] = None
-        def update(e: ObservableEvent): Unit = lastEvent = Some(e)
+      val observer =
+        new Observer:
+          var lastEvent: Option[ObservableEvent] = None
+          def update(e: ObservableEvent): Unit   = lastEvent = Some(e)
 
       observer shouldBe a[Observer]
   }

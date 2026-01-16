@@ -77,18 +77,18 @@ class ShareParserSpec extends AnyWordSpec with Matchers:
   "ShareParser.validatePersonsInGroup" should {
 
     "return Right when all persons are in group" in:
-      val alice = Person("Alice")
-      val bob = Person("Bob")
+      val alice  = Person("Alice")
+      val bob    = Person("Bob")
       val shares = List(Share(alice, 10.0), Share(bob, 20.0))
       val result = ShareParser.validatePersonsInGroup(shares, List(alice, bob))
       result shouldBe a[Right[?, ?]]
 
     "return Left when person not in group" in:
-      val alice = Person("Alice")
-      val bob = Person("Bob")
+      val alice   = Person("Alice")
+      val bob     = Person("Bob")
       val charlie = Person("Charlie")
-      val shares = List(Share(charlie, 10.0))
-      val result = ShareParser.validatePersonsInGroup(shares, List(alice, bob))
+      val shares  = List(Share(charlie, 10.0))
+      val result  = ShareParser.validatePersonsInGroup(shares, List(alice, bob))
       result shouldBe a[Left[?, ?]]
       result.swap.toOption.get shouldBe a[ShareParser.ParseError.PersonNotInGroup]
   }
@@ -96,19 +96,19 @@ class ShareParserSpec extends AnyWordSpec with Matchers:
   "ShareParser.parseAndValidate" should {
 
     "return Right for valid input" in:
-      val alice = Person("Alice")
-      val bob = Person("Bob")
+      val alice  = Person("Alice")
+      val bob    = Person("Bob")
       val result = ShareParser.parseAndValidate("Alice:15_Bob:15", 30.0, List(alice, bob))
       result shouldBe a[Right[?, ?]]
 
     "return Left for invalid sum" in:
-      val alice = Person("Alice")
-      val bob = Person("Bob")
+      val alice  = Person("Alice")
+      val bob    = Person("Bob")
       val result = ShareParser.parseAndValidate("Alice:10_Bob:10", 30.0, List(alice, bob))
       result shouldBe a[Left[?, ?]]
 
     "return Left for person not in group" in:
-      val alice = Person("Alice")
+      val alice  = Person("Alice")
       val result = ShareParser.parseAndValidate("Alice:15_Bob:15", 30.0, List(alice))
       result shouldBe a[Left[?, ?]]
   }

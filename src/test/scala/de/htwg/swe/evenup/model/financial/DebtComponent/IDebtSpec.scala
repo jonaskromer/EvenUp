@@ -27,22 +27,22 @@ class IDebtSpec extends AnyWordSpec with Matchers:
       d.amount shouldBe 50.0
 
     "define updateFrom method" in:
-      val d: IDebt   = debt
-      val charlie    = Person("Charlie")
-      val updated    = d.updateFrom(charlie)
+      val d: IDebt = debt
+      val charlie  = Person("Charlie")
+      val updated  = d.updateFrom(charlie)
       updated.from shouldBe charlie
       updated shouldBe a[IDebt]
 
     "define updateTo method" in:
-      val d: IDebt   = debt
-      val charlie    = Person("Charlie")
-      val updated    = d.updateTo(charlie)
+      val d: IDebt = debt
+      val charlie  = Person("Charlie")
+      val updated  = d.updateTo(charlie)
       updated.to shouldBe charlie
       updated shouldBe a[IDebt]
 
     "define updateAmount method" in:
-      val d: IDebt   = debt
-      val updated    = d.updateAmount(100.0)
+      val d: IDebt = debt
+      val updated  = d.updateAmount(100.0)
       updated.amount shouldBe 100.0
       updated shouldBe a[IDebt]
 

@@ -16,23 +16,32 @@ import de.htwg.swe.evenup.model.DateComponent.IDate
 class UndoManagerSpec extends AnyWordSpec with Matchers:
 
   class TestController extends IController:
-    var app: IApp = App(Nil, None, None, MainMenuState())
+    var app: IApp   = App(Nil, None, None, MainMenuState())
     val argsHandler = new ArgsHandler
 
-    def undo(): Unit = ()
-    def redo(): Unit = ()
-    def quit: Unit = ()
-    def load(): Unit = ()
-    def gotoMainMenu: Unit = ()
-    def gotoGroup(group_name: String): Unit = ()
-    def addGroup(group_name: String): Unit = ()
+    def undo(): Unit                            = ()
+    def redo(): Unit                            = ()
+    def quit: Unit                              = ()
+    def load(): Unit                            = ()
+    def gotoMainMenu: Unit                      = ()
+    def gotoGroup(group_name: String): Unit     = ()
+    def addGroup(group_name: String): Unit      = ()
     def addUserToGroup(user_name: String): Unit = ()
-    def addExpenseToGroup(expense_name: String, paid_by: String, amount: Double, date: IDate, shares: Option[String]): Unit = ()
+
+    def addExpenseToGroup(
+      expense_name: String,
+      paid_by: String,
+      amount: Double,
+      date: IDate,
+      shares: Option[String]
+    ): Unit = ()
+
     def setDebtStrategy(strategy: String): Unit = ()
-    def calculateDebts(): Unit = ()
+    def calculateDebts(): Unit                  = ()
 
   class TestCommand(controller: IController, doAction: () => Unit) extends Command(controller):
     var doStepCalled = false
+
     def doStep: Unit =
       doStepCalled = true
       doAction()
@@ -48,9 +57,9 @@ class UndoManagerSpec extends AnyWordSpec with Matchers:
 
     "execute command on doStep" in:
       val controller = new TestController
-      val manager = new UndoManager
-      var executed = false
-      val command = new TestCommand(controller, () => executed = true)
+      val manager    = new UndoManager
+      var executed   = false
+      val command    = new TestCommand(controller, () => executed = true)
 
       manager.doStep(command)
       executed shouldBe true
@@ -58,8 +67,8 @@ class UndoManagerSpec extends AnyWordSpec with Matchers:
 
     "add command to undo stack after doStep" in:
       val controller = new TestController
-      val manager = new UndoManager
-      val command = new TestCommand(controller, () => ())
+      val manager    = new UndoManager
+      val command    = new TestCommand(controller, () => ())
 
       manager.doStep(command)
       manager.canUndo shouldBe true
@@ -67,9 +76,9 @@ class UndoManagerSpec extends AnyWordSpec with Matchers:
 
     "clear redo stack after new command" in:
       val controller = new TestController
-      val manager = new UndoManager
-      val command1 = new TestCommand(controller, () => ())
-      val command2 = new TestCommand(controller, () => ())
+      val manager    = new UndoManager
+      val command1   = new TestCommand(controller, () => ())
+      val command2   = new TestCommand(controller, () => ())
 
       manager.doStep(command1)
       manager.undoStep
@@ -81,8 +90,8 @@ class UndoManagerSpec extends AnyWordSpec with Matchers:
 
     "undo a step" in:
       val controller = new TestController
-      val alice = Person("Alice")
-      val group = Group("Test", List(alice), Nil, Nil, NormalDebtStrategy())
+      val alice      = Person("Alice")
+      val group      = Group("Test", List(alice), Nil, Nil, NormalDebtStrategy())
       controller.app = controller.app.addGroup(group)
 
       val manager = new UndoManager
@@ -97,10 +106,10 @@ class UndoManagerSpec extends AnyWordSpec with Matchers:
       manager.getRedoStackSize shouldBe 1
 
     "redo a step" in:
-      val controller = new TestController
-      val manager = new UndoManager
+      val controller   = new TestController
+      val manager      = new UndoManager
       var executeCount = 0
-      val command = new TestCommand(controller, () => executeCount += 1)
+      val command      = new TestCommand(controller, () => executeCount += 1)
 
       manager.doStep(command)
       executeCount shouldBe 1
@@ -114,10 +123,10 @@ class UndoManagerSpec extends AnyWordSpec with Matchers:
 
     "handle multiple undo/redo operations" in:
       val controller = new TestController
-      val manager = new UndoManager
-      val command1 = new TestCommand(controller, () => ())
-      val command2 = new TestCommand(controller, () => ())
-      val command3 = new TestCommand(controller, () => ())
+      val manager    = new UndoManager
+      val command1   = new TestCommand(controller, () => ())
+      val command2   = new TestCommand(controller, () => ())
+      val command3   = new TestCommand(controller, () => ())
 
       manager.doStep(command1)
       manager.doStep(command2)

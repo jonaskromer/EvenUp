@@ -26,18 +26,17 @@ class ControllerSpec extends AnyWordSpec with Matchers:
   val date = Date(15, 6, 2025)
 
   class TestObserver extends Observer:
-    var lastEvent: Option[ObservableEvent] = None
+    var lastEvent: Option[ObservableEvent]   = None
     def update(event: ObservableEvent): Unit = lastEvent = Some(event)
 
   // Use the default givens which loads from file
-  def createController(): Controller =
-    new Controller
+  def createController(): Controller = new Controller
 
   "Controller" should {
 
     "add a group with unique name" in:
       val controller = createController()
-      val observer = new TestObserver
+      val observer   = new TestObserver
       controller.add(observer)
       val uniqueName = s"TestGroup_${System.currentTimeMillis}"
 
@@ -47,23 +46,23 @@ class ControllerSpec extends AnyWordSpec with Matchers:
 
     "fail to add duplicate group" in:
       val controller = createController()
-      val observer = new TestObserver
+      val observer   = new TestObserver
       controller.add(observer)
 
       // First add a unique group
       val uniqueName = s"DuplicateTest_${System.currentTimeMillis}"
       controller.addGroup(uniqueName)
-      
+
       // Try to add the same group again
       controller.addGroup(uniqueName)
 
       observer.lastEvent.get match
         case EventResponse.AddGroup(result, _) => result shouldBe AddGroupResult.GroupExists
-        case _ => fail("Expected AddGroup response")
+        case _                                 => fail("Expected AddGroup response")
 
     "goto an existing group" in:
       val controller = createController()
-      val observer = new TestObserver
+      val observer   = new TestObserver
       controller.add(observer)
 
       // Vacation exists in the data file
@@ -73,7 +72,7 @@ class ControllerSpec extends AnyWordSpec with Matchers:
 
     "fail to goto non-existent group" in:
       val controller = createController()
-      val observer = new TestObserver
+      val observer   = new TestObserver
       controller.add(observer)
 
       controller.gotoGroup("NonExistentGroup_12345")
@@ -81,11 +80,11 @@ class ControllerSpec extends AnyWordSpec with Matchers:
       observer.lastEvent.get shouldBe a[EventResponse.GotoGroup]
       observer.lastEvent.get match
         case EventResponse.GotoGroup(result, _) => result shouldBe GotoGroupResult.GroupNotFound
-        case _ => fail("Expected GotoGroup response")
+        case _                                  => fail("Expected GotoGroup response")
 
     "goto main menu from group" in:
       val controller = createController()
-      val observer = new TestObserver
+      val observer   = new TestObserver
       controller.add(observer)
 
       controller.gotoGroup("Vacation")
@@ -95,7 +94,7 @@ class ControllerSpec extends AnyWordSpec with Matchers:
 
     "add user to group" in:
       val controller = createController()
-      val observer = new TestObserver
+      val observer   = new TestObserver
       controller.add(observer)
 
       controller.gotoGroup("Vacation")
@@ -107,7 +106,7 @@ class ControllerSpec extends AnyWordSpec with Matchers:
 
     "fail to add duplicate user" in:
       val controller = createController()
-      val observer = new TestObserver
+      val observer   = new TestObserver
       controller.add(observer)
 
       controller.gotoGroup("Vacation")
@@ -116,11 +115,11 @@ class ControllerSpec extends AnyWordSpec with Matchers:
 
       observer.lastEvent.get match
         case EventResponse.AddUserToGroup(result, _, _) => result shouldBe AddUserToGroupResult.UserAlreadyAdded
-        case _ => fail("Expected AddUserToGroup response")
+        case _                                          => fail("Expected AddUserToGroup response")
 
     "fail to add user without active group" in:
       val controller = createController()
-      val observer = new TestObserver
+      val observer   = new TestObserver
       controller.add(observer)
 
       // Make sure we're in main menu
@@ -129,11 +128,11 @@ class ControllerSpec extends AnyWordSpec with Matchers:
 
       observer.lastEvent.get match
         case EventResponse.AddUserToGroup(result, _, _) => result shouldBe AddUserToGroupResult.NoActiveGroup
-        case _ => fail("Expected AddUserToGroup response")
+        case _                                          => fail("Expected AddUserToGroup response")
 
     "add expense to group" in:
       val controller = createController()
-      val observer = new TestObserver
+      val observer   = new TestObserver
       controller.add(observer)
 
       controller.gotoGroup("Vacation")
@@ -144,7 +143,7 @@ class ControllerSpec extends AnyWordSpec with Matchers:
 
     "fail to add expense without active group" in:
       val controller = createController()
-      val observer = new TestObserver
+      val observer   = new TestObserver
       controller.add(observer)
 
       controller.gotoMainMenu
@@ -152,11 +151,11 @@ class ControllerSpec extends AnyWordSpec with Matchers:
 
       observer.lastEvent.get match
         case EventResponse.AddExpenseToGroup(result, _) => result shouldBe AddExpenseToGroupResult.NoActiveGroup
-        case _ => fail("Expected AddExpenseToGroup response")
+        case _                                          => fail("Expected AddExpenseToGroup response")
 
     "set debt strategy" in:
       val controller = createController()
-      val observer = new TestObserver
+      val observer   = new TestObserver
       controller.add(observer)
 
       controller.gotoGroup("Vacation")
@@ -166,7 +165,7 @@ class ControllerSpec extends AnyWordSpec with Matchers:
 
     "fail to set debt strategy without active group" in:
       val controller = createController()
-      val observer = new TestObserver
+      val observer   = new TestObserver
       controller.add(observer)
 
       controller.gotoMainMenu
@@ -174,11 +173,11 @@ class ControllerSpec extends AnyWordSpec with Matchers:
 
       observer.lastEvent.get match
         case EventResponse.SetDebtStrategy(result, _) => result shouldBe SetDebtStrategyResult.NoActiveGroup
-        case _ => fail("Expected SetDebtStrategy response")
+        case _                                        => fail("Expected SetDebtStrategy response")
 
     "calculate debts" in:
       val controller = createController()
-      val observer = new TestObserver
+      val observer   = new TestObserver
       controller.add(observer)
 
       controller.gotoGroup("Vacation")
@@ -188,7 +187,7 @@ class ControllerSpec extends AnyWordSpec with Matchers:
 
     "fail to calculate debts without active group" in:
       val controller = createController()
-      val observer = new TestObserver
+      val observer   = new TestObserver
       controller.add(observer)
 
       controller.gotoMainMenu
@@ -196,33 +195,33 @@ class ControllerSpec extends AnyWordSpec with Matchers:
 
       observer.lastEvent.get match
         case EventResponse.CalculateDebts(result, _) => result shouldBe CalculateDebtsResult.NoActiveGroup
-        case _ => fail("Expected CalculateDebts response")
+        case _                                       => fail("Expected CalculateDebts response")
 
     "undo with empty stack" in:
       val controller = createController()
-      val observer = new TestObserver
+      val observer   = new TestObserver
       controller.add(observer)
 
       controller.undo()
 
       observer.lastEvent.get match
         case EventResponse.Undo(result, _) => result shouldBe UndoResult.EmptyStack
-        case _ => fail("Expected Undo response")
+        case _                             => fail("Expected Undo response")
 
     "redo with empty stack" in:
       val controller = createController()
-      val observer = new TestObserver
+      val observer   = new TestObserver
       controller.add(observer)
 
       controller.redo()
 
       observer.lastEvent.get match
         case EventResponse.Redo(result, _) => result shouldBe RedoResult.EmptyStack
-        case _ => fail("Expected Redo response")
+        case _                             => fail("Expected Redo response")
 
     "undo after action" in:
       val controller = createController()
-      val observer = new TestObserver
+      val observer   = new TestObserver
       controller.add(observer)
 
       val uniqueName = s"UndoGroup_${System.currentTimeMillis}"
@@ -234,7 +233,7 @@ class ControllerSpec extends AnyWordSpec with Matchers:
 
     "redo after undo" in:
       val controller = createController()
-      val observer = new TestObserver
+      val observer   = new TestObserver
       controller.add(observer)
 
       val uniqueName = s"RedoGroup_${System.currentTimeMillis}"

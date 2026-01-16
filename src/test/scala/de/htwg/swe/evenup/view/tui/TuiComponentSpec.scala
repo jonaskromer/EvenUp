@@ -21,23 +21,23 @@ class TuiComponentSpec extends AnyWordSpec with Matchers:
 
     "wrap text with border" in:
       val component = TextComponent("Test")
-      val bordered = BorderDecorator(component, "*")
-      val result = bordered.render
+      val bordered  = BorderDecorator(component, "*")
+      val result    = bordered.render
 
       result should include("*")
       result should include("Test")
 
     "use custom border character" in:
       val component = TextComponent("Test")
-      val bordered = BorderDecorator(component, "#")
-      val result = bordered.render
+      val bordered  = BorderDecorator(component, "#")
+      val result    = bordered.render
 
       result should include("#")
 
     "handle multi-line content" in:
       val component = TextComponent("Line 1\nLine 2")
-      val bordered = BorderDecorator(component, "=")
-      val lines = bordered.render.split("\n")
+      val bordered  = BorderDecorator(component, "=")
+      val lines     = bordered.render.split("\n")
 
       lines.length should be >= 4
   }
@@ -46,8 +46,8 @@ class TuiComponentSpec extends AnyWordSpec with Matchers:
 
     "wrap text with color codes" in:
       val component = TextComponent("Colored")
-      val colored = ColorDecorator(component, ConsoleColors.RED)
-      val result = colored.render
+      val colored   = ColorDecorator(component, ConsoleColors.RED)
+      val result    = colored.render
 
       result should startWith(ConsoleColors.RED)
       result should include("Colored")
@@ -55,8 +55,8 @@ class TuiComponentSpec extends AnyWordSpec with Matchers:
 
     "apply different colors" in:
       val component = TextComponent("Blue")
-      val colored = ColorDecorator(component, ConsoleColors.BLUE)
-      val result = colored.render
+      val colored   = ColorDecorator(component, ConsoleColors.BLUE)
+      val result    = colored.render
 
       result should startWith(ConsoleColors.BLUE)
   }
@@ -65,18 +65,18 @@ class TuiComponentSpec extends AnyWordSpec with Matchers:
 
     "add padding around content" in:
       val component = TextComponent("Content")
-      val padded = PaddingDecorator(component, 2)
-      val result = padded.render
-      
+      val padded    = PaddingDecorator(component, 2)
+      val result    = padded.render
+
       // The result should have: empty, empty, content, empty, empty
       result should include("Content")
       result.split("\n", -1).length shouldBe 5 // Use -1 to include trailing empty strings
 
     "use default padding of 1" in:
       val component = TextComponent("Content")
-      val padded = PaddingDecorator(component)
-      val result = padded.render
-      
+      val padded    = PaddingDecorator(component)
+      val result    = padded.render
+
       // The result should have: empty, content, empty
       result should include("Content")
       result.split("\n", -1).length shouldBe 3 // Use -1 to include trailing empty strings
@@ -87,7 +87,7 @@ class TuiComponentSpec extends AnyWordSpec with Matchers:
     "add header to content" in:
       val component = TextComponent("Body")
       val decorated = HeaderFooterDecorator(component, header = Some("Header"))
-      val result = decorated.render
+      val result    = decorated.render
 
       result should startWith("Header")
       result should include("Body")
@@ -95,7 +95,7 @@ class TuiComponentSpec extends AnyWordSpec with Matchers:
     "add footer to content" in:
       val component = TextComponent("Body")
       val decorated = HeaderFooterDecorator(component, footer = Some("Footer"))
-      val result = decorated.render
+      val result    = decorated.render
 
       result should include("Body")
       result should endWith("Footer")
@@ -103,7 +103,7 @@ class TuiComponentSpec extends AnyWordSpec with Matchers:
     "add both header and footer" in:
       val component = TextComponent("Body")
       val decorated = HeaderFooterDecorator(component, header = Some("Header"), footer = Some("Footer"))
-      val result = decorated.render
+      val result    = decorated.render
 
       result should startWith("Header")
       result should include("Body")
@@ -112,7 +112,7 @@ class TuiComponentSpec extends AnyWordSpec with Matchers:
     "work without header and footer" in:
       val component = TextComponent("Body")
       val decorated = HeaderFooterDecorator(component)
-      val result = decorated.render
+      val result    = decorated.render
 
       result shouldBe "Body"
   }

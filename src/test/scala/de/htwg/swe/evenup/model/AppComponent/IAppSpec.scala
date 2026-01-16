@@ -111,11 +111,11 @@ class IAppSpec extends AnyWordSpec with Matchers:
       app.active_group shouldBe None
 
     "roundtrip JSON serialization correctly" in:
-      val date     = Date(15, 6, 2025)
-      val expense  = Expense("Dinner", 30.0, date, alice, List(Share(bob, 15.0)))
-      val group2   = Group("Party", List(alice, bob), List(expense), Nil, strategy)
-      val original = App(List(group2), Some(alice), Some(group2), InGroupState())
-      val json     = original.toJson
+      val date         = Date(15, 6, 2025)
+      val expense      = Expense("Dinner", 30.0, date, alice, List(Share(bob, 15.0)))
+      val group2       = Group("Party", List(alice, bob), List(expense), Nil, strategy)
+      val original     = App(List(group2), Some(alice), Some(group2), InGroupState())
+      val json         = original.toJson
       val deserialized = AppDeserializer.fromJson(json)
       deserialized.groups.length shouldBe original.groups.length
       deserialized.groups.head.name shouldBe original.groups.head.name

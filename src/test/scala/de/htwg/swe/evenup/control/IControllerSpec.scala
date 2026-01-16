@@ -16,29 +16,30 @@ class IControllerSpec extends AnyWordSpec with Matchers:
 
   // Test implementation of IController trait
   class TestController extends IController:
-    var app: IApp = App(Nil, None, None, MainMenuState())
+    var app: IApp   = App(Nil, None, None, MainMenuState())
     val argsHandler = new ArgsHandler
-    
-    var undoCalled = false
-    var redoCalled = false
-    var quitCalled = false
-    var loadCalled = false
-    var gotoMainMenuCalled = false
-    var gotoGroupName: Option[String] = None
-    var addGroupName: Option[String] = None
-    var addUserName: Option[String] = None
-    var addExpenseData: Option[(String, String, Double, IDate, Option[String])] = None
-    var setStrategyName: Option[String] = None
-    var calculateDebtsCalled = false
 
-    def undo(): Unit = undoCalled = true
-    def redo(): Unit = redoCalled = true
-    def quit: Unit = quitCalled = true
-    def load(): Unit = loadCalled = true
-    def gotoMainMenu: Unit = gotoMainMenuCalled = true
-    def gotoGroup(group_name: String): Unit = gotoGroupName = Some(group_name)
-    def addGroup(group_name: String): Unit = addGroupName = Some(group_name)
+    var undoCalled                                                              = false
+    var redoCalled                                                              = false
+    var quitCalled                                                              = false
+    var loadCalled                                                              = false
+    var gotoMainMenuCalled                                                      = false
+    var gotoGroupName: Option[String]                                           = None
+    var addGroupName: Option[String]                                            = None
+    var addUserName: Option[String]                                             = None
+    var addExpenseData: Option[(String, String, Double, IDate, Option[String])] = None
+    var setStrategyName: Option[String]                                         = None
+    var calculateDebtsCalled                                                    = false
+
+    def undo(): Unit                            = undoCalled = true
+    def redo(): Unit                            = redoCalled = true
+    def quit: Unit                              = quitCalled = true
+    def load(): Unit                            = loadCalled = true
+    def gotoMainMenu: Unit                      = gotoMainMenuCalled = true
+    def gotoGroup(group_name: String): Unit     = gotoGroupName = Some(group_name)
+    def addGroup(group_name: String): Unit      = addGroupName = Some(group_name)
     def addUserToGroup(user_name: String): Unit = addUserName = Some(user_name)
+
     def addExpenseToGroup(
       expense_name: String,
       paid_by: String,
@@ -46,22 +47,23 @@ class IControllerSpec extends AnyWordSpec with Matchers:
       date: IDate,
       shares: Option[String] = None
     ): Unit = addExpenseData = Some((expense_name, paid_by, amount, date, shares))
+
     def setDebtStrategy(strategy: String): Unit = setStrategyName = Some(strategy)
-    def calculateDebts(): Unit = calculateDebtsCalled = true
+    def calculateDebts(): Unit                  = calculateDebtsCalled = true
 
   class TestObserver extends Observer:
-    var lastEvent: Option[ObservableEvent] = None
+    var lastEvent: Option[ObservableEvent]   = None
     def update(event: ObservableEvent): Unit = lastEvent = Some(event)
 
   "IController" should {
 
     "extend Observable" in:
       val controller = new TestController
-      val observer = new TestObserver
-      
+      val observer   = new TestObserver
+
       controller.add(observer)
       controller.notifyObservers(EventResponse.Success)
-      
+
       observer.lastEvent shouldBe Some(EventResponse.Success)
 
     "have app property" in:
@@ -114,13 +116,13 @@ class IControllerSpec extends AnyWordSpec with Matchers:
 
     "define addExpenseToGroup method with all parameters" in:
       val controller = new TestController
-      val date = Date(15, 6, 2025)
+      val date       = Date(15, 6, 2025)
       controller.addExpenseToGroup("Dinner", "Alice", 50.0, date, Some("Alice:25_Bob:25"))
       controller.addExpenseData shouldBe Some(("Dinner", "Alice", 50.0, date, Some("Alice:25_Bob:25")))
 
     "define addExpenseToGroup method with default shares" in:
       val controller = new TestController
-      val date = Date(15, 6, 2025)
+      val date       = Date(15, 6, 2025)
       controller.addExpenseToGroup("Lunch", "Bob", 30.0, date)
       controller.addExpenseData shouldBe Some(("Lunch", "Bob", 30.0, date, None))
 
@@ -136,7 +138,7 @@ class IControllerSpec extends AnyWordSpec with Matchers:
 
     "allow updating app property" in:
       val controller = new TestController
-      val newApp = App(Nil, None, None, MainMenuState())
+      val newApp     = App(Nil, None, None, MainMenuState())
       controller.app = newApp
       controller.app shouldBe newApp
   }

@@ -18,7 +18,7 @@ class FileIOXmlSpec extends AnyWordSpec with Matchers:
 
     "load returns default app when file doesn't exist" in:
       val fileIO = new FileIO
-      val app = fileIO.load()
+      val app    = fileIO.load()
       app shouldBe a[IApp]
 
     "save creates an XML file" in:

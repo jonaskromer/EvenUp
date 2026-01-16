@@ -50,7 +50,7 @@ class IExpenseBuilderSpec extends AnyWordSpec with Matchers:
 
     "support full builder pattern through interface" in:
       val builder: IExpenseBuilder = ExpenseBuilder()
-      val expense = builder
+      val expense                  = builder
         .withName("Dinner")
         .withAmount(50.0)
         .onDate(Date(15, 6, 2025))

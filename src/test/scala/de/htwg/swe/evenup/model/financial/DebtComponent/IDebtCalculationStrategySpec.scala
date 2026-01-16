@@ -29,12 +29,12 @@ class IDebtCalculationStrategySpec extends AnyWordSpec with Matchers:
 
     "define calculateBalances method" in:
       val strategy: IDebtCalculationStrategy = NormalDebtStrategy()
-      val expense                            = Expense("Dinner", 30.0, date, alice, List(Share(bob, 15.0), Share(charlie, 15.0)))
-      val group                              = Group("Trip", List(alice, bob, charlie), List(expense), Nil, strategy)
-      val balances                           = strategy.calculateBalances(group)
+      val expense  = Expense("Dinner", 30.0, date, alice, List(Share(bob, 15.0), Share(charlie, 15.0)))
+      val group    = Group("Trip", List(alice, bob, charlie), List(expense), Nil, strategy)
+      val balances = strategy.calculateBalances(group)
       balances shouldBe a[Map[?, ?]]
-      balances(alice) shouldBe 30.0  // Alice paid 30
-      balances(bob) shouldBe -15.0   // Bob owes 15
+      balances(alice) shouldBe 30.0    // Alice paid 30
+      balances(bob) shouldBe -15.0     // Bob owes 15
       balances(charlie) shouldBe -15.0 // Charlie owes 15
 
     "serialize to XML correctly" in:
@@ -60,10 +60,10 @@ class IDebtCalculationStrategySpec extends AnyWordSpec with Matchers:
 
     "calculate correct balances for multiple expenses" in:
       val strategy: IDebtCalculationStrategy = NormalDebtStrategy()
-      val expense1                           = Expense("E1", 30.0, date, alice, List(Share(bob, 15.0), Share(alice, 15.0)))
-      val expense2                           = Expense("E2", 20.0, date, bob, List(Share(alice, 10.0), Share(bob, 10.0)))
-      val group                              = Group("Trip", List(alice, bob), List(expense1, expense2), Nil, strategy)
-      val balances                           = strategy.calculateBalances(group)
+      val expense1 = Expense("E1", 30.0, date, alice, List(Share(bob, 15.0), Share(alice, 15.0)))
+      val expense2 = Expense("E2", 20.0, date, bob, List(Share(alice, 10.0), Share(bob, 10.0)))
+      val group    = Group("Trip", List(alice, bob), List(expense1, expense2), Nil, strategy)
+      val balances = strategy.calculateBalances(group)
 
       // Alice: paid 30, owes 15 (to herself) + 10 (to Bob) = net +5
       // Bob: paid 20, owes 15 (to Alice) + 10 (to himself) = net -5

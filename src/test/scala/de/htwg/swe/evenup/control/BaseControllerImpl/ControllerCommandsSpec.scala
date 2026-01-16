@@ -24,24 +24,31 @@ import de.htwg.swe.evenup.util.ObservableEvent
 class ControllerCommandsSpec extends AnyWordSpec with Matchers:
 
   class TestController extends IController:
-    var app: IApp = App(Nil, None, None, MainMenuState())
-    val argsHandler = new ArgsHandler
+    var app: IApp                          = App(Nil, None, None, MainMenuState())
+    val argsHandler                        = new ArgsHandler
     var lastEvent: Option[ObservableEvent] = None
 
-    override def notifyObservers(e: ObservableEvent): Unit =
-      lastEvent = Some(e)
+    override def notifyObservers(e: ObservableEvent): Unit = lastEvent = Some(e)
 
-    def undo(): Unit = ()
-    def redo(): Unit = ()
-    def quit: Unit = ()
-    def load(): Unit = ()
-    def gotoMainMenu: Unit = ()
-    def gotoGroup(group_name: String): Unit = ()
-    def addGroup(group_name: String): Unit = ()
+    def undo(): Unit                            = ()
+    def redo(): Unit                            = ()
+    def quit: Unit                              = ()
+    def load(): Unit                            = ()
+    def gotoMainMenu: Unit                      = ()
+    def gotoGroup(group_name: String): Unit     = ()
+    def addGroup(group_name: String): Unit      = ()
     def addUserToGroup(user_name: String): Unit = ()
-    def addExpenseToGroup(expense_name: String, paid_by: String, amount: Double, date: IDate, shares: Option[String]): Unit = ()
+
+    def addExpenseToGroup(
+      expense_name: String,
+      paid_by: String,
+      amount: Double,
+      date: IDate,
+      shares: Option[String]
+    ): Unit = ()
+
     def setDebtStrategy(strategy: String): Unit = ()
-    def calculateDebts(): Unit = ()
+    def calculateDebts(): Unit                  = ()
 
   val alice    = Person("Alice")
   val bob      = Person("Bob")
@@ -53,7 +60,7 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
 
     "add group to app" in:
       val controller = new TestController
-      val command = AddGroupCommand(controller, group)
+      val command    = AddGroupCommand(controller, group)
       command.doStep
 
       controller.app.allGroups should contain(group)
@@ -62,7 +69,7 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
 
     "notify observers with AddGroup event" in:
       val controller = new TestController
-      val command = AddGroupCommand(controller, group)
+      val command    = AddGroupCommand(controller, group)
       command.doStep
 
       controller.lastEvent shouldBe Some(EventResponse.AddGroup(AddGroupResult.Success, group))
@@ -81,7 +88,7 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
 
     "notify observers with MainMenu event" in:
       val controller = new TestController
-      val command = GotoMainMenuCommand(controller)
+      val command    = GotoMainMenuCommand(controller)
       command.doStep
 
       controller.lastEvent shouldBe Some(EventResponse.MainMenu)
@@ -99,7 +106,7 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
 
     "notify observers with GotoGroup Success event" in:
       val controller = new TestController
-      val command = GotoGroupCommand(controller, group)
+      val command    = GotoGroupCommand(controller, group)
       command.doStep
 
       controller.lastEvent shouldBe Some(EventResponse.GotoGroup(GotoGroupResult.Success, group))
@@ -119,7 +126,7 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
     "notify observers with GotoGroup SuccessEmptyGroup event" in:
       val controller = new TestController
       val emptyGroup = Group("Empty", List(alice), Nil, Nil, strategy)
-      val command = GotoEmptyGroupCommand(controller, emptyGroup)
+      val command    = GotoEmptyGroupCommand(controller, emptyGroup)
       command.doStep
 
       controller.lastEvent shouldBe Some(EventResponse.GotoGroup(GotoGroupResult.SuccessEmptyGroup, emptyGroup))
@@ -175,7 +182,7 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
       val controller = new TestController
       controller.app = controller.app.addGroup(group).updateActiveGroup(Some(group))
       val newStrategy = SimplifiedDebtStrategy()
-      val command = SetDebtCalculationStrategy(controller, newStrategy)
+      val command     = SetDebtCalculationStrategy(controller, newStrategy)
       command.doStep
 
       controller.app.active_group.get.debt_strategy shouldBe a[SimplifiedDebtStrategy]
@@ -184,7 +191,7 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
       val controller = new TestController
       controller.app = controller.app.addGroup(group).updateActiveGroup(Some(group))
       val newStrategy = SimplifiedDebtStrategy()
-      val command = SetDebtCalculationStrategy(controller, newStrategy)
+      val command     = SetDebtCalculationStrategy(controller, newStrategy)
       command.doStep
 
       val event = controller.lastEvent.get.asInstanceOf[EventResponse.SetDebtStrategy]
@@ -195,8 +202,8 @@ class ControllerCommandsSpec extends AnyWordSpec with Matchers:
 
     "notify observers with CalculateDebts Success event" in:
       val controller = new TestController
-      val debts = List(Debt(bob, alice, 15.0))
-      val command = CalculateDebtsCommand(controller, debts)
+      val debts      = List(Debt(bob, alice, 15.0))
+      val command    = CalculateDebtsCommand(controller, debts)
       command.doStep
 
       controller.lastEvent shouldBe Some(EventResponse.CalculateDebts(CalculateDebtsResult.Success, debts))

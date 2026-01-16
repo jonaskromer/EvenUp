@@ -36,7 +36,8 @@ class ITransactionSpec extends AnyWordSpec with Matchers:
   "TransactionDeserializer" should {
 
     "deserialize from XML correctly" in:
-      val xml = <Transaction>
+      val xml =
+        <Transaction>
         <From><Person><Name>Charlie</Name></Person></From>
         <To><Person><Name>David</Name></Person></To>
         <Amount>100.0</Amount>

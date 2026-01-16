@@ -60,8 +60,8 @@ class TuiKeysSpec extends AnyWordSpec with Matchers:
 
   "TuiKeys allowed functions" should {
 
-    val mainMenuState = MainMenuState()
-    val inGroupState = InGroupState()
+    val mainMenuState     = MainMenuState()
+    val inGroupState      = InGroupState()
     val inEmptyGroupState = InEmptyGroupState()
 
     "allow newGroup in MainMenu" in:

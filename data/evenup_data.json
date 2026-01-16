@@ -1,8 +1,420 @@
 {
-  "groups" : [ ],
+  "groups" : [ {
+    "name" : "Vacation",
+    "members" : [ {
+      "name" : "Jonas"
+    }, {
+      "name" : "Bryan"
+    }, {
+      "name" : "Lennart"
+    }, {
+      "name" : "Annika"
+    }, {
+      "name" : "Julia"
+    } ],
+    "expenses" : [ {
+      "name" : "Food",
+      "amount" : 84,
+      "date" : {
+        "day" : 14,
+        "month" : 1,
+        "year" : 2026
+      },
+      "paidBy" : {
+        "name" : "Bryan"
+      },
+      "shares" : [ {
+        "person" : {
+          "name" : "Julia"
+        },
+        "amount" : 16.8
+      }, {
+        "person" : {
+          "name" : "Bryan"
+        },
+        "amount" : 16.8
+      }, {
+        "person" : {
+          "name" : "Lennart"
+        },
+        "amount" : 16.8
+      }, {
+        "person" : {
+          "name" : "Jonas"
+        },
+        "amount" : 16.8
+      }, {
+        "person" : {
+          "name" : "Annika"
+        },
+        "amount" : 16.8
+      } ]
+    }, {
+      "name" : "Flights",
+      "amount" : 835,
+      "date" : {
+        "day" : 7,
+        "month" : 10,
+        "year" : 2025
+      },
+      "paidBy" : {
+        "name" : "Lennart"
+      },
+      "shares" : [ {
+        "person" : {
+          "name" : "Julia"
+        },
+        "amount" : 167
+      }, {
+        "person" : {
+          "name" : "Bryan"
+        },
+        "amount" : 167
+      }, {
+        "person" : {
+          "name" : "Lennart"
+        },
+        "amount" : 167
+      }, {
+        "person" : {
+          "name" : "Jonas"
+        },
+        "amount" : 167
+      }, {
+        "person" : {
+          "name" : "Annika"
+        },
+        "amount" : 167
+      } ]
+    }, {
+      "name" : "Hotel",
+      "amount" : 503.22,
+      "date" : {
+        "day" : 10,
+        "month" : 10,
+        "year" : 2025
+      },
+      "paidBy" : {
+        "name" : "Jonas"
+      },
+      "shares" : [ {
+        "person" : {
+          "name" : "Julia"
+        },
+        "amount" : 100.64
+      }, {
+        "person" : {
+          "name" : "Bryan"
+        },
+        "amount" : 100.64
+      }, {
+        "person" : {
+          "name" : "Lennart"
+        },
+        "amount" : 100.64
+      }, {
+        "person" : {
+          "name" : "Jonas"
+        },
+        "amount" : 100.66
+      }, {
+        "person" : {
+          "name" : "Annika"
+        },
+        "amount" : 100.64
+      } ]
+    }, {
+      "name" : "Drinks",
+      "amount" : 53,
+      "date" : {
+        "day" : 13,
+        "month" : 1,
+        "year" : 2026
+      },
+      "paidBy" : {
+        "name" : "Annika"
+      },
+      "shares" : [ {
+        "person" : {
+          "name" : "Lennart"
+        },
+        "amount" : 22
+      }, {
+        "person" : {
+          "name" : "Bryan"
+        },
+        "amount" : 22
+      }, {
+        "person" : {
+          "name" : "Jonas"
+        },
+        "amount" : 9
+      } ]
+    } ],
+    "transactions" : [ ],
+    "debtCalculationStrategy" : {
+      "type" : "SimplifiedDebtStrategy"
+    }
+  }, {
+    "name" : "WG",
+    "members" : [ {
+      "name" : "Jonas"
+    }, {
+      "name" : "Bryan"
+    } ],
+    "expenses" : [ {
+      "name" : "Shopping",
+      "amount" : 23.35,
+      "date" : {
+        "day" : 14,
+        "month" : 1,
+        "year" : 2026
+      },
+      "paidBy" : {
+        "name" : "Jonas"
+      },
+      "shares" : [ {
+        "person" : {
+          "name" : "Jonas"
+        },
+        "amount" : 12.22
+      }, {
+        "person" : {
+          "name" : "Bryan"
+        },
+        "amount" : 11.13
+      } ]
+    }, {
+      "name" : "Party",
+      "amount" : 44,
+      "date" : {
+        "day" : 13,
+        "month" : 1,
+        "year" : 2026
+      },
+      "paidBy" : {
+        "name" : "Bryan"
+      },
+      "shares" : [ {
+        "person" : {
+          "name" : "Jonas"
+        },
+        "amount" : 22
+      }, {
+        "person" : {
+          "name" : "Bryan"
+        },
+        "amount" : 22
+      } ]
+    }, {
+      "name" : "Shopping",
+      "amount" : 28,
+      "date" : {
+        "day" : 12,
+        "month" : 11,
+        "year" : 2025
+      },
+      "paidBy" : {
+        "name" : "Jonas"
+      },
+      "shares" : [ {
+        "person" : {
+          "name" : "Jonas"
+        },
+        "amount" : 14
+      }, {
+        "person" : {
+          "name" : "Bryan"
+        },
+        "amount" : 14
+      } ]
+    }, {
+      "name" : "Shopping",
+      "amount" : 10,
+      "date" : {
+        "day" : 16,
+        "month" : 12,
+        "year" : 2025
+      },
+      "paidBy" : {
+        "name" : "Bryan"
+      },
+      "shares" : [ {
+        "person" : {
+          "name" : "Jonas"
+        },
+        "amount" : 5
+      }, {
+        "person" : {
+          "name" : "Bryan"
+        },
+        "amount" : 5
+      } ]
+    } ],
+    "transactions" : [ ],
+    "debtCalculationStrategy" : {
+      "type" : "NormalDebtStrategy"
+    }
+  } ],
   "activeUser" : { },
-  "activeGroup" : { },
+  "activeGroup" : {
+    "name" : "Vacation",
+    "members" : [ {
+      "name" : "Jonas"
+    }, {
+      "name" : "Bryan"
+    }, {
+      "name" : "Lennart"
+    }, {
+      "name" : "Annika"
+    }, {
+      "name" : "Julia"
+    } ],
+    "expenses" : [ {
+      "name" : "Food",
+      "amount" : 84,
+      "date" : {
+        "day" : 14,
+        "month" : 1,
+        "year" : 2026
+      },
+      "paidBy" : {
+        "name" : "Bryan"
+      },
+      "shares" : [ {
+        "person" : {
+          "name" : "Julia"
+        },
+        "amount" : 16.8
+      }, {
+        "person" : {
+          "name" : "Bryan"
+        },
+        "amount" : 16.8
+      }, {
+        "person" : {
+          "name" : "Lennart"
+        },
+        "amount" : 16.8
+      }, {
+        "person" : {
+          "name" : "Jonas"
+        },
+        "amount" : 16.8
+      }, {
+        "person" : {
+          "name" : "Annika"
+        },
+        "amount" : 16.8
+      } ]
+    }, {
+      "name" : "Flights",
+      "amount" : 835,
+      "date" : {
+        "day" : 7,
+        "month" : 10,
+        "year" : 2025
+      },
+      "paidBy" : {
+        "name" : "Lennart"
+      },
+      "shares" : [ {
+        "person" : {
+          "name" : "Julia"
+        },
+        "amount" : 167
+      }, {
+        "person" : {
+          "name" : "Bryan"
+        },
+        "amount" : 167
+      }, {
+        "person" : {
+          "name" : "Lennart"
+        },
+        "amount" : 167
+      }, {
+        "person" : {
+          "name" : "Jonas"
+        },
+        "amount" : 167
+      }, {
+        "person" : {
+          "name" : "Annika"
+        },
+        "amount" : 167
+      } ]
+    }, {
+      "name" : "Hotel",
+      "amount" : 503.22,
+      "date" : {
+        "day" : 10,
+        "month" : 10,
+        "year" : 2025
+      },
+      "paidBy" : {
+        "name" : "Jonas"
+      },
+      "shares" : [ {
+        "person" : {
+          "name" : "Julia"
+        },
+        "amount" : 100.64
+      }, {
+        "person" : {
+          "name" : "Bryan"
+        },
+        "amount" : 100.64
+      }, {
+        "person" : {
+          "name" : "Lennart"
+        },
+        "amount" : 100.64
+      }, {
+        "person" : {
+          "name" : "Jonas"
+        },
+        "amount" : 100.66
+      }, {
+        "person" : {
+          "name" : "Annika"
+        },
+        "amount" : 100.64
+      } ]
+    }, {
+      "name" : "Drinks",
+      "amount" : 53,
+      "date" : {
+        "day" : 13,
+        "month" : 1,
+        "year" : 2026
+      },
+      "paidBy" : {
+        "name" : "Annika"
+      },
+      "shares" : [ {
+        "person" : {
+          "name" : "Lennart"
+        },
+        "amount" : 22
+      }, {
+        "person" : {
+          "name" : "Bryan"
+        },
+        "amount" : 22
+      }, {
+        "person" : {
+          "name" : "Jonas"
+        },
+        "amount" : 9
+      } ]
+    } ],
+    "transactions" : [ ],
+    "debtCalculationStrategy" : {
+      "type" : "SimplifiedDebtStrategy"
+    }
+  },
   "state" : {
-    "state" : "MainMenuState"
+    "state" : "InGroupState"
   }
 }

@@ -122,7 +122,7 @@ Setup on MacOS
       ```
 
 Setup on Windows
-* Ask you AI of trust
+* Ask your AI of trust
 
 
 ### Installation
@@ -271,7 +271,7 @@ Distributed under the MIT. See `LICENSE` for more information.
 [Scala]: https://img.shields.io/badge/scala-000000?style=for-the-badge&logo=scala&logoColor=DC322F
 [scala-url]: https://scala-lang.org
 [Docker]: https://img.shields.io/badge/docker-000000?style=for-the-badge&logo=docker&logoColor=2496ED
-[docker-url]: https://scala-lang.org
+[docker-url]: https://docker.com
 [Coveralls]: https://img.shields.io/badge/Coveralls-3F5767?style=for-the-badge&logo=coveralls&logoColor=fff
 [Sonar-Cloud]: https://img.shields.io/badge/SonarQube%20Cloud-126ED3?style=for-the-badge&logo=sonarqubecloud&logoColor=fff
 [sonar-cloud-url]: https://sonarcloud.io/project/overview?id=jonaskromer_EvenUp

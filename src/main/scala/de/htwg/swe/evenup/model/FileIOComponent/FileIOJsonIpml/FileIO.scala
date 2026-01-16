@@ -13,11 +13,10 @@ import scala.util.Try
 
 class FileIO extends IFileIO:
 
-  override def load(): IApp =
-    Try(Source.fromFile("data/evenup_data.json").getLines().mkString)
-      .map(file => Json.parse(file).as[JsObject])
-      .map(AppDeserializer.fromJson)
-      .getOrElse(summon[IApp])
+  override def load(): IApp = Try(Source.fromFile("data/evenup_data.json").getLines().mkString)
+    .map(file => Json.parse(file).as[JsObject])
+    .map(AppDeserializer.fromJson)
+    .getOrElse(summon[IApp])
 
   override def save(app: IApp): Unit =
     val jsonData   = app.toJson

@@ -26,7 +26,7 @@ trait IShare extends Serializable:
   )
 
 object ShareDeserializer extends Deserializer[IShare]:
-  val factory: IShareFactory     = summon[IShareFactory]
+  val factory: IShareFactory = summon[IShareFactory]
 
   def fromXml(xml: Elem): IShare =
     val person = PersonDeserializer.fromXml((xml \ "Person").head.asInstanceOf[Elem])

@@ -70,7 +70,7 @@ trait IGroup extends Serializable:
   def containsUser(user_name: String): Boolean
 
 object GroupDeserializer extends Deserializer[IGroup]:
-  val factory: IGroupFactory              = summon[IGroupFactory]
+  val factory: IGroupFactory = summon[IGroupFactory]
 
   override def fromXml(xml: Elem): IGroup = {
     val name     = (xml \ "Name").text

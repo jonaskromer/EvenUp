@@ -362,7 +362,7 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
         spacing = 10
         alignment = Pos.Center
         children = Seq(
-          new Label("Shares (optional):") { 
+          new Label("Shares (optional):") {
             styleClass += "form-label"
             alignment = Pos.Center
           },
@@ -474,22 +474,22 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
             prefHeight = 600
             alignment = Pos.TopCenter
             children = Seq(
-              new Label("Expense Name:") { 
+              new Label("Expense Name:") {
                 styleClass += "form-label"
                 alignment = Pos.Center
               },
               nameField,
-              new Label("Paid By:") { 
+              new Label("Paid By:") {
                 styleClass += "form-label"
                 alignment = Pos.Center
               },
               paidByCombo,
-              new Label("Amount:") { 
+              new Label("Amount:") {
                 styleClass += "form-label"
                 alignment = Pos.Center
               },
               amountField,
-              new Label("Date:") { 
+              new Label("Date:") {
                 styleClass += "form-label"
                 alignment = Pos.Center
               },
@@ -504,7 +504,6 @@ class GroupView(controller: IController, group: IGroup, loadingIndicator: Progre
             )
           }
       }
-
 
     dialog.scene =
       new Scene() {

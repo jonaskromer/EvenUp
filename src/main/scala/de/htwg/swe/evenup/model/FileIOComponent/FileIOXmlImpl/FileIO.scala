@@ -8,10 +8,9 @@ import scala.util.Try
 
 class FileIO extends IFileIO:
 
-  override def load(): IApp =
-    Try(scala.xml.XML.loadFile("data/evenup_data.xml"))
-      .map(AppDeserializer.fromXml)
-      .getOrElse(summon[IApp])
+  override def load(): IApp = Try(scala.xml.XML.loadFile("data/evenup_data.xml"))
+    .map(AppDeserializer.fromXml)
+    .getOrElse(summon[IApp])
 
   override def save(app: IApp): Unit =
     val xmlData = app.toXml

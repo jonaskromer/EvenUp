@@ -44,19 +44,8 @@ class Parser:
         if tokens.length != 2 then Failure(new Exception(decorateErrorMessage(TuiKeys.setStrategy)))
         else Success(tokens)
       case TuiKeys.addExpense.key =>
-        tokens.length match
-          case _ =>
-            ShareParser.parseShares(tokens(4)) match
-              case Left(error) => Failure(new Exception(error.toMessage))
-              case Right(_)    => Success(tokens)
-          case 4 => // no shares and no date given
-            if tokens(3).toDoubleOption == None then Failure(new Exception(decorateErrorMessage(TuiKeys.addExpense)))
-            else Success(tokens)
-          case 5 => // share given
-            if tokens(3).toDoubleOption == None then Failure(new Exception(decorateErrorMessage(TuiKeys.addExpense)))
-            else if !validSharePattern(tokens(4)) then Failure(new Exception(decorateErrorMessage(TuiKeys.addExpense)))
-            else Success(tokens)
-          // TODO: add case for date given
-          case _ => Failure(new Exception(decorateErrorMessage(TuiKeys.addExpense)))
+        ShareParser.parseShares(tokens(4)) match
+          case Left(error) => Failure(new Exception(error.toMessage))
+          case Right(_)    => Success(tokens)
 
       case _ => Failure(new Exception(decorateErrorMessage(TuiKeys.unsupportedKey)))

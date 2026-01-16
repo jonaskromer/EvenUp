@@ -1,23 +1,4 @@
-<!-- Improved compatibility of back to top link: See: https://github.com/othneildrew/Best-README-Template/pull/73 -->
 <a id="readme-top"></a>
-<!--
-*** Thanks for checking out the Best-README-Template. If you have a suggestion
-*** that would make this better, please fork the repo and create a pull request
-*** or simply open an issue with the tag "enhancement".
-*** Don't forget to give the project a star!
-*** Thanks again! Now go create something AMAZING! :D
--->
-
-
-
-<!-- PROJECT SHIELDS -->
-<!--
-*** I'm using markdown "reference style" links for readability.
-*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
-*** See the bottom of this document for the declaration of the reference variables
-*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
-*** https://www.markdownguide.org/basic-syntax/#reference-style-links
--->
 
 <br />
 <div align="center">
@@ -45,8 +26,6 @@
 
   <p align="center">
     An Expense Management App
-    <br />
-    <a href="https://github.com/jonaskromer/EvenUp"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://github.com/jonaskromer/EvenUp">View Demo</a>
@@ -80,28 +59,29 @@
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
   </ol>
 </details>
 
 
 
 <!-- ABOUT THE PROJECT -->
+
 ## About The Project
 
-EvenUp is a simple, console-based (TUI) application designed to help you manage shared expenses and group finances.
-With EvenUp, you can:
+EvenUp is a console and gui based application for managing shared expenses and group finances. Create groups, track shared expenses, and manage transactions between members with an intuitive text-based interface. The immutable domain model ensures data integrity while the TUI provides interactive navigation through simple commands.
 
-* Create and manage groups of people.
-* Track expenses within groups, including shared expenses.
-* Manage transactions between group members.
-* Navigate through groups and menus easily using simple text commands.
+### Key Features
+- Group Management: Create and organize groups of people
+- Expense Tracking: Monitor shared expenses within groups
+- Transaction Management: Handle financial transactions between group members
+- User Interface: Navigate through intuitive text-based commands
 
-EvenUp follows an MVC architecture, keeping the domain model (`App`, `Group`, `Person`) immutable, while the TUI provides an interactive interface.
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
+### Architecture
+EvenUp implements the Model-View-Controller (MVC) pattern with:
+- **Model Layer**: Immutable domain objects (`App`, `Group`, `Person`)
+- **View Layer**: TUI (Terminal User Interface) and GUI for interactive user engagement
+- **Controller Layer**: Command-based architecture with state management
+- **Utilities**: Memento pattern for undo/redo, observable pattern for state synchronization
 
 
 ### Built With
@@ -118,8 +98,7 @@ EvenUp follows an MVC architecture, keeping the domain model (`App`, `Group`, `P
 <!-- GETTING STARTED -->
 ## Getting Started
 
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
+This guide will help you set up EvenUp locally and get it running. Follow the prerequisites for your system and then proceed with the installation steps.
 
 ### Prerequisites
 
@@ -142,6 +121,9 @@ Setup on MacOS
       xhost + 127.0.0.1
       ```
 
+Setup on Windows
+
+
 ### Installation
 
 1. Clone the repo
@@ -156,7 +138,7 @@ Setup on MacOS
    ```sh
    docker start evenup-evenup-1
    ```
-4. For the TUI to work, run this command in any terminal
+4. For the TUI to work, attach any terminal to the container
    ```sh
    docker attach evenup-evenup-1
    ```
@@ -170,7 +152,30 @@ Setup on MacOS
 
 Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
 
-_For more examples, please refer to the [Documentation](https://example.com)_
+### TUI Usage
+
+The following commands are available in the TUI:
+
+| Command     | Usage                                                                      | Description                                |
+| ----------- | -------------------------------------------------------------------------- | ------------------------------------------ |
+| `:newgroup` | `<group name>`                                                             | Add a new group                            |
+| `:group`    | `<group name>`                                                             | Open a specific group                      |
+| `:addexp`   | `<name> <paid_by> <amount> <opt:shares as Person:Amount_Person...> <date>` | Add an expense                             |
+| `:editexp`  | `tbd`                                                                      | Edit an expense                            |
+| `:pay`      | `<amount> <to> <opt:from>`                                                 | Add a new transaction                      |
+| `:editpay`  | `tbd`                                                                      | Edit a transaction                         |
+| `:adduser`  | `<user name> <user name> ...`                                              | Add one or more users to the current group |
+| `:debts`    |                                                                            | Calculate debts for group                  |
+| `:strategy` | `<simplified\|normal>`                                                     | Set debt calculation strategy              |
+| `:undo`     |                                                                            | Undo the latest action                     |
+| `:redo`     |                                                                            | Redo the latest undo action                |
+| `:h`        |                                                                            | Show help                                  |
+| `:q`        |                                                                            | Quit the app                               |
+| `:m`        |                                                                            | Go back to the main menu                   |
+| `:l`        | `<user name>`                                                              | Login as a specific user                   |
+
+### GUI Usage
+
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -179,10 +184,21 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 <!-- ROADMAP -->
 ## Roadmap
 
-- [ ] Feature 1
-- [ ] Feature 2
-- [ ] Feature 3
-    - [ ] Nested Feature
+- [x] Core expense tracking functionality
+- [x] Group management system
+- [x] Transaction tracking
+- [x] TUI
+- [x] Share-based expense splitting
+- [x] Debt calculation strategies
+    - [x] Normal debt calculation
+    - [x] Simplified debt strategy (minimizes transactions)
+- [x] Undo/Redo support
+- [x] GUI implementation
+- [x] Data persistence
+- [ ] Expense categories and tags
+- [ ] Export reports (PDF, CSV)
+- [ ] Receipt attachments
+- [ ] Cloud synchronization
 
 See the [open issues](https://github.com/jonaskromer/EvenUp/issues) for a full list of proposed features (and known issues).
 
@@ -200,7 +216,7 @@ Don't forget to give the project a star! Thanks again!
 
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+3. Commit your Changes (`git commit -m 'feat: Add some AmazingFeature'`)
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
@@ -222,30 +238,7 @@ Distributed under the MIT. See `LICENSE` for more information.
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-
-<!-- CONTACT -->
-## Contact
-
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email@email_client.com
-
-Project Link: [https://github.com/jonaskromer/EvenUp](https://github.com/jonaskromer/EvenUp)
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
-<!-- ACKNOWLEDGMENTS -->
-## Acknowledgments
-
-* []()
-* []()
-* []()
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 <!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 [coveralls-shield]: https://img.shields.io/coverallsCoverage/github/jonaskromer/EvenUp?style=for-the-badge
 [coveralls-url]: https://coveralls.io/github/jonaskromer/EvenUp?branch=main
 [actions-shield]: https://img.shields.io/github/actions/workflow/status/jonaskromer/EvenUp/scala.yml?style=for-the-badge
@@ -260,8 +253,7 @@ Project Link: [https://github.com/jonaskromer/EvenUp](https://github.com/jonaskr
 [issues-url]: https://github.com/jonaskromer/EvenUp/issues
 [license-shield]: https://img.shields.io/github/license/jonaskromer/EvenUp.svg?style=for-the-badge
 [license-url]: https://github.com/jonaskromer/EvenUp/blob/main/LICENSE
-[product-screenshot]: images/screenshot.png
-<!-- Shields.io badges. You can a comprehensive list with many more badges at: https://github.com/inttter/md-badges -->
+
 [Scala]: https://img.shields.io/badge/scala-000000?style=for-the-badge&logo=scala&logoColor=DC322F
 [scala-url]: https://scala-lang.org
 [Docker]: https://img.shields.io/badge/docker-000000?style=for-the-badge&logo=docker&logoColor=2496ED
@@ -270,3 +262,4 @@ Project Link: [https://github.com/jonaskromer/EvenUp](https://github.com/jonaskr
 [Sonar-Cloud]: https://img.shields.io/badge/SonarQube%20Cloud-126ED3?style=for-the-badge&logo=sonarqubecloud&logoColor=fff
 [sonar-cloud-url]: https://sonarcloud.io/project/overview?id=jonaskromer_EvenUp
 
+[product-screenshot]: images/screenshot.png

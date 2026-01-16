@@ -12,14 +12,6 @@ object EvenUp:
   val tui                     = new Tui(controller)
   val gui                     = new Gui(controller)
 
-  try {
-      controller.load()
-    } catch {
-      case e: Exception => 
-        println(s"No previous state found or error loading: ${e.getMessage}")
-        println("Starting with empty state")
-    }
-
   def main(args: Array[String]): Unit =
     new Thread(() => gui.main(Array.empty)).start()
 

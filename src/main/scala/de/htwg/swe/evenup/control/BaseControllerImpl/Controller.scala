@@ -13,6 +13,8 @@ class Controller(using var app: IApp) extends IController:
   val undoManager = new UndoManager
   val argsHandler = new ArgsHandler
 
+  this.load()
+
   def undo(): Unit =
     val response = argsHandler.checkOrDelegate(
       Map("operation" -> "undo", "undo_stack_size" -> undoManager.getUndoStackSize),

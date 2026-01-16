@@ -18,15 +18,21 @@
 *** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
 *** https://www.markdownguide.org/basic-syntax/#reference-style-links
 -->
-[![Contributors][contributors-shield]][contributors-url]
+
+<br />
+<div align="center">
+  <p align="center">
+  
+[![Coveralls][coveralls-shield]][coveralls-url]
+[![Build][actions-shield]][actions-url]
+[![Commits][commits-shield]][commits-url]
 [![Forks][forks-shield]][forks-url]
 [![Stargazers][stars-shield]][stars-url]
 [![Issues][issues-shield]][issues-url]
-[![project_license][license-shield]][license-url]
-[![LinkedIn][linkedin-shield]][linkedin-url]
-[![Coverage Status](https://coveralls.io/repos/github/jonaskromer/EvenUp/badge.svg?branch=main)](https://coveralls.io/github/jonaskromer/EvenUp?branch=main)
+[![MIT][license-shield]][license-url]
 
-
+  </p>
+</div>
 
 <!-- PROJECT LOGO -->
 <br />
@@ -38,7 +44,7 @@
 <h3 align="center">EvenUp</h3>
 
   <p align="center">
-    Easy Expense Tracking for Groups
+    An Expense Management App
     <br />
     <a href="https://github.com/jonaskromer/EvenUp"><strong>Explore the docs »</strong></a>
     <br />
@@ -84,9 +90,15 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-[![Product Name Screen Shot][product-screenshot]](https://example.com)
+EvenUp is a simple, console-based (TUI) application designed to help you manage shared expenses and group finances.
+With EvenUp, you can:
 
-Here's a blank template to get started. To avoid retyping too much info, do a search and replace with your text editor for the following: `github_username`, `repo_name`, `twitter_handle`, `linkedin_username`, `email_client`, `email`, `project_title`, `project_description`, `project_license`
+* Create and manage groups of people.
+* Track expenses within groups, including shared expenses.
+* Manage transactions between group members.
+* Navigate through groups and menus easily using simple text commands.
+
+EvenUp follows an MVC architecture, keeping the domain model (`App`, `Group`, `Person`) immutable, while the TUI provides an interactive interface.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -94,14 +106,10 @@ Here's a blank template to get started. To avoid retyping too much info, do a se
 
 ### Built With
 
-* [![Next][Next.js]][Next-url]
-* [![React][React.js]][React-url]
-* [![Vue][Vue.js]][Vue-url]
-* [![Angular][Angular.io]][Angular-url]
-* [![Svelte][Svelte.dev]][Svelte-url]
-* [![Laravel][Laravel.com]][Laravel-url]
-* [![Bootstrap][Bootstrap.com]][Bootstrap-url]
-* [![JQuery][JQuery.com]][JQuery-url]
+* [![Scala][Scala]][scala-url]
+* [![Docker][Docker]][docker-url]
+* [![Coveralls][Coveralls]][coveralls-url]
+* [![Sonar-Cloud][Sonar-Cloud]][sonar-cloud-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -115,31 +123,42 @@ To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
 
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
+Setup on MacOS
+* XQuartz Setup
+  1. Install XQuartz via Homebrew
+      ```sh
+      brew install --cask xquartz
+      open -a XQuartz
+      ```
+  2. Enable network client connections
+   
+      In XQuartz:
+      * Open **Settings**
+      * Go to **Security**
+      * Enable **“Allow connections from network clients”**
+  3. Allow local connections
+  
+      ```sh
+      xhost + 127.0.0.1
+      ```
 
 ### Installation
 
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
+1. Clone the repo
    ```sh
-   git clone https://github.com/github_username/repo_name.git
+   git clone https://github.com/jonaskromer/EvenUp.git
    ```
-3. Install NPM packages
+2. Build Docker Image
    ```sh
-   npm install
+   docker compose -f 'docker-compose.yaml' up -d --build 'evenup'
    ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
-   ```
-5. Change git remote url to avoid accidental pushes to base project
+3. Rerun the App
    ```sh
-   git remote set-url origin github_username/repo_name
-   git remote -v # confirm the changes
+   docker start evenup-evenup-1
+   ```
+4. For the TUI to work, run this command in any terminal
+   ```sh
+   docker attach evenup-evenup-1
    ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -165,7 +184,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 - [ ] Feature 3
     - [ ] Nested Feature
 
-See the [open issues](https://github.com/github_username/repo_name/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/jonaskromer/EvenUp/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -189,8 +208,8 @@ Don't forget to give the project a star! Thanks again!
 
 ### Top contributors:
 
-<a href="https://github.com/github_username/repo_name/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=github_username/repo_name" alt="contrib.rocks image" />
+<a href="https://github.com/jonaskromer/EvenUp/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=jonaskromer/EvenUp" alt="contrib.rocks image" />
 </a>
 
 
@@ -198,7 +217,7 @@ Don't forget to give the project a star! Thanks again!
 <!-- LICENSE -->
 ## License
 
-Distributed under the project_license. See `LICENSE.txt` for more information.
+Distributed under the MIT. See `LICENSE` for more information.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -209,7 +228,7 @@ Distributed under the project_license. See `LICENSE.txt` for more information.
 
 Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email@email_client.com
 
-Project Link: [https://github.com/github_username/repo_name](https://github.com/github_username/repo_name)
+Project Link: [https://github.com/jonaskromer/EvenUp](https://github.com/jonaskromer/EvenUp)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -225,36 +244,29 @@ Project Link: [https://github.com/github_username/repo_name](https://github.com/
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
-[![Coverage Status]()](https://coveralls.io/github/jonaskromer/EvenUp?branch=main)
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/coverallsCoverage/github/jonaskromer/EvenUp?style=for-the-badge
-[contributors-url]: https://coveralls.io/github/jonaskromer/EvenUp?branch=main
-[forks-shield]: https://img.shields.io/github/forks/github_username/repo_name.svg?style=for-the-badge
-[forks-url]: https://github.com/github_username/repo_name/network/members
-[stars-shield]: https://img.shields.io/github/stars/github_username/repo_name.svg?style=for-the-badge
-[stars-url]: https://github.com/github_username/repo_name/stargazers
-[issues-shield]: https://img.shields.io/github/issues/github_username/repo_name.svg?style=for-the-badge
-[issues-url]: https://github.com/github_username/repo_name/issues
-[license-shield]: https://img.shields.io/github/license/github_username/repo_name.svg?style=for-the-badge
-[license-url]: https://github.com/github_username/repo_name/blob/master/LICENSE.txt
-[linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
-[linkedin-url]: https://linkedin.com/in/linkedin_username
+[coveralls-shield]: https://img.shields.io/coverallsCoverage/github/jonaskromer/EvenUp?style=for-the-badge
+[coveralls-url]: https://coveralls.io/github/jonaskromer/EvenUp?branch=main
+[actions-shield]: https://img.shields.io/github/actions/workflow/status/jonaskromer/EvenUp/scala.yml?style=for-the-badge
+[actions-url]: https://github.com/jonaskromer/EvenUp/actions/workflows/scala.yml
+[commits-shield]: https://img.shields.io/github/last-commit/jonaskromer/EvenUp?style=for-the-badge
+[commits-url]: https://github.com/jonaskromer/EvenUp/commits/main/
+[forks-shield]: https://img.shields.io/github/forks/jonaskromer/EvenUp.svg?style=for-the-badge
+[forks-url]: https://github.com/jonaskromer/EvenUp/network/members
+[stars-shield]: https://img.shields.io/github/stars/jonaskromer/EvenUp.svg?style=for-the-badge
+[stars-url]: https://github.com/jonaskromer/EvenUp/stargazers
+[issues-shield]: https://img.shields.io/github/issues/jonaskromer/EvenUp.svg?style=for-the-badge
+[issues-url]: https://github.com/jonaskromer/EvenUp/issues
+[license-shield]: https://img.shields.io/github/license/jonaskromer/EvenUp.svg?style=for-the-badge
+[license-url]: https://github.com/jonaskromer/EvenUp/blob/main/LICENSE
 [product-screenshot]: images/screenshot.png
 <!-- Shields.io badges. You can a comprehensive list with many more badges at: https://github.com/inttter/md-badges -->
-[Next.js]: https://img.shields.io/badge/next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white
-[Next-url]: https://nextjs.org/
-[React.js]: https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
-[React-url]: https://reactjs.org/
-[Vue.js]: https://img.shields.io/badge/Vue.js-35495E?style=for-the-badge&logo=vuedotjs&logoColor=4FC08D
-[Vue-url]: https://vuejs.org/
-[Angular.io]: https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white
-[Angular-url]: https://angular.io/
-[Svelte.dev]: https://img.shields.io/badge/Svelte-4A4A55?style=for-the-badge&logo=svelte&logoColor=FF3E00
-[Svelte-url]: https://svelte.dev/
-[Laravel.com]: https://img.shields.io/badge/Laravel-FF2D20?style=for-the-badge&logo=laravel&logoColor=white
-[Laravel-url]: https://laravel.com
-[Bootstrap.com]: https://img.shields.io/badge/Bootstrap-563D7C?style=for-the-badge&logo=bootstrap&logoColor=white
-[Bootstrap-url]: https://getbootstrap.com
-[JQuery.com]: https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white
-[JQuery-url]: https://jquery.com 
+[Scala]: https://img.shields.io/badge/scala-000000?style=for-the-badge&logo=scala&logoColor=DC322F
+[scala-url]: https://scala-lang.org
+[Docker]: https://img.shields.io/badge/docker-000000?style=for-the-badge&logo=docker&logoColor=2496ED
+[docker-url]: https://scala-lang.org
+[Coveralls]: https://img.shields.io/badge/Coveralls-3F5767?style=for-the-badge&logo=coveralls&logoColor=fff
+[Sonar-Cloud]: https://img.shields.io/badge/SonarQube%20Cloud-126ED3?style=for-the-badge&logo=sonarqubecloud&logoColor=fff
+[sonar-cloud-url]: https://sonarcloud.io/project/overview?id=jonaskromer_EvenUp
+

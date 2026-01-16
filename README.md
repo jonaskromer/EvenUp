@@ -122,7 +122,15 @@ Setup on MacOS
       ```
 
 Setup on Windows
-* Ask your AI of trust
+* VcXsrv Setup
+  1. Install VcXsrv (Download via [VcXsrv Website](https://vcxsrv.com/))
+  2. Configure VcXsrv
+
+      Open VcXsrv (search for XLaunch in start menu):
+      * Select **Multiple Windows** on Select display settings page, then press next.
+      * Select **Start no client** on Select how to start client page, then press next.
+      * Select **Clipboard, Primary Selection and Native opengl** on Extra settings page, then press next.
+      * Click on **Finish** button on Configuration complete page.
 
 
 ### Installation

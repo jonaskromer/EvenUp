@@ -48,13 +48,13 @@ jobs:
       - name: Compile
         run: sbt compile
 
-      - name: Run tests (cross version)
-        run: sbt -v +test
+      - name: Run tests with coverage
+        run: sbt clean coverage test
 
-      - name: Generate Scoverage report
-        run: sbt clean coverage test coverageReport coveralls
+      - name: Generate coverage report and upload to Coveralls
+        run: sbt coverageReport coveralls
         env:
-          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Coverage Artifacts
         uses: actions/upload-artifact@v4

@@ -3,12 +3,10 @@ name: Scala Release
 on:
   push:
     tags:
-      - '*'
-  pull_request:
-    tags:
-      - '*'
+      - 'v*'
 
-permissions: write-all
+permissions:
+  contents: write
 
 jobs:
   build:
@@ -20,29 +18,34 @@ jobs:
         include:
           - os: ubuntu-latest
             osName: "linux"
-            java: 17
           - os: windows-latest
-            osName: "Windows"
-            java: 17
+            osName: "windows"
 
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up JDK 11
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           java-version: '11'
           distribution: 'adopt'
-      - name: compile
+
+      - uses: sbt/setup-sbt@v1
+
+      - name: Compile
         run: sbt compile
-      - name: run tests
+
+      - name: Run tests
         run: sbt test
-      - name: jar
+
+      - name: Build JAR
         run: sbt "-Dos.name=${{ matrix.osName }}" assembly
+
       - name: Upload JAR
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
-          name: EvenUp-${{ matrix.osName }}.jar
-          path: ${{ github.workspace }}/target/scala-3.4.0/*.jar
+          name: EvenUp-${{ matrix.osName }}
+          path: target/scala-3.7.3/*.jar
 
   release:
     needs: build
@@ -50,7 +53,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - name: Create release
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+
+      - name: Create release and upload assets
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ github.ref_name }}
@@ -58,14 +68,5 @@ jobs:
           gh release create "$tag" \
               --repo="$GITHUB_REPOSITORY" \
               --title="${GITHUB_REPOSITORY#*/} ${tag#v}" \
-              --generate-notes
-      - name: Download all artifacts
-        uses: actions/download-artifact@v2
-      - name: Upload release assets
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ github.ref_name }}
-        run: |
-              gh release upload "$tag" *.jar
-          
-        working-directory: ${{ github.workspace }}
+              --generate-notes \
+              artifacts/*.jar

@@ -2,7 +2,10 @@ services:
   evenup:
     build: .
     environment:
+      - DISPLAY=host.docker.internal:0
       - LIBGL_ALWAYS_INDIRECT=true
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    network_mode: host
     stdin_open: true
     tty: true
-    command: java -Dprism.order=sw -jar target/scala-3.7.3/EvenUp.jar

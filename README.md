@@ -100,6 +100,31 @@ EvenUp implements the Model-View-Controller (MVC) pattern with:
 
 This guide will help you set up EvenUp locally and get it running. Follow the prerequisites for your system and then proceed with the installation steps.
 
+## Quick Start (No Docker, No X Server)
+
+If you just want to run EvenUp directly without Docker or X server setup:
+
+### Prerequisites
+
+* Java JDK 17 or newer
+  * Download from: [Adoptium](https://adoptium.net/)
+
+### Installation
+
+1. Download the newest release from the [release page](https://github.com/jonaskromer/EvenUp/releases)
+2. Start the application
+   ```sh
+   java -jar EvenUp.jar
+   ```
+
+Works on **Linux**, **macOS**, and **Windows**.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Run with Docker
+
+If you want to run EvenUp in a Docker container:
+
 ### Prerequisites
 
 Setup on MacOS

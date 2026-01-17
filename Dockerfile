@@ -8,6 +8,7 @@ RUN apt update && apt install -y \
     libxi6 \
     libgl1 \
     xvfb \
+    openjfx \
     && rm -rf /var/lib/apt/lists/*
 
 

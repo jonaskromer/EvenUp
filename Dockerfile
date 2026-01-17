@@ -1,5 +1,4 @@
-FROM sbtscala/scala-sbt:eclipse-temurin-jammy-22_36_1.10.0_3.4.2
-
+FROM sbtscala/scala-sbt:eclipse-temurin-25.0.1_8_1.12.0_3.7.4
 RUN apt update && apt install -y \
     libgtk-3-0 \
     libx11-6 \

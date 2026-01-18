@@ -1,0 +1,11 @@
+services:
+  evenup:
+    build: .
+    image: evenup:v1
+    stdin_open: true
+    tty: true
+    environment:
+      - DISPLAY=${DISPLAY}
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    network_mode: "host"

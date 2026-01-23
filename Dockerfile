@@ -23,4 +23,4 @@ ADD . /evenup
 
 RUN sbt assembly
 
-CMD ["java", "-Dprism.order=sw", "-jar", "target/scala-3.7.3/EvenUp.jar"]
+CMD ["java", "-Dprism.order=sw", "-jar", "target/scala-3.7.4/EvenUp.jar"]
